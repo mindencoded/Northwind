@@ -1,0 +1,10 @@
+﻿CREATE TABLE [dbo].[USER] (
+    [ID]            INT          IDENTITY (1, 1) NOT NULL,
+    [USERNAME]      VARCHAR (50) NOT NULL,
+    [PASSWORD]      VARCHAR (32) NOT NULL,
+    [CREATED]       DATETIME     NULL,
+    [LAST_MODIFIED] DATETIME     NULL,
+    [ACTIVE]        BIT          NOT NULL,
+    CONSTRAINT [PK_USER] PRIMARY KEY CLUSTERED ([ID] ASC)
+);
+
