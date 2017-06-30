@@ -1,7 +1,7 @@
 ﻿using System.Data.SqlClient;
-using S3K.RealTimeOnline.DataAccess.Repositories;
+using S3K.RealTimeOnline.DataAccess.Repositories.Security;
 
-namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security
 {
     public class SecurityUnitOfWork : UnitOfWork, ISecurityUnitOfWork
     {

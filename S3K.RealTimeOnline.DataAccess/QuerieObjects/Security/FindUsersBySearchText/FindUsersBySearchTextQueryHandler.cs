@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security;
 using S3K.RealTimeOnline.Domain.Entities.Security;
 
-namespace S3K.RealTimeOnline.DataAccess.QuerieObjects.FindUsersBySearchText
+namespace S3K.RealTimeOnline.DataAccess.QuerieObjects.Security.FindUsersBySearchText
 {
     public class FindUsersBySearchTextQueryHandler : IQueryHandler<FindUsersBySearchTextQuery, User[]>
     {
@@ -15,11 +15,11 @@ namespace S3K.RealTimeOnline.DataAccess.QuerieObjects.FindUsersBySearchText
 
         public User[] Handle(FindUsersBySearchTextQuery query)
         {
-            
+           
             using (_db)
             {
                 var userRepository = _db.UserRepository;
-                var users = userRepository.SelectAll(new User { Username = query.SearchText }).ToArray();
+                var users = userRepository.SelectAll(new User { Username = query.SearchText, Active = !query.IncludeInactiveUsers }).ToArray();
                 return users;
             } 
         }

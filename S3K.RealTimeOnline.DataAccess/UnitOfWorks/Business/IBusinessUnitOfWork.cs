@@ -1,6 +1,6 @@
-﻿using S3K.RealTimeOnline.DataAccess.Repositories;
+﻿using S3K.RealTimeOnline.DataAccess.Repositories.Business;
 
-namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks.Business
 {
     public interface IBusinessUnitOfWork : IUnitOfWork
     {

@@ -10,9 +10,12 @@ using System.Threading;
 using Microsoft.Practices.Unity;
 using S3K.RealTimeOnline.Commons;
 using S3K.RealTimeOnline.DataAccess.QuerieObjects;
-using S3K.RealTimeOnline.DataAccess.QuerieObjects.FindUsersBySearchText;
+using S3K.RealTimeOnline.DataAccess.QuerieObjects.Security.FindUsersBySearchText;
 using S3K.RealTimeOnline.DataAccess.Repositories;
+using S3K.RealTimeOnline.DataAccess.Repositories.Security;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Business;
+using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security;
 using S3K.RealTimeOnline.Domain.Entities.Business;
 using S3K.RealTimeOnline.Domain.Entities.Security;
 
@@ -45,21 +48,19 @@ namespace S3K.RealTimeOnline.Service
             //SelectUserByUsername(container);
             //SelectProductByName(container);
 
+            var queryProcessor = (IQueryProcessor) new QueryProcessor(Bootstrapper);
+            var parameter = new FindUsersBySearchTextQuery { SearchText = "Mark Smith", IncludeInactiveUsers = false};
+            User[] users = queryProcessor.Process<IQuery<User[]>, User[]>(parameter);
 
-
-            IQuery<User[]> query = new FindUsersBySearchTextQuery {SearchText = "Mark Smith"};
-            //IQueryProcessor queryProcessor = new QueryProcessor(Bootstrapper);
-
-            IQueryProcessor queryProcessor =
-                Bootstrapper.UnityContainer.Resolve<IQueryProcessor>(new ParameterOverride("container", Bootstrapper));
-
-            User[] users = queryProcessor.Process<IQuery<User[]>, User[]>(query);
+            // var queryHandler =  Bootstrapper.Resolve<FindUsersBySearchTextQueryHandler>();
+            // User[] users = queryHandler.Handle(query);
 
 
             //Print out the ID of the executing thread
             //Console.WriteLine("Main() running on thread {0}", Thread.CurrentThread.ManagedThreadId);
 
-            /*BinaryOp bp = Add;
+            /*
+            BinaryOp bp = Add;
             IAsyncResult iftAr = bp.BeginInvoke(5, 5, AddComplete, "This message is from Main() thread " + Thread.CurrentThread.ManagedThreadId);
             while (!iftAr.AsyncWaitHandle.WaitOne(50, true))
             {
@@ -260,15 +261,13 @@ namespace S3K.RealTimeOnline.Service
             container.Register<ISecurityUnitOfWork>(delegate
             {
                 var connectionName = container.GetConfiguration<string>("ConnectionNameSecurityDb");
-                SqlConnection connection = DbManager.GetSqlConnection(connectionName);
-                return new SecurityUnitOfWork(connection);
+                return new SecurityUnitOfWork(DbManager.GetSqlConnection(connectionName));
             });
 
             container.Register<IBusinessUnitOfWork>(delegate
             {
                 var connectionName = container.GetConfiguration<string>("ConnectionNameBusinessDb");
-                SqlConnection connection = DbManager.GetSqlConnection(connectionName);
-                return new BusinessUnitOfWork(connection);
+                return new BusinessUnitOfWork(DbManager.GetSqlConnection(connectionName));
             });
 
             container.Register<IQueryHandler<FindUsersBySearchTextQuery, User[]>>(delegate
@@ -291,7 +290,6 @@ namespace S3K.RealTimeOnline.Service
             unityContainer
                 .RegisterType<IQueryHandler<FindUsersBySearchTextQuery, User[]>, FindUsersBySearchTextQueryHandler>(
                     new InjectionConstructor(unityContainer.Resolve<ISecurityUnitOfWork>()));
-            unityContainer.RegisterType<IQueryProcessor, QueryProcessor>();
             return new ContainerBootstrapper(unityContainer);
         }
     }
