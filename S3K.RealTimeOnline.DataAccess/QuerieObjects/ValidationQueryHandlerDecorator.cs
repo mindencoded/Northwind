@@ -16,7 +16,7 @@ namespace S3K.RealTimeOnline.DataAccess.QuerieObjects
         public TResult Handle(TQuery query)
         {
             var validationContext = new ValidationContext(query, null, null);
-            Validator.ValidateObject(query, validationContext, validateAllProperties: true);
+            Validator.ValidateObject(query, validationContext, true);
             return _decorated.Handle(query);
         }
     }

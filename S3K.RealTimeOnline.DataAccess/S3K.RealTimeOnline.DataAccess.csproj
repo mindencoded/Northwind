@@ -52,6 +52,9 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Commands\Security\MoveCustomer\MoveCustomerCommand.cs" />
+    <Compile Include="Commands\Security\MoveCustomer\MoveCustomerCommandHandler.cs" />
     <Compile Include="QuerieObjects\Security\FindUsersBySearchText\FindUsersBySearchTextQuery.cs" />
     <Compile Include="QuerieObjects\Security\FindUsersBySearchText\FindUsersBySearchTextQueryHandler.cs" />
     <Compile Include="QuerieObjects\IQuery.cs" />
@@ -96,11 +99,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Commands\Business\" />
     <Folder Include="Notifiers\Business\" />
     <Folder Include="Notifiers\Security\" />
     <Folder Include="QuerieObjects\Business\" />
-    <Folder Include="SqlQueries\Business\" />
-    <Folder Include="SqlQueries\Security\" />
+    <Folder Include="Statements\Business\" />
+    <Folder Include="Statements\Security\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
