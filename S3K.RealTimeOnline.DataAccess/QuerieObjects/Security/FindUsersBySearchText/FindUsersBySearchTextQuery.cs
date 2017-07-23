@@ -8,6 +8,7 @@ namespace S3K.RealTimeOnline.DataAccess.QuerieObjects.Security.FindUsersBySearch
         [Required]
         [StringLength(1)]
         public string SearchText { get; set; }
+
         public bool IncludeInactiveUsers { get; set; }
     }
 }

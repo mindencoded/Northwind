@@ -24,13 +24,9 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             string query = null;
 
             if (_dictionary != null)
-            {
                 query = "";
-            }
             else if (_dynamic != null)
-            {
                 query = "";
-            }       
 
             return query;
         }

@@ -10,9 +10,7 @@ namespace S3K.RealTimeOnline.Commons
         {
             var att = type.GetCustomAttributes(typeof(TAttribute), true).FirstOrDefault() as TAttribute;
             if (att != null)
-            {
                 return valueSelector(att);
-            }
             return default(TValue);
         }
     }

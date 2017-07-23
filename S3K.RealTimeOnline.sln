@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Domain", "S3K.RealTimeOnline.Domain\S3K.RealTimeOnline.Domain.csproj", "{B47F25EC-D429-4DA4-9330-94B871DE729C}"
 EndProject

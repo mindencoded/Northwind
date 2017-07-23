@@ -10,12 +10,13 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories.Security
         {
         }
 
-        public UserRepository(SqlConnection sqlConnection, SqlTransaction sqlTransaction) : base(sqlConnection, sqlTransaction)
+        public UserRepository(SqlConnection sqlConnection, SqlTransaction sqlTransaction) : base(sqlConnection,
+            sqlTransaction)
         {
         }
 
         public UserRepository(ISecurityUnitOfWork unitOfWork) : base(unitOfWork)
-        {       
+        {
         }
     }
 }

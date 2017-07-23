@@ -15,9 +15,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks.Business
             get
             {
                 if (!Repositories.ContainsKey(typeof(ProductRepository)))
-                {
                     Repositories.Add(typeof(ProductRepository), new ProductRepository(SqlConnection, SqlTransaction));
-                }
 
                 return (IProductRepository) Repositories[typeof(ProductRepository)];
             }

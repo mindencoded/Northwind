@@ -1,8 +1,5 @@
-﻿using S3K.RealTimeOnline.DataAccess.Tools;
-using Serilog;
-using System;
+﻿using System;
 using System.Configuration;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
@@ -11,13 +8,13 @@ using Microsoft.Practices.Unity;
 using S3K.RealTimeOnline.Commons;
 using S3K.RealTimeOnline.DataAccess.QuerieObjects;
 using S3K.RealTimeOnline.DataAccess.QuerieObjects.Security.FindUsersBySearchText;
-using S3K.RealTimeOnline.DataAccess.Repositories;
 using S3K.RealTimeOnline.DataAccess.Repositories.Security;
-using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.DataAccess.Tools;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Business;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security;
 using S3K.RealTimeOnline.Domain.Entities.Business;
 using S3K.RealTimeOnline.Domain.Entities.Security;
+using Serilog;
 
 namespace S3K.RealTimeOnline.Service
 {
@@ -49,8 +46,8 @@ namespace S3K.RealTimeOnline.Service
             //SelectProductByName(container);
 
             var queryProcessor = (IQueryProcessor) new QueryProcessor(Bootstrapper);
-            var parameter = new FindUsersBySearchTextQuery { SearchText = "Mark Smith", IncludeInactiveUsers = false};
-            User[] users = queryProcessor.Process<IQuery<User[]>, User[]>(parameter);
+            var parameter = new FindUsersBySearchTextQuery {SearchText = "Mark Smith", IncludeInactiveUsers = false};
+            var users = queryProcessor.Process<IQuery<User[]>, User[]>(parameter);
 
             // var queryHandler =  Bootstrapper.Resolve<FindUsersBySearchTextQueryHandler>();
             // User[] users = queryHandler.Handle(query);
@@ -197,10 +194,8 @@ namespace S3K.RealTimeOnline.Service
             {
                 var result = userRepository.SelectById(search);
                 if (result != null)
-                {
                     Console.WriteLine("Id: {0}, Username: {1}, Password: {2}", result.Id, result.Username,
                         result.Password);
-                }
             }
         }
 
@@ -213,16 +208,12 @@ namespace S3K.RealTimeOnline.Service
 
             using (var unitOfWork = container.Resolve<ISecurityUnitOfWork>())
             {
-                var result = unitOfWork.UserRepository.SelectAll(search).FirstOrDefault();
+                var result = unitOfWork.UserRepository.Select(search).FirstOrDefault();
                 if (result != null)
-                {
                     Console.WriteLine("Id: {0}, Username: {1}, Password: {2}", result.Id, result.Username,
                         result.Password);
-                }
                 else
-                {
                     Console.WriteLine("User Not Found!");
-                }
             }
         }
 
@@ -236,16 +227,12 @@ namespace S3K.RealTimeOnline.Service
             using (var unitOfWork = container.Resolve<IBusinessUnitOfWork>())
             {
                 var productRepository = unitOfWork.ProductRepository;
-                var result = productRepository.SelectAll(search).FirstOrDefault();
+                var result = productRepository.Select(search).FirstOrDefault();
                 if (result != null)
-                {
                     Console.WriteLine("Id: {0}, Name: {1}, Description: {2}", result.Id, result.Name,
                         result.Description);
-                }
                 else
-                {
                     Console.WriteLine("Product Not Found!");
-                }
             }
         }
 

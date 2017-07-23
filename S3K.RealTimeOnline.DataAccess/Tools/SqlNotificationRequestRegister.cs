@@ -49,9 +49,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             NotificationRequest.Options = string.Format("Service={0};", _serviceName);
             NotificationRequest.Timeout = _notificationTimeout;
             if (OnChanged != null)
-            {
                 OnChanged(this, null);
-            }
         }
 
         /// <summary>
@@ -64,19 +62,15 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                 using (_cmd = new SqlCommand(_listenSql, conn))
                 {
                     if (conn.State != ConnectionState.Open)
-                    {
                         conn.Open();
-                    }
 
                     _cmd.CommandTimeout = _notificationTimeout + 120;
 
                     using (var reader = _cmd.ExecuteReader())
                     {
                         while (reader.Read())
-                        {
                             for (var i = 0; i <= reader.FieldCount - 1; i++)
                                 Debug.WriteLine(reader[i].ToString());
-                        }
                     }
                 }
             }
@@ -87,9 +81,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
         public void StopSqlNotification()
         {
             if (_cmd != null)
-            {
                 _cmd.Dispose();
-            }
         }
 
         public void Dispose()
@@ -101,9 +93,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
         private void Dispose(bool disposed)
         {
             if (disposed)
-            {
                 StopSqlNotification();
-            }
         }
     }
 }

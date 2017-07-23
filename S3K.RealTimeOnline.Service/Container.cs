@@ -12,11 +12,6 @@ namespace S3K.RealTimeOnline.Service
 
         public Dictionary<string, object> Configuration { get; } = new Dictionary<string, object>();
 
-        public void Register<T>(Creator creator)
-        {
-            _typeToCreator.Add(typeof(T), creator);
-        }
-
         public T Resolve<T>()
         {
             var type = typeof(T);
@@ -26,6 +21,11 @@ namespace S3K.RealTimeOnline.Service
         public object Resolve(Type type)
         {
             return _typeToCreator[type](this);
+        }
+
+        public void Register<T>(Creator creator)
+        {
+            _typeToCreator.Add(typeof(T), creator);
         }
 
         public T GetConfiguration<T>(string name)

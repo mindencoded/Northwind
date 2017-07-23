@@ -1,6 +1,6 @@
 ﻿namespace S3K.RealTimeOnline.DataAccess.Tools
 {
-    public  interface IQueryBuilder
+    public interface IQueryBuilder
     {
         string CreateSelect();
 

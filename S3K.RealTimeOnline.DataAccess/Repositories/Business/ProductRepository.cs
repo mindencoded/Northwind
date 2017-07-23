@@ -6,17 +6,17 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories.Business
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {
-        
         public ProductRepository(SqlConnection sqlConnection) : base(sqlConnection)
         {
         }
 
-        public ProductRepository(SqlConnection sqlConnection, SqlTransaction sqlTransaction) : base(sqlConnection, sqlTransaction)
+        public ProductRepository(SqlConnection sqlConnection, SqlTransaction sqlTransaction) : base(sqlConnection,
+            sqlTransaction)
         {
         }
 
         public ProductRepository(IBusinessUnitOfWork unitOfWork) : base(unitOfWork)
-        {    
+        {
         }
     }
 }

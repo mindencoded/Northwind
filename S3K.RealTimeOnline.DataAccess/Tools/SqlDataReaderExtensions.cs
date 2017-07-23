@@ -10,7 +10,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
         public static TEntity ConvertToEntity<TEntity>(this SqlDataReader reader) where TEntity : class
         {
             var type = typeof(TEntity);
-            var instance = (TEntity)Activator.CreateInstance(type);
+            var instance = (TEntity) Activator.CreateInstance(type);
             var properties = type.GetProperties();
             for (var i = 0; i < reader.FieldCount; i++)
             {
@@ -25,13 +25,12 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                 if (value is DBNull) continue;
 
                 foreach (var property in properties)
-                {
                     try
                     {
                         var attribute =
                             property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
-                        if ((attribute != null && columnName == attribute.Name) || columnName == property.Name)
+                        if (attribute != null && columnName == attribute.Name || columnName == property.Name)
                         {
                             property.SetValue(instance, value);
                             break;
@@ -41,7 +40,6 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                     {
                         // ignored
                     }
-                }
             }
             return instance;
         }

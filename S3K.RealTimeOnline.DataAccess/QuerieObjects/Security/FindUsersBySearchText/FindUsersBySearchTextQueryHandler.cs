@@ -15,13 +15,12 @@ namespace S3K.RealTimeOnline.DataAccess.QuerieObjects.Security.FindUsersBySearch
 
         public User[] Handle(FindUsersBySearchTextQuery query)
         {
-           
             using (_db)
             {
-                var userRepository = _db.UserRepository;
-                var users = userRepository.SelectAll(new User { Username = query.SearchText, Active = !query.IncludeInactiveUsers }).ToArray();
+                var user = new User { Username = query.SearchText, Active = !query.IncludeInactiveUsers };
+                var users = _db.UserRepository.Select(user).ToArray();
                 return users;
-            } 
+            }
         }
     }
 }

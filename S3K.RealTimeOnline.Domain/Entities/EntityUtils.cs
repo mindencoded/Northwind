@@ -15,31 +15,23 @@ namespace S3K.RealTimeOnline.Domain.Entities
             var schema = GetSchema<TEntity>();
             var tableName = GetTableName<TEntity>();
             foreach (var property in properties)
-            {
                 try
                 {
                     var attribute =
                         property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                     if (attribute != null)
-                    {
                         columns.Add(schema + ".[" + tableName + "].[" + attribute.Name + "]");
-                    }
                     else
-                    {
                         columns.Add(schema + ".[" + tableName + "].[" + property.Name + "]");
-                    }
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
-            }
 
             if (columns.Count > 0)
-            {
                 return string.Join(",", columns);
-            }
             return null;
         }
 
@@ -49,31 +41,23 @@ namespace S3K.RealTimeOnline.Domain.Entities
             var properties = type.GetProperties();
             var columns = new List<string>();
             foreach (var property in properties)
-            {
                 try
                 {
                     var attribute =
                         property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                     if (attribute != null)
-                    {
                         columns.Add("[" + attribute.Name + "]");
-                    }
                     else
-                    {
                         columns.Add(property.Name);
-                    }
                 }
                 catch (Exception)
                 {
                     // ignored
                 }
-            }
 
             if (columns.Count > 0)
-            {
                 return string.Join(",", columns);
-            }
             return null;
         }
 
@@ -83,9 +67,7 @@ namespace S3K.RealTimeOnline.Domain.Entities
             var type = typeof(TEntity);
             var attribute = type.GetCustomAttributes(true).OfType<SchemaAttribute>().FirstOrDefault();
             if (attribute != null)
-            {
                 schema = attribute.Name;
-            }
             return schema;
         }
 
@@ -101,9 +83,7 @@ namespace S3K.RealTimeOnline.Domain.Entities
             {
                 var tableAttribute = temp[0] as TableAttribute;
                 if (tableAttribute != null)
-                {
                     return tableAttribute.Name;
-                }
             }
 
             return type.Name;

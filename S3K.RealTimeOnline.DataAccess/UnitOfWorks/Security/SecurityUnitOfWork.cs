@@ -5,7 +5,8 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security
 {
     public class SecurityUnitOfWork : UnitOfWork, ISecurityUnitOfWork
     {
-        public SecurityUnitOfWork(SqlConnection sqlConnection, bool isTransactional = true) : base(sqlConnection, isTransactional)
+        public SecurityUnitOfWork(SqlConnection sqlConnection, bool isTransactional = true) : base(sqlConnection,
+            isTransactional)
         {
         }
 
@@ -15,9 +16,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security
             get
             {
                 if (!Repositories.ContainsKey(typeof(UserRepository)))
-                {
                     Repositories.Add(typeof(UserRepository), new UserRepository(SqlConnection, SqlTransaction));
-                }
 
                 return (IUserRepository) Repositories[typeof(UserRepository)];
             }

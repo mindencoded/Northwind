@@ -17,7 +17,7 @@ namespace S3K.RealTimeOnline.DataAccess.QuerieObjects
 
             dynamic handler = _container.Resolve(handlerType);
 
-            return handler.Handle((dynamic)query);
+            return handler.Handle((dynamic) query);
         }
     }
 }

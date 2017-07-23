@@ -46,30 +46,15 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             Identity = identity;
         }
 
-        public string ConversationQueueName
-        {
-            get { return string.Format("ListenerQueue_{0}", Identity); }
-        }
+        public string ConversationQueueName => string.Format("ListenerQueue_{0}", Identity);
 
-        public string ConversationServiceName
-        {
-            get { return string.Format("ListenerService_{0}", Identity); }
-        }
+        public string ConversationServiceName => string.Format("ListenerService_{0}", Identity);
 
-        public string ConversationTriggerName
-        {
-            get { return string.Format("tr_Listener_{0}", Identity); }
-        }
+        public string ConversationTriggerName => string.Format("tr_Listener_{0}", Identity);
 
-        public string InstallListenerProcedureName
-        {
-            get { return string.Format("sp_InstallListenerNotification_{0}", Identity); }
-        }
+        public string InstallListenerProcedureName => string.Format("sp_InstallListenerNotification_{0}", Identity);
 
-        public string UninstallListenerProcedureName
-        {
-            get { return string.Format("sp_UninstallListenerNotification_{0}", Identity); }
-        }
+        public string UninstallListenerProcedureName => string.Format("sp_UninstallListenerNotification_{0}", Identity);
 
         public string ConnectionString { get; }
 
@@ -123,17 +108,15 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             UninstallNotification();
 
             lock (ActiveEntities)
-                if (ActiveEntities.Contains(Identity)) ActiveEntities.Remove(Identity);
-
-            if ((_threadSource == null) || _threadSource.Token.IsCancellationRequested)
             {
-                return;
+                if (ActiveEntities.Contains(Identity)) ActiveEntities.Remove(Identity);
             }
+
+            if (_threadSource == null || _threadSource.Token.IsCancellationRequested)
+                return;
 
             if (!_threadSource.Token.CanBeCanceled)
-            {
                 return;
-            }
 
             _threadSource.Cancel();
             _threadSource.Dispose();
@@ -142,14 +125,10 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
         public static int[] GetDependencyDbIdentities(string connectionString, string database)
         {
             if (connectionString == null)
-            {
                 throw new ArgumentNullException("connectionString");
-            }
 
             if (database == null)
-            {
                 throw new ArgumentNullException("database");
-            }
 
             var result = new List<string>();
 
@@ -160,8 +139,10 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                 command.CommandText = string.Format(SQL_FORMAT_GET_DEPENDENCY_IDENTITIES, database);
                 command.CommandType = CommandType.Text;
                 using (var reader = command.ExecuteReader())
+                {
                     while (reader.Read())
                         result.Add(reader.GetString(0));
+                }
             }
 
             int temp;
@@ -187,9 +168,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                     var message = ReceiveEvent();
                     Active = true;
                     if (!string.IsNullOrWhiteSpace(message))
-                    {
                         OnTableChanged(message);
-                    }
                 }
             }
             catch
@@ -220,7 +199,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                 SQL_FORMAT_RECEIVE_EVENT,
                 DatabaseName,
                 ConversationQueueName,
-                COMMAND_TIMEOUT/2,
+                COMMAND_TIMEOUT / 2,
                 SchemaName);
 
             using (var conn = new SqlConnection(ConnectionString))
@@ -370,19 +349,13 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                 }
             }
 
-            public NotificationTypes NotificationType
-            {
-                get
-                {
-                    return (Data != null ? Data.Element(INSERTED_TAG) : null) != null
-                        ? (Data != null ? Data.Element(DELETED_TAG) : null) != null
-                            ? NotificationTypes.Update
-                            : NotificationTypes.Insert
-                        : (Data != null ? Data.Element(DELETED_TAG) : null) != null
-                            ? NotificationTypes.Delete
-                            : NotificationTypes.None;
-                }
-            }
+            public NotificationTypes NotificationType => (Data != null ? Data.Element(INSERTED_TAG) : null) != null
+                ? (Data != null ? Data.Element(DELETED_TAG) : null) != null
+                    ? NotificationTypes.Update
+                    : NotificationTypes.Insert
+                : (Data != null ? Data.Element(DELETED_TAG) : null) != null
+                    ? NotificationTypes.Delete
+                    : NotificationTypes.None;
 
             /// <summary>
             ///     Converts an xml string into XElement with no invalid characters check.
