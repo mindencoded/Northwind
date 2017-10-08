@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using S3K.RealTimeOnline.Domain.Entities;
+using S3K.RealTimeOnline.Domain;
 
 namespace S3K.RealTimeOnline.DataAccess.Tools
 {

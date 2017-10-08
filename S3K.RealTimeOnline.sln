@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.14
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Domain", "S3K.RealTimeOnline.Domain\S3K.RealTimeOnline.Domain.csproj", "{B47F25EC-D429-4DA4-9330-94B871DE729C}"
 EndProject
@@ -74,5 +74,8 @@ Global
 		{DE3F8993-D5DB-4F11-8DD4-65B16B6A7439} = {F9BA9756-22AD-430A-AB3C-09E706D44AFD}
 		{6D21CD73-808B-42A2-A4E1-3583AB6BBF23} = {1FBABEE5-EEA4-46CC-888A-38E834E4B042}
 		{94CBFB90-729D-45CC-8A09-52E5B06D4EC8} = {1FBABEE5-EEA4-46CC-888A-38E834E4B042}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DECA91E6-677C-458B-9E96-C0702324AC5E}
 	EndGlobalSection
 EndGlobal

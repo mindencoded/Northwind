@@ -13,8 +13,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
     public interface IRepository<TEntity> : IRepository, IDisposable where TEntity : class
     {
-        IEnumerable<TEntity> Select();
-
         IEnumerable<TEntity> Select(TEntity entity);
 
         IEnumerable<TEntity> Select(object instance);
@@ -30,8 +28,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
         int Update(object instance);
 
         int Update(object instance, object conditions);
-
-        int Delete();
 
         int Delete(TEntity entity);
 

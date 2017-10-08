@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.DataAccess.Tools;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
-using S3K.RealTimeOnline.Domain.Entities;
+using S3K.RealTimeOnline.Domain;
 using Serilog;
 
 namespace S3K.RealTimeOnline.DataAccess.Repositories
@@ -33,11 +33,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
         public Repository(IUnitOfWork unitOfWork)
         {
             unitOfWork.Register(this);
-        }
-
-        public virtual IEnumerable<TEntity> Select()
-        {
-            return Select(null);
         }
 
         public virtual IEnumerable<TEntity> Select(TEntity entity)
@@ -137,11 +132,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             return sqlCommand.ExecuteNonQuery();
         }
 
-        public virtual int Delete()
-        {
-            return Delete(null);
-        }
-
         public virtual int Delete(TEntity entity)
         {
             var sqlCommand = CreateDelete(entity);
@@ -171,12 +161,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             return SqlConnection != null && SqlConnection.State == ConnectionState.Open;
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
         public bool IsIdentityInsert()
         {
             using (var sqlCommand = SqlConnection.CreateCommand())
@@ -198,6 +182,12 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             SqlTransaction = sqlTransaction;
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

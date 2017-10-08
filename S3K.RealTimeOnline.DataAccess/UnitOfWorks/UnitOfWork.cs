@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using S3K.RealTimeOnline.DataAccess.Repositories;
+using Serilog;
 
 namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 {
@@ -16,6 +18,9 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         protected UnitOfWork(SqlConnection sqlConnection, bool isTransactional = true)
         {
             SqlConnection = sqlConnection;
+            SqlConnection.FireInfoMessageEventOnUserErrors = true;
+            SqlConnection.InfoMessage += OnInfoMessage;
+            SqlConnection.StateChange += OnStateChange;  
             if (isTransactional)
                 SqlTransaction = SqlConnection.BeginTransaction();
         }
@@ -39,7 +44,6 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         {
             if (!Repositories.Keys.Contains(typeof(IRepository<T>)))
                 Repositories.Add(typeof(IRepository<T>), new Repository<T>(SqlConnection, SqlTransaction));
-
             return Repositories[typeof(IRepository<T>)] as IRepository<T>;
         }
 
@@ -80,5 +84,24 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
                 IsDisposed = true;
             }
         }
+
+        protected static void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
+        {
+            foreach (SqlError err in args.Errors)
+            {
+                Log.Information(
+                    "The {0} has received a severity {1}, state {2} error number {3}\n" +
+                    "on line {4} of procedure {5} on server {6}:\n{7}",
+                    err.Source, err.Class, err.State, err.Number, err.LineNumber,
+                    err.Procedure, err.Server, err.Message);
+            }
+        }
+        
+        protected static void OnStateChange(object sender, StateChangeEventArgs args)  
+        {  
+            Log.Information(  
+                "The current Connection state has changed from {0} to {1}.",  
+                args.OriginalState, args.CurrentState);  
+        }  
     }
 }

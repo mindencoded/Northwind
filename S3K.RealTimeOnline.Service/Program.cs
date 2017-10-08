@@ -5,15 +5,15 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Microsoft.Practices.Unity;
-using S3K.RealTimeOnline.Commons;
-using S3K.RealTimeOnline.DataAccess.QuerieObjects;
-using S3K.RealTimeOnline.DataAccess.QuerieObjects.Security.FindUsersBySearchText;
-using S3K.RealTimeOnline.DataAccess.Repositories.Security;
+using S3K.RealTimeOnline.DataAccess.Commands;
+using S3K.RealTimeOnline.DataAccess.Commands.MoveCustomer;
+using S3K.RealTimeOnline.DataAccess.Decorators;
+using S3K.RealTimeOnline.DataAccess.Queries;
+using S3K.RealTimeOnline.DataAccess.Queries.FindUsersBySearchText;
+using S3K.RealTimeOnline.DataAccess.Repositories;
 using S3K.RealTimeOnline.DataAccess.Tools;
-using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Business;
-using S3K.RealTimeOnline.DataAccess.UnitOfWorks.Security;
-using S3K.RealTimeOnline.Domain.Entities.Business;
-using S3K.RealTimeOnline.Domain.Entities.Security;
+using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.Domain;
 using Serilog;
 
 namespace S3K.RealTimeOnline.Service
@@ -24,9 +24,7 @@ namespace S3K.RealTimeOnline.Service
 
         public delegate string MyDelegate(string txt);
 
-        private static readonly ContainerBootstrapper Bootstrapper;
-
-        private static readonly Container Container;
+        private static readonly IUnityContainer Container;
 
         static Program()
         {
@@ -36,21 +34,28 @@ namespace S3K.RealTimeOnline.Service
                 .WriteTo.ColoredConsole()
                 .CreateLogger();
             Container = ConfigureContainer();
-            Bootstrapper = ConfigureContainerBootstrapper();
         }
 
         private static void Main()
         {
-            //SelectUserById(container);
-            //SelectUserByUsername(container);
-            //SelectProductByName(container);
+            //SelectUserById(Container);
+            //SelectUserByUsername(Container);
+            //SelectProductByName(Container);
 
-            var queryProcessor = (IQueryProcessor) new QueryProcessor(Bootstrapper);
-            var parameter = new FindUsersBySearchTextQuery {SearchText = "Mark Smith", IncludeInactiveUsers = false};
-            var users = queryProcessor.Process<IQuery<User[]>, User[]>(parameter);
+            FindUsersBySearchTextQuery parameter =
+                new FindUsersBySearchTextQuery { SearchText = "MIKE", IncludeInactiveUsers = false };
+            IQueryProcessor queryProcessor = new QueryProcessor(Container);
+            User[] users = queryProcessor.Process<IQuery<User[]>, User[]>(parameter);
 
-            // var queryHandler =  Bootstrapper.Resolve<FindUsersBySearchTextQueryHandler>();
-            // User[] users = queryHandler.Handle(query);
+            var commandHandler = Container.Resolve<ICommandHandler<MoveCustomerCommand>>();
+
+            var transactionCommandHandler = Container.Resolve<ICommandHandler<MoveCustomerCommand>>("TransactionCommand");
+
+            var deadlockRetryHandler = Container.Resolve<ICommandHandler<MoveCustomerCommand>>("DeadlockRetryCommand");
+
+            var queryHandler = Container.Resolve<IQueryHandler<FindUsersBySearchTextQuery, User[]>>();
+
+            var validationQueryHandler = Container.Resolve<IQueryHandler<FindUsersBySearchTextQuery, User[]>>("ValidationQuery");
 
 
             //Print out the ID of the executing thread
@@ -183,7 +188,7 @@ namespace S3K.RealTimeOnline.Service
             return ">> " + txt + " Done !";
         }
 
-        private static void SelectUserById(IContainer container)
+        private static void SelectUserById(IUnityContainer container)
         {
             var search = new User
             {
@@ -199,7 +204,7 @@ namespace S3K.RealTimeOnline.Service
             }
         }
 
-        private static void SelectUserByUsername(IContainer container)
+        private static void SelectUserByUsername(IUnityContainer container)
         {
             var search = new User
             {
@@ -217,7 +222,7 @@ namespace S3K.RealTimeOnline.Service
             }
         }
 
-        private static void SelectProductByName(IContainer container)
+        private static void SelectProductByName(IUnityContainer container)
         {
             var search = new Product
             {
@@ -236,48 +241,70 @@ namespace S3K.RealTimeOnline.Service
             }
         }
 
-        private static Container ConfigureContainer()
+        private static IUnityContainer ConfigureContainer()
         {
-            var container = new Container();
+            UnityContainer container = new UnityContainer();
+            string connectionNameSecurityDb = ConfigurationManager.AppSettings["ConnectionNameSecurityDb"];
+            string connectionNameBusinessDb = ConfigurationManager.AppSettings["ConnectionNameBusinessDb"];
+            container.RegisterType<ISecurityUnitOfWork, SecurityUnitOfWork>(new HierarchicalLifetimeManager(),
+                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameSecurityDb), true));
+            container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
+                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameBusinessDb), true));
 
-            container.Configuration.Add("ConnectionNameSecurityDb",
-                ConfigurationManager.AppSettings["ConnectionNameSecurityDb"]);
-            container.Configuration.Add("ConnectionNameBusinessDb",
-                ConfigurationManager.AppSettings["ConnectionNameBusinessDb"]);
-
-            container.Register<ISecurityUnitOfWork>(delegate
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                var connectionName = container.GetConfiguration<string>("ConnectionNameSecurityDb");
-                return new SecurityUnitOfWork(DbManager.GetSqlConnection(connectionName));
-            });
+                var types = assembly.GetTypes().Where(t => t.GetInterfaces()
+                                                               .Count(i => i.IsGenericType &&
+                                                                           (i.GetGenericTypeDefinition() ==
+                                                                            typeof(ICommandHandler<>) ||
+                                                                            i.GetGenericTypeDefinition() ==
+                                                                            typeof(IQueryHandler<,>))) > 0);
 
-            container.Register<IBusinessUnitOfWork>(delegate
-            {
-                var connectionName = container.GetConfiguration<string>("ConnectionNameBusinessDb");
-                return new BusinessUnitOfWork(DbManager.GetSqlConnection(connectionName));
-            });
+                foreach (var type in types)
+                {
+                    container.RegisterType(type.GetInterfaces().First(), type);
+                }
+            }
 
-            container.Register<IQueryHandler<FindUsersBySearchTextQuery, User[]>>(delegate
-            {
-                return new FindUsersBySearchTextQueryHandler(container.Resolve<ISecurityUnitOfWork>());
-            });
+            //container.AddExtension(new Decorator())
+            //    .RegisterType<ICommandHandler<MoveCustomerCommand>,
+            //        DeadlockRetryCommandHandlerDecorator<MoveCustomerCommand>>()
+            //    .RegisterType<ICommandHandler<MoveCustomerCommand>,TransactionCommandHandlerDecorator<MoveCustomerCommand>>()
+            // .RegisterType<ICommandHandler<MoveCustomerCommand>, MoveCustomerCommandHandler>()
+            //    ;
+
+            //container.AddNewExtension<Decorating>();
+            //container
+            //    .Configure<Decorating>()
+            //    .Decorate(typeof(ICommandHandler<>), typeof(DeadlockRetryCommandHandlerDecorator<>))
+            //    .Configure<Decorating>()
+            //    .Decorate(typeof(ICommandHandler<>), typeof(TransactionCommandHandlerDecorator<>));
+
+            container
+                .RegisterType(typeof(ICommandHandler<>),
+                    typeof(TransactionCommandHandlerDecorator<>), "TransactionCommand",
+                    new InjectionConstructor(
+                        new ResolvedParameter(typeof(ICommandHandler<>))));
+
+            container
+                .RegisterType(typeof(ICommandHandler<>),
+                    typeof(DeadlockRetryCommandHandlerDecorator<>), "DeadlockRetryCommand",
+                    new InjectionConstructor(new ResolvedParameter(typeof(ICommandHandler<>), "TransactionCommand"))
+                );
+
+            container
+                .RegisterType(typeof(ICommandHandler<>),
+                    typeof(ValidationCommandHandlerDecorator<>), "ValidationCommand",
+                    new InjectionConstructor(
+                        new ResolvedParameter(typeof(ICommandHandler<>))));
+
+            container
+                .RegisterType(typeof(IQueryHandler<,>),
+                    typeof(ValidationQueryHandlerDecorator<,>), "ValidationQuery",
+                    new InjectionConstructor(
+                        new ResolvedParameter(typeof(IQueryHandler<,>))));
 
             return container;
-        }
-
-        private static ContainerBootstrapper ConfigureContainerBootstrapper()
-        {
-            var unityContainer = new UnityContainer();
-            var connectionNameSecurityDb = ConfigurationManager.AppSettings["ConnectionNameSecurityDb"];
-            var connectionNameBusinessDb = ConfigurationManager.AppSettings["ConnectionNameBusinessDb"];
-            unityContainer.RegisterType<ISecurityUnitOfWork, SecurityUnitOfWork>(
-                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameSecurityDb), true));
-            unityContainer.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(
-                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameBusinessDb), true));
-            unityContainer
-                .RegisterType<IQueryHandler<FindUsersBySearchTextQuery, User[]>, FindUsersBySearchTextQueryHandler>(
-                    new InjectionConstructor(unityContainer.Resolve<ISecurityUnitOfWork>()));
-            return new ContainerBootstrapper(unityContainer);
         }
     }
 }
