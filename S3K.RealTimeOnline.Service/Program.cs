@@ -247,9 +247,9 @@ namespace S3K.RealTimeOnline.Service
             string connectionNameSecurityDb = ConfigurationManager.AppSettings["ConnectionNameSecurityDb"];
             string connectionNameBusinessDb = ConfigurationManager.AppSettings["ConnectionNameBusinessDb"];
             container.RegisterType<ISecurityUnitOfWork, SecurityUnitOfWork>(new HierarchicalLifetimeManager(),
-                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameSecurityDb), true));
+                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameSecurityDb)));
             container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
-                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameBusinessDb), true));
+                new InjectionConstructor(DbManager.GetSqlConnection(connectionNameBusinessDb)));
 
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {

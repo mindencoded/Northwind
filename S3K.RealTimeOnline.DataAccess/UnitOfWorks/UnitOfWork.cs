@@ -2,34 +2,41 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
 using S3K.RealTimeOnline.DataAccess.Repositories;
+using S3K.RealTimeOnline.DataAccess.Tools;
 using Serilog;
 
 namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 {
     public abstract class UnitOfWork : IUnitOfWork
     {
-        protected readonly SqlConnection SqlConnection;
-        protected readonly SqlTransaction SqlTransaction;
+        protected readonly SqlConnection Connection;
+        protected readonly SqlTransaction Transaction;
         protected bool IsCommited;
         protected bool IsDisposed;
         protected IDictionary<Type, object> Repositories = new Dictionary<Type, object>();
 
-        protected UnitOfWork(SqlConnection sqlConnection, bool isTransactional = true)
+        protected UnitOfWork(SqlConnection connection)
         {
-            SqlConnection = sqlConnection;
-            SqlConnection.FireInfoMessageEventOnUserErrors = true;
-            SqlConnection.InfoMessage += OnInfoMessage;
-            SqlConnection.StateChange += OnStateChange;  
-            if (isTransactional)
-                SqlTransaction = SqlConnection.BeginTransaction();
+            Connection = connection;
+            Connection.FireInfoMessageEventOnUserErrors = true;
+            Connection.InfoMessage += OnInfoMessage;
+            Connection.StateChange += OnStateChange;
+            Transaction = Connection.BeginTransaction();
+            if (Connection.State == ConnectionState.Closed)
+            {
+                Connection.Open();
+            }
         }
 
         public void Commit()
         {
-            if (SqlTransaction != null)
+            if (Transaction != null)
             {
-                SqlTransaction.Commit();
+                Transaction.Commit();
                 IsCommited = true;
             }
         }
@@ -43,7 +50,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         public IRepository<T> Repository<T>() where T : class
         {
             if (!Repositories.Keys.Contains(typeof(IRepository<T>)))
-                Repositories.Add(typeof(IRepository<T>), new Repository<T>(SqlConnection, SqlTransaction));
+                Repositories.Add(typeof(IRepository<T>), new Repository<T>(Connection, Transaction));
             return Repositories[typeof(IRepository<T>)] as IRepository<T>;
         }
 
@@ -54,7 +61,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 
             if (!Repositories.ContainsKey(type))
             {
-                var instance = Activator.CreateInstance(type, SqlConnection, SqlTransaction);
+                var instance = Activator.CreateInstance(type, Connection, Transaction);
                 Repositories.Add(type, instance);
             }
             return Repositories[type];
@@ -62,8 +69,8 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 
         public void Register(IRepository repository)
         {
-            repository.SetSqlConnection(SqlConnection);
-            repository.SetSqlTransaction(SqlTransaction);
+            repository.SetSqlConnection(Connection);
+            repository.SetSqlTransaction(Transaction);
 
             if (!Repositories.ContainsKey(repository.GetType()))
                 Repositories.Add(repository.GetType(), repository);
@@ -74,12 +81,12 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             if (!IsDisposed)
             {
                 if (disposing)
-                    if (SqlConnection != null)
+                    if (Connection != null)
                     {
                         if (!IsCommited)
-                            SqlTransaction.Rollback();
+                            Transaction.Rollback();
 
-                        SqlConnection.Close();
+                        Connection.Close();
                     }
                 IsDisposed = true;
             }
@@ -96,12 +103,94 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
                     err.Procedure, err.Server, err.Message);
             }
         }
-        
-        protected static void OnStateChange(object sender, StateChangeEventArgs args)  
-        {  
-            Log.Information(  
-                "The current Connection state has changed from {0} to {1}.",  
-                args.OriginalState, args.CurrentState);  
-        }  
+
+        protected static void OnStateChange(object sender, StateChangeEventArgs args)
+        {
+            Log.Information(
+                "The current Connection state has changed from {0} to {1}.",
+                args.OriginalState, args.CurrentState);
+        }
+
+        public IEnumerable<T> ExecuteQueryText<T>(string commandText, object query = null) where T : class
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                Transaction = Transaction,
+                CommandText = commandText,
+                CommandType = CommandType.Text
+            };
+
+            if (query != null)
+            {
+                IList<string> parameters = Regex.Matches(command.CommandText, @"\@\w+").Cast<Match>().Select(m => m.Value).ToList();
+                PropertyInfo[] properties = query.GetType().GetProperties();
+                foreach (var parameter in parameters)
+                {
+                    foreach (var property in properties)
+                    {
+                        string parameterName = '@' + property.Name;
+                        if (parameter.Equals(parameterName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            SqlParameter sqlParameter = new SqlParameter
+                            {
+                                ParameterName = parameterName,
+                                SqlDbType = TypeConvertor.ToSqlDbType(property.PropertyType),
+                                Value = property.GetValue(query, null)
+                            };
+                            command.Parameters.Add(sqlParameter);
+                        }
+                    }
+                } 
+            }
+
+            SqlDataReader reader = command.ExecuteReader();
+            IList<T> results = new List<T>();
+            while (reader.Read())
+            {
+                results.Add(reader.ConvertToEntity<T>());
+            }
+
+            return results.AsEnumerable();
+        }
+
+        public IEnumerable<T> ExecuteQueryFunction<T>(string commandText, object query = null)
+            where T : class
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                Transaction = Transaction,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (query != null)
+            {
+                SqlCommandBuilder.DeriveParameters(command);
+                SqlParameterCollection parameters = command.Parameters;
+                PropertyInfo[] properties = query.GetType().GetProperties();
+                foreach (SqlParameter parameter in parameters)
+                {
+                    foreach (PropertyInfo propertyInfo in properties)
+                    {
+                        string parameterName = '@' + propertyInfo.Name;
+                        if (parameterName.Equals(parameter.ParameterName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            parameter.Value = propertyInfo.GetValue(query, null);
+                        }
+                    }
+                }
+            }
+
+            SqlDataReader reader = command.ExecuteReader();
+            IList<T> results = new List<T>();
+            while (reader.Read())
+            {
+                results.Add(reader.ConvertToEntity<T>());
+            }
+
+            return results.AsEnumerable();
+        }
     }
 }

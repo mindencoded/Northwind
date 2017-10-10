@@ -21,6 +21,10 @@ namespace S3K.RealTimeOnline.Domain
         [Column("USERNAME")]
         public string Username { get; set; }
 
+        [MaxLength(150)]
+        [Column("FULL_NAME")]
+        public string FullName { get; set; }
+
         [MaxLength(32)]
         [Required]
         [Column("PASSWORD")]

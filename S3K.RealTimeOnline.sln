@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.DataAcce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Service", "S3K.RealTimeOnline.Service\S3K.RealTimeOnline.Service.csproj", "{DE3F8993-D5DB-4F11-8DD4-65B16B6A7439}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{F9BA9756-22AD-430A-AB3C-09E706D44AFD}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F9BA9756-22AD-430A-AB3C-09E706D44AFD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{173C9A31-8A98-42BD-BA82-D108DE004BA6}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBases", "DataBases", "{1FBABEE5-EEA4-46CC-888A-38E834E4B042}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "S3K.RealTimeOnline.BusinessDb", "S3K.RealTimeOnline.BusinessDb\S3K.RealTimeOnline.BusinessDb.sqlproj", "{94CBFB90-729D-45CC-8A09-52E5B06D4EC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Applications", "{BC894F82-4706-4E8E-938B-32E282782D60}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

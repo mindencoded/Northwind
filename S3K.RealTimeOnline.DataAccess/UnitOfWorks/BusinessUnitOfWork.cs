@@ -5,8 +5,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 {
     public class BusinessUnitOfWork : UnitOfWork, IBusinessUnitOfWork
     {
-        public BusinessUnitOfWork(SqlConnection sqlConnection, bool isTransactional = true) : base(sqlConnection,
-            isTransactional)
+        public BusinessUnitOfWork(SqlConnection connection) : base(connection)
         {
         }
 
@@ -15,7 +14,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             get
             {
                 if (!Repositories.ContainsKey(typeof(ProductRepository)))
-                    Repositories.Add(typeof(ProductRepository), new ProductRepository(SqlConnection, SqlTransaction));
+                    Repositories.Add(typeof(ProductRepository), new ProductRepository(Connection, Transaction));
 
                 return (IProductRepository) Repositories[typeof(ProductRepository)];
             }

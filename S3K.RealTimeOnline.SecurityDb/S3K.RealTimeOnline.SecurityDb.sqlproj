@@ -61,8 +61,13 @@
     <Folder Include="Properties" />
     <Folder Include="dbo\" />
     <Folder Include="dbo\Tables\" />
+    <Folder Include="dbo\Stored procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\USER.sql" />
+    <Build Include="dbo\Stored procedures\FINDUSERSBYSEARCHTEXTQUERY.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="S3K.RealTimeOnline.SecurityDb.publish.xml" />
   </ItemGroup>
 </Project>

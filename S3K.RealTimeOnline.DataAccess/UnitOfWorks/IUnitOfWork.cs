@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using S3K.RealTimeOnline.DataAccess.Repositories;
 
 namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
@@ -12,5 +13,9 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         object Repository(Type type);
 
         void Register(IRepository repository);
+
+        IEnumerable<TEntity> ExecuteQueryText<TEntity>(string statement, object query = null) where TEntity : class;
+
+        IEnumerable<TEntity> ExecuteQueryFunction<TEntity>(string commandText, object query = null) where TEntity : class;
     }
 }
