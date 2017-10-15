@@ -18,16 +18,32 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
     {
         protected SqlConnection SqlConnection;
         protected SqlTransaction SqlTransaction;
+        protected bool IgnoreNulls;
 
         public Repository(SqlConnection sqlConnection)
         {
             SqlConnection = sqlConnection;
+            IgnoreNulls = true;
+        }
+
+        public Repository(SqlConnection sqlConnection, bool ignoreNulls)
+        {
+            SqlConnection = sqlConnection;
+            IgnoreNulls = ignoreNulls;
         }
 
         public Repository(SqlConnection sqlConnection, SqlTransaction sqlTransaction)
         {
             SqlConnection = sqlConnection;
             SqlTransaction = sqlTransaction;
+            IgnoreNulls = true;
+        }
+
+        public Repository(SqlConnection sqlConnection, SqlTransaction sqlTransaction, bool ignoreNulls)
+        {
+            SqlConnection = sqlConnection;
+            SqlTransaction = sqlTransaction;
+            IgnoreNulls = ignoreNulls;
         }
 
         public Repository(IUnitOfWork unitOfWork)
@@ -94,7 +110,8 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             var sqlCommand = CreateInsert(entity);
             if (SqlTransaction != null)
                 sqlCommand.Transaction = SqlTransaction;
-            int.TryParse(sqlCommand.ExecuteScalar().ToString(), out result);
+            //int.TryParse(sqlCommand.ExecuteScalar().ToString(), out result);
+            result = (int)sqlCommand.ExecuteScalar();
             return result;
         }
 
@@ -104,7 +121,8 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             var sqlCommand = CreateInsert(instance);
             if (SqlTransaction != null)
                 sqlCommand.Transaction = SqlTransaction;
-            int.TryParse(sqlCommand.ExecuteScalar().ToString(), out result);
+            //int.TryParse(sqlCommand.ExecuteScalar().ToString(), out result);
+            result = (int) sqlCommand.ExecuteScalar();
             return result;
         }
 
@@ -393,99 +411,126 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         private SqlCommand CreateInsert(TEntity entity)
         {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
             var type = typeof(TEntity);
             var properties = type.GetProperties();
             var columnList = new List<string>();
-            var parameterList = new List<string>();
-            var isIdentityInsert = IsIdentityInsert();
-            IDictionary<string, object> parameterDictionary = new ConcurrentDictionary<string, object>();
-
-            foreach (var property in properties)
+            var sqlParameterList = new List<SqlParameter>();
+            try
             {
-                var propertyName = '@' + property.Name;
-                try
+                foreach (var property in properties)
                 {
+                    var parameterName = '@' + property.Name;
+                    var value = property.GetValue(entity, null);
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    var keyAttribute = property.GetCustomAttribute(typeof(KeyAttribute));
+                    if (keyAttribute != null && IsIdentityInsert())
+                    {
+                        continue;
+                    }
+
                     var columnAttribute =
                         property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                    if (columnAttribute != null)
+                    string columnName = columnAttribute != null ? columnAttribute.Name : property.Name;
+
+
+                    columnList.Add("[" + columnName + "]");
+
+                    SqlParameter sqlParameter = new SqlParameter
                     {
-                        var keyAttribute = property.GetCustomAttribute(typeof(KeyAttribute));
-                        if (keyAttribute != null && isIdentityInsert)
-                            continue;
-                        var value = property.GetValue(entity, null);
-                        if (value != null)
-                        {
-                            columnList.Add("[" + columnAttribute.Name + "]");
-                            parameterList.Add(propertyName);
-                            if (property.PropertyType == typeof(DateTime) || property.PropertyType == typeof(DateTime?))
-                            {
-                                var dateValue = (DateTime?) value;
-                                parameterDictionary.Add(propertyName, dateValue.Value.ToString(DbManager.DateFormat));
-                            }
-                            else
-                            {
-                                parameterDictionary.Add(propertyName, value);
-                            }
-                        }
+                        ParameterName = parameterName
+                    };
+
+                    if (value != null)
+                    {
+                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        sqlParameter.Value = value;
                     }
+                    else
+                    {
+                        sqlParameter.Value = DBNull.Value;
+                    }
+
+                    sqlParameterList.Add(sqlParameter);
+
                 }
-                catch (Exception e)
-                {
-                    Log.Error(e.Message);
-                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
             }
             var sqlQuery = @"INSERT INTO " + EntityUtils.GetSchema<TEntity>() + ".[" +
                            EntityUtils.GetTableName<TEntity>() + "] (" +
-                           string.Join(", ", columnList) + ") VALUES(" + string.Join(", ", parameterList) +
-                           "); select SCOPE_IDENTITY()";
+                           string.Join(", ", columnList) + ") VALUES (" +
+                           string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
+                           "); SELECT CAST(SCOPE_IDENTITY() AS int);";
             var sqlCommand = new SqlCommand(sqlQuery, SqlConnection);
-            foreach (var keyValuePair in parameterDictionary)
-                sqlCommand.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
+            sqlCommand.Parameters.AddRange(sqlParameterList.ToArray());
             return sqlCommand;
         }
 
         private SqlCommand CreateInsert(object instance)
         {
+            if (instance == null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+
             var type = typeof(TEntity);
             var typeProperties = type.GetProperties();
             var columnList = new List<string>();
-            var parameterList = new List<string>();
-            var parameterDictionary = new Dictionary<string, object>();
+            var sqlParameterList = new List<SqlParameter>();
             try
             {
-                foreach (var typeProperty in typeProperties)
+                var instanceProperties = type.GetProperties();
+                foreach (var instanceProperty in instanceProperties)
                 {
-                    foreach (var instanceProperty in instance.GetType()
-                        .GetProperties(BindingFlags.Instance | BindingFlags.Public))
+                    if (typeProperties.Select(x => x.Name).Contains(instanceProperty.Name))
                     {
-                        if (!typeProperty.Name.Equals(instanceProperty.Name))
-                        {
-                            continue;
-                        }
-
-                        var parameterName = '@' + typeProperty.Name;
-                        var columnAttribute =
-                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-
-                        var columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-
-                        var value = typeProperty.GetValue(instance, null);
-
-                        columnList.Add("[" + columnName + "]");
-                        parameterList.Add(parameterName);
-                        if (value != null && (typeProperty.PropertyType == typeof(DateTime) ||
-                                              typeProperty.PropertyType == typeof(DateTime?)))
-                        {
-                            var dateValue = (DateTime?) value;
-                            parameterDictionary.Add(parameterName,
-                                dateValue.Value.ToString(DbManager.DateFormat));
-                        }
-                        else
-                        {
-                            parameterDictionary.Add(parameterName, value ?? DBNull.Value);
-                        }
+                        continue;
                     }
+
+                    var typeProperty = typeProperties.First(x => x.Name == instanceProperty.Name);
+
+                    var value = typeProperty.GetValue(instance, null);
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    var parameterName = '@' + typeProperty.Name;
+                    var columnAttribute = typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    var columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+
+
+                    columnList.Add("[" + columnName + "]");
+
+                    SqlParameter sqlParameter = new SqlParameter
+                    {
+                        ParameterName = parameterName
+                    };
+
+                    if (value != null)
+                    {
+                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        sqlParameter.Value = value;
+                    }
+                    else
+                    {
+                        sqlParameter.Value = DBNull.Value;
+                    }
+
+                    sqlParameterList.Add(sqlParameter);
                 }
+
             }
             catch (Exception e)
             {
@@ -494,11 +539,13 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
             var sqlQuery = @"INSERT INTO " + EntityUtils.GetSchema<TEntity>() + ".[" +
                            EntityUtils.GetTableName<TEntity>() + "] (" +
-                           string.Join(", ", columnList) + ") VALUES(" + string.Join(", ", parameterList) +
-                           "); select SCOPE_IDENTITY()";
+                           string.Join(", ", columnList) + ") VALUES(" +
+                           string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
+                           "); SELECT CAST(SCOPE_IDENTITY() AS int);";
             var sqlCommand = new SqlCommand(sqlQuery, SqlConnection);
-            foreach (var keyValuePair in parameterDictionary)
-                sqlCommand.Parameters.AddWithValue(keyValuePair.Key, keyValuePair.Value);
+
+            sqlCommand.Parameters.AddRange(sqlParameterList.ToArray());
+
             return sqlCommand;
         }
 

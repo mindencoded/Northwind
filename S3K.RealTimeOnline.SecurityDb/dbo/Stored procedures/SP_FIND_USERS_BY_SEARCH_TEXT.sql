@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[FINDUSERSBYSEARCHTEXTQUERY]
+﻿CREATE PROCEDURE [dbo].[SP_FIND_USERS_BY_SEARCH_TEXT]
 	@SearchText varchar,
 	@IncludeInactiveUsers bit
 AS

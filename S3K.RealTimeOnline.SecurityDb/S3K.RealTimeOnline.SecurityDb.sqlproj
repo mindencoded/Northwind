@@ -65,7 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\USER.sql" />
-    <Build Include="dbo\Stored procedures\FINDUSERSBYSEARCHTEXTQUERY.sql" />
+    <Build Include="dbo\Stored procedures\SP_FIND_USERS_BY_SEARCH_TEXT.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="S3K.RealTimeOnline.SecurityDb.publish.xml" />

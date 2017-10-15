@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Awesome.Data.Sql.Builder;
 using S3K.RealTimeOnline.DataAccess.Properties;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.Domain;
-using Serilog;
 
 namespace S3K.RealTimeOnline.DataAccess.Queries.FindUsersBySearchText
 {
@@ -21,23 +19,23 @@ namespace S3K.RealTimeOnline.DataAccess.Queries.FindUsersBySearchText
         {
             using (_unitOfWork)
             {
-                
-                var statement = SqlStatements.Select("u.ID", "u.USERNAME", "u.ACTIVE")
-                    .From("USER u")
-                    .Where("u.ACTIVE <> @IncludeInactiveUsers")
-                    .Where("u.USERNAME LIKE '%' + @SearchText + '%'")
-                    .OrderBy("u.USERNAME", false);
+                //IEnumerable<User> users = _unitOfWork.ExecuteFunction<IEnumerable<User>>(Resources.SpFindUsersBySearchText, query.SearchText, query.IncludeInactiveUsers);
+ 
+                //IEnumerable<User> users = _unitOfWork.ExecuteFunction<IEnumerable<User>>(
+                //    Resources.SpFindUsersBySearchText, new Dictionary<string, object>
+                //    {
+                //        {"@SearchText", query.SearchText},
+                //        {"@IncludeInactiveUsers", query.IncludeInactiveUsers}
+                //    });
 
-                var sql = statement.ToSql();
+                //IEnumerable<User> users = _unitOfWork.ExecuteQuery<IEnumerable<User>>(Resources.FindUsersBySearchText, query.SearchText, query.IncludeInactiveUsers);
 
-                Log.Debug(sql);
-
-                //IEnumerable<User> users = _unitOfWork.ExecuteQueryFunction<User>("FINDUSERSBYSEARCHTEXTQUERY", query);
-
-                IEnumerable<User> users = _unitOfWork.ExecuteQueryText<User>(Resources.FindUsersBySearchTextQuery, query);
-
-                var user = new User {Username = query.SearchText, Active = !query.IncludeInactiveUsers};
-                return _unitOfWork.UserRepository.Select(user).ToArray();
+                IEnumerable<User> users = _unitOfWork.ExecuteQuery<IEnumerable<User>>(Resources.FindUsersBySearchText, new Dictionary<string, object>
+                    {
+                        {"@SearchText", query.SearchText},
+                        {"@IncludeInactiveUsers", query.IncludeInactiveUsers}
+                    });
+                return users.ToArray();
             }
         }
     }

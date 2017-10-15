@@ -107,7 +107,7 @@
     <Compile Include="UnitOfWorks\UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Queries\FindUsersBySearchText\FindUsersBySearchTextQuery.sql" />
+    <Content Include="Queries\FindUsersBySearchText\FindUsersBySearchText.sql" />
     <Content Include="Snippets.txt" />
   </ItemGroup>
   <ItemGroup>

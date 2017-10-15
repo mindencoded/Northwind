@@ -61,11 +61,20 @@ namespace S3K.RealTimeOnline.DataAccess.Properties {
         }
         
         /// <summary>
-        ///   Busca una cadena traducida similar a SELECT u.ID, u.USERNAME, u.ACTIVE FROM [dbo].[USER] u WHERE u.USERNAME LIKE &apos;%&apos; + @SearchText + &apos;%&apos; AND u.ACTIVE &lt;&gt; @IncludeInactiveUsers ORDER BY u.USERNAME.
+        ///   Busca una cadena traducida similar a SELECT u.ID, u.USERNAME, u.ACTIVE FROM [dbo].[USER] u WHERE u.USERNAME LIKE &apos;%&apos; + @SearchText + &apos;%&apos; AND u.ACTIVE &lt;&gt; @IncludeInactiveUsers ORDER BY u.USERNAME DESC.
         /// </summary>
-        internal static string FindUsersBySearchTextQuery {
+        internal static string FindUsersBySearchText {
             get {
-                return ResourceManager.GetString("FindUsersBySearchTextQuery", resourceCulture);
+                return ResourceManager.GetString("FindUsersBySearchText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a SP_FIND_USERS_BY_SEARCH_TEXT.
+        /// </summary>
+        internal static string SpFindUsersBySearchText {
+            get {
+                return ResourceManager.GetString("SpFindUsersBySearchText", resourceCulture);
             }
         }
     }

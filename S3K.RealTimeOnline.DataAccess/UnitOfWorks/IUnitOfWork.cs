@@ -14,8 +14,19 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 
         void Register(IRepository repository);
 
-        IEnumerable<TEntity> ExecuteQueryText<TEntity>(string statement, object query = null) where TEntity : class;
+        T ExecuteQuery<T>(string statement, params object[] values);
 
-        IEnumerable<TEntity> ExecuteQueryFunction<TEntity>(string commandText, object query = null) where TEntity : class;
+        T ExecuteQuery<T>(string commandText, IDictionary<string, object> values);
+
+        T ExecuteFunction<T>(string commandText, params object[] values);
+
+        T ExecuteFunction<T>(string commandText, IDictionary<string, object> values);
+
+        int ExecuteNonQuery(string commandText, params object[] values);
+
+        int ExecuteNonQuery(string commandText, IDictionary<string, object> values);
+
+        Tuple<int, int> ExecuteNonQuery(string commandText, string returnParameterName,
+            string outputParameterName, params object[] values);
     }
 }

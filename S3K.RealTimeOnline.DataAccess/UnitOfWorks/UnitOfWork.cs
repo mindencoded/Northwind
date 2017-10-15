@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -61,7 +62,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 
             if (!Repositories.ContainsKey(type))
             {
-                var instance = Activator.CreateInstance(type, Connection, Transaction);
+                object instance = Activator.CreateInstance(type, Connection, Transaction);
                 Repositories.Add(type, instance);
             }
             return Repositories[type];
@@ -92,7 +93,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             }
         }
 
-        protected static void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
+        private static void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
         {
             foreach (SqlError err in args.Errors)
             {
@@ -104,14 +105,14 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             }
         }
 
-        protected static void OnStateChange(object sender, StateChangeEventArgs args)
+        private static void OnStateChange(object sender, StateChangeEventArgs args)
         {
             Log.Information(
                 "The current Connection state has changed from {0} to {1}.",
                 args.OriginalState, args.CurrentState);
         }
 
-        public IEnumerable<T> ExecuteQueryText<T>(string commandText, object query = null) where T : class
+        public T ExecuteQuery<T>(string commandText, params object[] values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -121,41 +122,33 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
                 CommandType = CommandType.Text
             };
 
-            if (query != null)
+            if (values != null && values.Length > 0)
             {
-                IList<string> parameters = Regex.Matches(command.CommandText, @"\@\w+").Cast<Match>().Select(m => m.Value).ToList();
-                PropertyInfo[] properties = query.GetType().GetProperties();
-                foreach (var parameter in parameters)
-                {
-                    foreach (var property in properties)
-                    {
-                        string parameterName = '@' + property.Name;
-                        if (parameter.Equals(parameterName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            SqlParameter sqlParameter = new SqlParameter
-                            {
-                                ParameterName = parameterName,
-                                SqlDbType = TypeConvertor.ToSqlDbType(property.PropertyType),
-                                Value = property.GetValue(query, null)
-                            };
-                            command.Parameters.Add(sqlParameter);
-                        }
-                    }
-                } 
+                SetQueryParameters(command, values);
             }
 
-            SqlDataReader reader = command.ExecuteReader();
-            IList<T> results = new List<T>();
-            while (reader.Read())
-            {
-                results.Add(reader.ConvertToEntity<T>());
-            }
-
-            return results.AsEnumerable();
+            return ExecuteCommand<T>(command);
         }
 
-        public IEnumerable<T> ExecuteQueryFunction<T>(string commandText, object query = null)
-            where T : class
+        public T ExecuteQuery<T>(string commandText, IDictionary<string, object> values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                Transaction = Transaction,
+                CommandText = commandText,
+                CommandType = CommandType.Text
+            };
+
+            if (values != null && values.Count > 0)
+            {
+                SetParameters(command, values);
+            }
+
+            return ExecuteCommand<T>(command);
+        }
+
+        public T ExecuteFunction<T>(string commandText, params object[] values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -165,32 +158,194 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
                 CommandType = CommandType.StoredProcedure
             };
 
-            if (query != null)
+            if (values != null && values.Length > 0)
             {
-                SqlCommandBuilder.DeriveParameters(command);
-                SqlParameterCollection parameters = command.Parameters;
-                PropertyInfo[] properties = query.GetType().GetProperties();
-                foreach (SqlParameter parameter in parameters)
+                SetFunctionParameters(command, values);
+            }
+
+            return ExecuteCommand<T>(command);
+        }
+
+        public T ExecuteFunction<T>(string commandText, IDictionary<string, object> values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                Transaction = Transaction,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (values != null && values.Count > 0)
+            {
+                SetParameters(command, values);
+            }
+
+            return ExecuteCommand<T>(command);
+        }
+
+        public int ExecuteNonQuery(string commandText, params object[] values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                Transaction = Transaction,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (values != null && values.Length > 0)
+            {
+                SetFunctionParameters(command, values);
+            }
+
+            return command.ExecuteNonQuery();
+        }
+
+        public int ExecuteNonQuery(string commandText, IDictionary<string, object> values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                Transaction = Transaction,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (values != null && values.Count > 0)
+            {
+                SetParameters(command, values);
+            }
+
+            return command.ExecuteNonQuery();
+        }
+
+        public Tuple<int, int> ExecuteNonQuery(string commandText, string returnParameterName,
+            string outputParameterName, params object[] values)
+        {
+            if (returnParameterName == null)
+            {
+                throw new ArgumentNullException(nameof(returnParameterName));
+            }
+
+            if (outputParameterName == null)
+            {
+                throw new ArgumentNullException(nameof(outputParameterName));
+            }
+
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                Transaction = Transaction,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (values != null && values.Length > 0)
+            {
+                SetFunctionParameters(command, values);
+            }
+
+            SqlParameter returnSqlParameter = command.Parameters.Add(returnParameterName, SqlDbType.Int);
+            returnSqlParameter.Direction = ParameterDirection.ReturnValue;
+
+            SqlParameter outputSqlParameter = command.Parameters.Add(outputParameterName, SqlDbType.Int);
+            outputSqlParameter.Direction = ParameterDirection.Output;
+
+            command.ExecuteNonQuery();
+
+            int returnValue = (int)command.Parameters[returnParameterName].Value;
+            int outPutValue = (int)command.Parameters[outputParameterName].Value;
+
+            return new Tuple<int, int>(returnValue, outPutValue);
+        }
+
+        private T ExecuteCommand<T>(SqlCommand command)
+        {
+            Type returnType = typeof(T);
+            T returnInstance;
+
+            if (returnType.IsGenericType &&
+                returnType.GetGenericTypeDefinition() == typeof(IList<>) ||
+                returnType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
+                returnType.GetGenericTypeDefinition() == typeof(ICollection<>))
+            {
+                SqlDataReader reader = command.ExecuteReader();
+                Type entityType = returnType.GetGenericArguments()[0];
+                Type sqlDataReaderType = typeof(SqlDataReaderExtensions);
+                MethodInfo convertToEntityMethod =
+                    sqlDataReaderType.GetMethod("ConvertToEntity", BindingFlags.Public | BindingFlags.Static);
+                MethodInfo convertToEntityGenericMethod = convertToEntityMethod.MakeGenericMethod(entityType);
+                Type listType = typeof(List<>);
+                Type constructedListType = listType.MakeGenericType(entityType);
+                IList listInstance = (IList)Activator.CreateInstance(constructedListType, null);
+                while (reader.Read())
                 {
-                    foreach (PropertyInfo propertyInfo in properties)
+                    object entity = convertToEntityGenericMethod.Invoke(reader, new object[] { reader });
+                    listInstance.Add(entity);
+                }
+                returnInstance = (T)listInstance;
+            }
+            else
+            {
+                returnInstance = (T)command.ExecuteScalar();
+            }
+
+            return returnInstance;
+        }
+
+        private void SetFunctionParameters(SqlCommand command, object[] values)
+        {
+            SqlCommandBuilder.DeriveParameters(command);
+            SqlParameterCollection sqlParameterCollection = command.Parameters;
+
+            if (sqlParameterCollection.Count > 0)
+            {
+                int index = 0;
+                foreach (SqlParameter sqlParameter in sqlParameterCollection)
+                {
+                    if (sqlParameter.Direction == ParameterDirection.Input ||
+                        sqlParameter.Direction == ParameterDirection.InputOutput)
                     {
-                        string parameterName = '@' + propertyInfo.Name;
-                        if (parameterName.Equals(parameter.ParameterName, StringComparison.OrdinalIgnoreCase))
-                        {
-                            parameter.Value = propertyInfo.GetValue(query, null);
-                        }
+                        sqlParameter.Value = values[index];
+                        index++;
                     }
                 }
             }
+        }
 
-            SqlDataReader reader = command.ExecuteReader();
-            IList<T> results = new List<T>();
-            while (reader.Read())
+        private void SetQueryParameters(SqlCommand command, object[] values)
+        {
+            string[] parameters = Regex.Matches(command.CommandText, @"\@\w+").Cast<Match>()
+                .Select(m => m.Value)
+                .ToArray();
+            if (parameters.Length > 0)
             {
-                results.Add(reader.ConvertToEntity<T>());
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    SqlParameter sqlParameter = new SqlParameter
+                    {
+                        ParameterName = parameters[i],
+                        SqlDbType = TypeConvertor.ToSqlDbType(values[i].GetType()),
+                        Value = values[i]
+                    };
+                    command.Parameters.Add(sqlParameter);
+                }
             }
+        }
 
-            return results.AsEnumerable();
+        private void SetParameters(SqlCommand command, IDictionary<string, object> values)
+        {
+            foreach (KeyValuePair<string, object> entry in values)
+            {
+                SqlParameter sqlParameter = new SqlParameter
+                {
+                    ParameterName = entry.Key,
+                    SqlDbType = TypeConvertor.ToSqlDbType(entry.Value.GetType()),
+                    Value = entry.Value
+                };
+                command.Parameters.Add(sqlParameter);
+            }
         }
     }
 }
