@@ -72,7 +72,6 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         {
             repository.SetSqlConnection(Connection);
             repository.SetSqlTransaction(Transaction);
-
             if (!Repositories.ContainsKey(repository.GetType()))
                 Repositories.Add(repository.GetType(), repository);
         }
