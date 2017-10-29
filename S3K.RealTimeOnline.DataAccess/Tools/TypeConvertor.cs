@@ -154,6 +154,149 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             return entry.SqlDbType;
         }
 
+        public static SqlDbType ToSqlDbType(string sqlDbType)
+        {
+            switch (sqlDbType)
+            {
+                case "bigint":
+                    return SqlDbType.BigInt;
+                case "binary":
+                    return SqlDbType.VarBinary;
+                case "bit":
+                    return SqlDbType.Bit;
+                case "char":
+                    return SqlDbType.Char;
+                case "date":
+                    return SqlDbType.Date;
+                case "datetime":
+                    return SqlDbType.DateTime;
+                case "datetime2":
+                    return SqlDbType.DateTime2;
+                case "datetimeoffset":
+                    return SqlDbType.DateTimeOffset;
+                case "decimal":
+                    return SqlDbType.Decimal;
+                case "FILESTREAM":
+                    return SqlDbType.VarBinary;
+                case "float":
+                    return SqlDbType.Float;
+                case "image":
+                    return SqlDbType.Binary;
+                case "int":
+                    return SqlDbType.Int;
+                case "money":
+                    return SqlDbType.Money;
+                case "nchar":
+                    return SqlDbType.NChar;
+                case "ntext":
+                    return SqlDbType.NText;
+                case "numeric":
+                    return SqlDbType.Decimal;
+                case "nvarchar":
+                    return SqlDbType.NVarChar;
+                case "real":
+                    return SqlDbType.Real;
+                case "rowversion":
+                    return SqlDbType.Timestamp;
+                case "smalldatetime":
+                    return SqlDbType.DateTime;
+                case "smallint":
+                    return SqlDbType.SmallInt;
+                case "smallmoney":
+                    return SqlDbType.SmallMoney;
+                case "sql_variant":
+                    return SqlDbType.Variant;
+                case "text":
+                    return SqlDbType.Text;
+                case "time":
+                    return SqlDbType.Time;
+                case "timestamp":
+                    return SqlDbType.Timestamp;
+                case "tinyint":
+                    return SqlDbType.TinyInt;
+                case "uniqueidentifier":
+                    return SqlDbType.UniqueIdentifier;
+                case "varbinary":
+                    return SqlDbType.VarBinary;
+                case "varchar":
+                    return SqlDbType.VarChar;
+                case "xml":
+                    return SqlDbType.Xml;
+                default:
+                    return SqlDbType.VarBinary;
+            }
+        }
+
+        public static Type ToNetType(string sqlDbType)
+        {
+            switch (sqlDbType)
+            {
+                case "bigint":
+                    return typeof(long);
+                case "binary":
+                    return typeof(byte[]);
+                case "bit":
+                    return typeof(bool);
+                case "char":
+                    return typeof(string);
+                case "date":
+                case "datetime":
+                case "datetime2":
+                case "smalldatetime":
+                    return typeof(DateTime);
+                case "datetimeoffset":
+                    return typeof(DateTimeOffset); 
+                case "decimal":
+                    return typeof(decimal);
+                case "FILESTREAM":
+                    return typeof(byte[]);
+                case "float":
+                    return typeof(double);
+                case "image":
+                    return typeof(byte[]);
+                case "int":
+                    return typeof(int);
+                case "money":
+                    return typeof(decimal);
+                case "nchar":
+                    return typeof(string);
+                case "ntext":
+                    return typeof(string);
+                case "numeric":
+                    return typeof(decimal);
+                case "nvarchar":
+                    return typeof(string);
+                case "real":
+                    return typeof(float);
+                case "rowversion":
+                    return typeof(byte[]);
+                case "smallint":
+                    return typeof(short);
+                case "smallmoney":
+                    return typeof(decimal);
+                case "sql_variant":
+                    return typeof(object);
+                case "text":
+                    return typeof(string);
+                case "time":
+                    return typeof(TimeSpan);
+                case "timestamp":
+                    return typeof(byte[]);
+                case "tinyint":
+                    return typeof(byte);
+                case "uniqueidentifier":
+                    return typeof(Guid);
+                case "varbinary":
+                    return typeof(byte[]);
+                case "varchar":
+                    return typeof(string);
+                case "xml":
+                    throw new NotSupportedException();
+                default:
+                    return typeof(byte[]);
+            }
+        }
+
         private static DbTypeMapEntry Find(Type type)
         {
             object retObj = null;

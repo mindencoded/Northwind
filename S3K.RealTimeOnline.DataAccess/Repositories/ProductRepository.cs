@@ -6,12 +6,12 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {
-        public ProductRepository(SqlConnection sqlConnection) : base(sqlConnection)
+        public ProductRepository(SqlConnection connection) : base(connection)
         {
         }
 
-        public ProductRepository(SqlConnection sqlConnection, SqlTransaction sqlTransaction) : base(sqlConnection,
-            sqlTransaction)
+        public ProductRepository(SqlConnection connection, SqlTransaction transaction) : base(connection,
+            transaction)
         {
         }
 

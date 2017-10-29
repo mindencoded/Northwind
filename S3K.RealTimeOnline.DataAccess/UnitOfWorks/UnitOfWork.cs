@@ -92,7 +92,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             }
         }
 
-        private static void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
+        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
         {
             foreach (SqlError err in args.Errors)
             {
@@ -104,7 +104,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             }
         }
 
-        private static void OnStateChange(object sender, StateChangeEventArgs args)
+        private void OnStateChange(object sender, StateChangeEventArgs args)
         {
             Log.Information(
                 "The current Connection state has changed from {0} to {1}.",
@@ -262,7 +262,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         private T ExecuteCommand<T>(SqlCommand command)
         {
             Type returnType = typeof(T);
-            T returnInstance;
+            T returnInstance = default(T);
 
             if (returnType.IsGenericType &&
                 returnType.GetGenericTypeDefinition() == typeof(IList<>) ||
@@ -272,18 +272,21 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
                 SqlDataReader reader = command.ExecuteReader();
                 Type entityType = returnType.GetGenericArguments()[0];
                 Type sqlDataReaderType = typeof(SqlDataReaderExtensions);
-                MethodInfo convertToEntityMethod =
-                    sqlDataReaderType.GetMethod("ConvertToEntity", BindingFlags.Public | BindingFlags.Static);
-                MethodInfo convertToEntityGenericMethod = convertToEntityMethod.MakeGenericMethod(entityType);
-                Type listType = typeof(List<>);
-                Type constructedListType = listType.MakeGenericType(entityType);
-                IList listInstance = (IList)Activator.CreateInstance(constructedListType, null);
-                while (reader.Read())
+                MethodInfo convertToMethod =
+                    sqlDataReaderType.GetMethod("ConvertTo", BindingFlags.Public | BindingFlags.Static);
+                if (convertToMethod != null)
                 {
-                    object entity = convertToEntityGenericMethod.Invoke(reader, new object[] { reader });
-                    listInstance.Add(entity);
+                    MethodInfo convertToGenericMethod = convertToMethod.MakeGenericMethod(entityType);
+                    Type listType = typeof(List<>);
+                    Type constructedListType = listType.MakeGenericType(entityType);
+                    IList listInstance = (IList)Activator.CreateInstance(constructedListType, null);
+                    while (reader.Read())
+                    {
+                        object entity = convertToGenericMethod.Invoke(reader, new object[] { reader });
+                        listInstance.Add(entity);
+                    }
+                    returnInstance = (T)listInstance;
                 }
-                returnInstance = (T)listInstance;
             }
             else
             {

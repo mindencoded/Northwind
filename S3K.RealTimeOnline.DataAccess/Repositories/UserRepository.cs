@@ -6,12 +6,12 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        public UserRepository(SqlConnection sqlConnection) : base(sqlConnection)
+        public UserRepository(SqlConnection connection) : base(connection)
         {
         }
 
-        public UserRepository(SqlConnection sqlConnection, SqlTransaction sqlTransaction) : base(sqlConnection,
-            sqlTransaction)
+        public UserRepository(SqlConnection connection, SqlTransaction transaction) : base(connection,
+            transaction)
         {
         }
 
