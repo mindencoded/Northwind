@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
@@ -9,37 +10,54 @@ namespace S3K.RealTimeOnline.Domain
 {
     public class EntityUtils
     {
-        public static string JoinColumns<TEntity>() where TEntity : class
+        public static string JoinColumns<T>(bool includeRowNumber = false) where T : class
         {
-            Type type = typeof(TEntity);
+            Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
             IList<string> columns = new List<string>();
             foreach (PropertyInfo property in properties)
             {
                 ColumnAttribute attribute =
                     property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                string propertyName = property.Name;
-                string columnName = attribute != null ? attribute.Name : propertyName;
-                columns.Add(GetSchema<TEntity>() + ".[" + GetTableName<TEntity>() + "].[" + columnName + "]");
+                string columnName = attribute != null ? attribute.Name : property.Name;
+                columns.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnName + "]");
             }
-            if (columns.Count > 0)
-                return string.Join(", ", columns);
-            return null;
+
+            if (includeRowNumber)
+            {
+                IList<string> keyNames = new List<string>();
+                foreach (PropertyInfo propertyInfo in properties)
+                {
+                    KeyAttribute attribute = (KeyAttribute)Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
+                    if (attribute != null)
+                    {
+                        ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyInfo.Name)
+                            .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        string keyName = columnAttribute != null ? columnAttribute.Name : propertyInfo.Name;
+                        keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + keyName + "]");
+                    }
+                }
+                columns.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
+            }
+            return string.Join(", ", columns);
         }
 
-        public static string JoinColumns<TEntity>(IList<string> columns, bool useAlias = false) where TEntity : class
+        public static string JoinColumns<T>(IList<string> columns, bool useColumnAlias = false,
+            bool includeRowNumber = false) where T : class
         {
-            Type type = typeof(TEntity);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            IList<string> columnAttributes = typeProperties.Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
-            IList<string> columnQueryList = new List<string>();
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            IList<string> columnAttributes = properties
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
+            IList<string> columnList = new List<string>();
             foreach (string item in columns)
             {
                 string propertyName = item;
                 string columnName = null;
-                if (typeProperties.FirstOrDefault(x => x.Name == propertyName) != null)
+                if (properties.FirstOrDefault(x => x.Name == propertyName) != null)
                 {
-                    ColumnAttribute columnAttribute = typeProperties.First(x => x.Name == propertyName).GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyName)
+                        .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                     columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                 }
                 else
@@ -53,60 +71,108 @@ namespace S3K.RealTimeOnline.Domain
 
                 if (columnName == null)
                 {
-                  continue;
+                    continue;
                 }
 
-                string columnQuery = GetSchema<TEntity>() + ".[" + GetTableName<TEntity>() + "].[" + columnName + "]";
-                if (useAlias)
+                string columnQuery = GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnName + "]";
+                if (useColumnAlias)
                 {
                     columnQuery += " AS '" + propertyName + "'";
                 }
-                columnQueryList.Add(columnQuery);
+                columnList.Add(columnQuery);
             }
-            if (columnQueryList.Count > 0)
-                return string.Join(", ", columnQueryList);
-            return null;
+
+            if (includeRowNumber)
+            {
+                IList<string> keyNames = new List<string>();
+                foreach (PropertyInfo propertyInfo in properties)
+                {
+                    KeyAttribute attribute = (KeyAttribute) Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
+                    if (attribute != null)
+                    {
+                        ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyInfo.Name)
+                            .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        string keyName = columnAttribute != null ? columnAttribute.Name : propertyInfo.Name;
+                        keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + keyName + "]");
+                    }
+                }
+                columnList.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
+            }
+            return string.Join(", ", columnList);
         }
 
-        public static string SimpleJoinColumns<TEntity>() where TEntity : class
+        public static string SimpleJoinColumns<T>() where T : class
         {
-            var type = typeof(TEntity);
+            var type = typeof(T);
             var properties = type.GetProperties();
             var columns = new List<string>();
             foreach (var property in properties)
-                try
-                {
-                    var attribute =
-                        property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+            {
+                var attribute =
+                    property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
-                    if (attribute != null)
-                        columns.Add("[" + attribute.Name + "]");
-                    else
-                        columns.Add(property.Name);
-                }
-                catch (Exception)
-                {
-                    // ignored
-                }
+                if (attribute != null)
+                    columns.Add("[" + attribute.Name + "]");
+                else
+                    columns.Add(property.Name);
 
-            if (columns.Count > 0)
-                return string.Join(",", columns);
-            return null;
+            }
+            return string.Join(",", columns);
         }
 
-        public static string GetSchema<TEntity>() where TEntity : class
+        public static string SimpleJoinColumns<T>(IList<string> columns, bool useColumnAlias = false) where T : class
+        {
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            IList<string> columnAttributes = properties
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
+            IList<string> columnList = new List<string>();
+            foreach (string item in columns)
+            {
+                string propertyName = item;
+                string columnName = null;
+                if (properties.FirstOrDefault(x => x.Name == propertyName) != null)
+                {
+                    ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyName)
+                        .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    columnName = columnAttribute != null ? "[" + columnAttribute.Name + "]" : "[" + propertyName + "]";
+                }
+                else
+                {
+                    if (columnAttributes.Contains(propertyName))
+                    {
+                        columnName = "[" + propertyName + "]";
+                        propertyName = UnderscoreCaseToTitleCase(propertyName);
+                    }
+                }
+
+                if (columnName == null)
+                {
+                    continue;
+                }
+
+                if (useColumnAlias)
+                {
+                    columnName += " AS '" + propertyName + "'";
+                }
+                columnList.Add(columnName);
+            }        
+            return string.Join(", ", columnList);
+        }
+
+        public static string GetSchema<T>() where T : class
         {
             var schema = "";
-            var type = typeof(TEntity);
+            var type = typeof(T);
             var attribute = type.GetCustomAttributes(true).OfType<SchemaAttribute>().FirstOrDefault();
             if (attribute != null)
                 schema = attribute.Name;
             return schema;
         }
 
-        public static string GetTableName<TEntity>() where TEntity : class
+        public static string GetTableName<T>() where T : class
         {
-            var type = typeof(TEntity);
+            var type = typeof(T);
 
             var temp = type.GetCustomAttributes(
                 typeof(TableAttribute),

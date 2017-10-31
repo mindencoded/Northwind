@@ -6,22 +6,23 @@ using S3K.RealTimeOnline.Domain;
 
 namespace S3K.RealTimeOnline.DataAccess.Tools
 {
-    public class InformationSchema
+    public class DbInformation
     {
         private readonly SqlConnection _connection;
         private readonly SqlTransaction _transaction;
-        public InformationSchema(SqlConnection connection)
+
+        public DbInformation(SqlConnection connection)
         {
             _connection = connection;
         }
 
-        public InformationSchema(SqlConnection connection, SqlTransaction transaction)
+        public DbInformation(SqlConnection connection, SqlTransaction transaction)
         {
             _connection = connection;
             _transaction = transaction;
         }
 
-        public IList<ColumnInfo> Columns<T>() where T :class
+        public IList<ColumnInfo> ColumnSchema<T>() where T : class
         {
             string query = @"
                 SELECT 
@@ -54,7 +55,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             return results;
         }
 
-        public ColumnInfo Column<T>(string columnName) where T : class
+        public ColumnInfo ColumnSchema<T>(string columnName) where T : class
         {
             string query = @"
                 SELECT 
@@ -86,6 +87,30 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                 }
             }
             return columnInfo;
+        }
+
+        public string Version()
+        {
+            string serverVersion = _connection.ServerVersion;
+            if (serverVersion != null)
+            {
+                string[] serverVersionDetails = serverVersion.Split(new [] {"."}, StringSplitOptions.None);
+
+                int versionNumber = int.Parse(serverVersionDetails[0]);
+
+                switch (versionNumber)
+                {
+                    case 8:
+                        return "SQL Server 2000";
+                    case 9:
+                        return "SQL Server 2005";
+                    case 10:
+                        return "SQL Server 2008";
+                    default:
+                        return string.Format("SQL Server {0}", versionNumber);
+                }
+            }
+            throw new Exception("Invalid Server Version");
         }
     }
 }

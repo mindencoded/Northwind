@@ -23,14 +23,16 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
         {
             Connection = connection;
             IgnoreNulls = true;
-            _columnAttributes = typeof(T).GetProperties().Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+            _columnAttributes = typeof(T).GetProperties()
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(SqlConnection connection, bool ignoreNulls)
         {
             Connection = connection;
             IgnoreNulls = ignoreNulls;
-            _columnAttributes = typeof(T).GetProperties().Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+            _columnAttributes = typeof(T).GetProperties()
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(SqlConnection connection, SqlTransaction transaction)
@@ -38,7 +40,8 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             Connection = connection;
             Transaction = transaction;
             IgnoreNulls = true;
-            _columnAttributes = typeof(T).GetProperties().Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+            _columnAttributes = typeof(T).GetProperties()
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls)
@@ -46,25 +49,29 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             Connection = connection;
             Transaction = transaction;
             IgnoreNulls = ignoreNulls;
-            _columnAttributes = typeof(T).GetProperties().Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+            _columnAttributes = typeof(T).GetProperties()
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(IUnitOfWork unitOfWork)
         {
             unitOfWork.Register(this);
-            _columnAttributes = typeof(T).GetProperties().Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+            _columnAttributes = typeof(T).GetProperties()
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(IUnitOfWork unitOfWork, bool ignoreNulls)
         {
             unitOfWork.Register(this);
             IgnoreNulls = ignoreNulls;
-            _columnAttributes = typeof(T).GetProperties().Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+            _columnAttributes = typeof(T).GetProperties()
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
-        public IEnumerable<dynamic> Select(IList<string> columns)
+        public IEnumerable<dynamic> Select(IList<string> columns, IList<string> orderBy = null, int? page = null,
+            int? pageSize = null)
         {
-            using (SqlCommand command = CreateCommandSelect(columns))
+            using (SqlCommand command = CreateCommandSelect(columns, CreateOrderByStatement(orderBy), page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -73,9 +80,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<T> Select(object conditions)
+        public virtual IEnumerable<T> Select(object conditions, IList<string> orderBy = null, int? page = null,
+            int? pageSize = null)
         {
-            using (SqlCommand command = CreateCommandSelect(null, conditions))
+            using (SqlCommand command =
+                CreateCommandSelect(null, conditions, CreateOrderByStatement(orderBy), page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -84,9 +93,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<T> Select(IDictionary<string, object> conditions)
+        public virtual IEnumerable<T> Select(IDictionary<string, object> conditions, IList<string> orderBy = null,
+            int? page = null, int? pageSize = null)
         {
-            using (SqlCommand command = CreateCommandSelect(null, conditions))
+            using (SqlCommand command =
+                CreateCommandSelect(null, conditions, CreateOrderByStatement(orderBy), page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -95,9 +106,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, object conditions)
+        public virtual IEnumerable<dynamic> Select(IList<string> columns, object conditions,
+            IList<string> orderBy = null, int? page = null, int? pageSize = null)
         {
-            using (SqlCommand command = CreateCommandSelect(columns, conditions))
+            using (SqlCommand command =
+                CreateCommandSelect(columns, conditions, CreateOrderByStatement(orderBy), page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -106,57 +119,15 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions)
+        public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
+            IList<string> orderBy = null, int? page = null, int? pageSize = null)
         {
-            using (SqlCommand command = CreateCommandSelect(columns, conditions))
+            using (SqlCommand command =
+                CreateCommandSelect(columns, conditions, CreateOrderByStatement(orderBy), page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     return reader.ConvertToDynamicEnumerable();
-                }
-            }
-        }
-
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, object conditions, IList<string> orderBy)
-        {
-            using (SqlCommand command = CreateCommandSelect(columns, conditions, CreateOrderByStatement(orderBy)))
-            {
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    return reader.ConvertToDynamicEnumerable();
-                }
-            }
-        }
-
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions, IList<string> orderBy)
-        {
-            using (SqlCommand command = CreateCommandSelect(columns, conditions, CreateOrderByStatement(orderBy)))
-            {
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    return reader.ConvertToDynamicEnumerable();
-                }
-            }
-        }
-
-        public IEnumerable<T> Select(object conditions, IList<string> orderBy)
-        {
-            using (SqlCommand command = CreateCommandSelect(null, conditions, CreateOrderByStatement(orderBy)))
-            {
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    return reader.ConvertToEnumerable<T>();
-                }
-            }
-        }
-
-        public IEnumerable<T> Select(IDictionary<string, object> conditions, IList<string> orderBy)
-        {
-            using (SqlCommand command = CreateCommandSelect(null, conditions, CreateOrderByStatement(orderBy)))
-            {
-                using (SqlDataReader reader = command.ExecuteReader())
-                {
-                    return reader.ConvertToEnumerable<T>();
                 }
             }
         }
@@ -243,7 +214,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         public SqlDataAdapter SqlDataAdapter()
         {
-            
+
             string selectCmdText = CreateSelectStatement();
             string insertCmdText = CreateInsertStatement(out IList<SqlParameter> insertSqlParameterList);
             string updateCmdText = CreateUpdateStatement(out IList<SqlParameter> updateSqlParameterList);
@@ -298,7 +269,8 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     Connection.Close();
         }
 
-        private string CreateSelectStatement(IList<string> columns = null,  IList<SqlParameter> sqlParameterList = null, string orderBy = null)
+        private string CreateSelectStatement(IList<string> columns = null, IList<SqlParameter> sqlParameterList = null,
+            string orderBy = null, int? page = null, int? pageSize = null)
         {
             IList<string> conditionList = new List<string>();
 
@@ -322,7 +294,37 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     }
                 }
             }
-            string columnsStr = columns != null ? EntityUtils.JoinColumns<T>(columns, true) : EntityUtils.JoinColumns<T>();
+
+            string columnsStr;
+
+            if (columns != null && columns.Count > 0)
+            {
+                if (page != null && pageSize != null)
+                {
+
+                    columnsStr = EntityUtils.JoinColumns<T>(columns, true, true);
+
+                }
+                else
+                {
+                    columnsStr = EntityUtils.JoinColumns<T>(columns, true);
+                }
+            }
+            else
+            {
+                if (page != null && pageSize != null)
+                {
+
+                    columnsStr = EntityUtils.JoinColumns<T>(true);
+
+                }
+                else
+                {
+                    columnsStr = EntityUtils.JoinColumns<T>();
+                }
+            }
+
+
             string query = @"SELECT " + columnsStr + " FROM " +
                            EntityUtils.GetSchema<T>() + ".[" +
                            EntityUtils.GetTableName<T>() + "]";
@@ -332,7 +334,17 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                 query += " WHERE " + string.Join(" AND ", conditionList);
             }
 
-            if (orderBy != null)
+            if (page != null && pageSize != null)
+            {
+                columnsStr = columns != null && columns.Count > 0
+                    ? EntityUtils.SimpleJoinColumns<T>(columns, true)
+                    : EntityUtils.SimpleJoinColumns<T>();
+                query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnsStr +
+                        " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+                //query = @"SELECT " + columnsStr + " FROM (" + query + ") AS PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+            }
+
+            if (!string.IsNullOrWhiteSpace(orderBy))
             {
                 query += " ORDER BY " + orderBy;
             }
@@ -363,7 +375,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     SourceColumn = columnName,
                     SqlDbType = TypeConvertor.ToSqlDbType(typeProperty.PropertyType)
                 };
-                
+
                 columnList.Add("[" + columnName + "]");
                 sqlParameterList.Add(sqlParameter);
             }
@@ -406,7 +418,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     parameters.Add("[" + columnName + "] = " + parameterName);
                 }
 
-              
+
 
                 sqlParameterList.Add(sqlParameter);
             }
@@ -421,7 +433,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             Type type = typeof(T);
             PropertyInfo[] typeProperties = type.GetProperties();
             IList<string> conditionList = new List<string>();
-           
+
             foreach (PropertyInfo typeProperty in typeProperties)
             {
                 ColumnAttribute columnAttribute =
@@ -438,7 +450,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                         SourceColumn = columnName,
                         SqlDbType = TypeConvertor.ToSqlDbType(typeProperty.PropertyType)
                     };
-                   
+
                     sqlParameterList.Add(sqlParameter);
                 }
             }
@@ -446,7 +458,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                    EntityUtils.GetTableName<T>() + "] WHERE " + string.Join(" AND ", conditionList);
         }
 
-        private IList<SqlParameter> CreateSelectParameters(object conditions)
+        private IList<SqlParameter> CreateSelectParameters(object conditions, int? page = null, int? pageSize = null)
         {
             IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
             Type type = typeof(T);
@@ -471,7 +483,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     .FirstOrDefault();
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
                 string parameterName = '@' + typeProperty.Name;
-               
+
                 SqlParameter sqlParameter = new SqlParameter
                 {
                     ParameterName = parameterName,
@@ -482,15 +494,34 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
                 sqlParameterList.Add(sqlParameter);
             }
+
+            if (page != null && pageSize != null)
+            {
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@Page",
+                    SqlDbType = SqlDbType.Int,
+                    Value = page
+                });
+
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@PageSize",
+                    SqlDbType = SqlDbType.Int,
+                    Value = pageSize
+                });
+            }
+
             return sqlParameterList;
         }
 
-        private IList<SqlParameter> CreateSelectParameters(IDictionary<string, object> conditions)
+        private IList<SqlParameter> CreateSelectParameters(IDictionary<string, object> conditions, int? page = null,
+            int? pageSize = null)
         {
             Type type = typeof(T);
             PropertyInfo[] typeProperties = type.GetProperties();
             IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
-           
+
             foreach (KeyValuePair<string, object> entry in conditions)
             {
                 object value = entry.Value;
@@ -499,7 +530,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     continue;
                 }
                 string columnName = null;
-                string propertyName = entry.Key.TrimStart('@');//entry.Key.Replace("@", "").Trim();
+                string propertyName = entry.Key.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
 
                 if (typeProperties.Select(x => x.Name).Contains(propertyName))
                 {
@@ -537,22 +568,40 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
                 sqlParameterList.Add(sqlParameter);
             }
+            if (page != null && pageSize != null)
+            {
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@Page",
+                    SqlDbType = SqlDbType.Int,
+                    Value = page
+                });
+
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@PageSize",
+                    SqlDbType = SqlDbType.Int,
+                    Value = pageSize
+                });
+            }
             return sqlParameterList;
         }
 
-        private SqlCommand CreateCommandSelect(IList<string> columns)
-        {          
-            string query = CreateSelectStatement(columns);
+        private SqlCommand CreateCommandSelect(IList<string> columns, string orderBy = null, int? page = null,
+            int? pageSize = null)
+        {
+            string query = CreateSelectStatement(columns, null, orderBy, page, pageSize);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
             return command;
         }
 
-        private SqlCommand CreateCommandSelect(IList<string> columns, object conditions, string orderBy = null)
+        private SqlCommand CreateCommandSelect(IList<string> columns, object conditions, string orderBy = null,
+            int? page = null, int? pageSize = null)
         {
-            IList<SqlParameter> sqlParameterList = CreateSelectParameters(conditions);
-            string query = CreateSelectStatement(columns, sqlParameterList, orderBy);
+            IList<SqlParameter> sqlParameterList = CreateSelectParameters(conditions, page, pageSize);
+            string query = CreateSelectStatement(columns, sqlParameterList, orderBy, page, pageSize);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
@@ -563,10 +612,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             return command;
         }
 
-        private SqlCommand CreateCommandSelect(IList<string> columns, IDictionary<string, object> conditions, string orderBy = null)
+        private SqlCommand CreateCommandSelect(IList<string> columns, IDictionary<string, object> conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
         {
-            IList<SqlParameter>  sqlParameterList = CreateSelectParameters(conditions);
-            string query = CreateSelectStatement(columns, sqlParameterList, orderBy);
+            IList<SqlParameter> sqlParameterList = CreateSelectParameters(conditions, page, pageSize);
+            string query = CreateSelectStatement(columns, sqlParameterList, orderBy, page, pageSize);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
@@ -628,7 +678,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             PropertyInfo[] typeProperties = type.GetProperties();
             IList<string> columnNameList = new List<string>();
             IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
-            PropertyInfo[] properties = parameters.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            PropertyInfo[] properties = parameters.GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
             {
@@ -722,6 +772,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+
+                if (columnName.Equals("created", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
                 Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
 
@@ -1003,6 +1058,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         private string CreateOrderByStatement(IList<string> orderBy)
         {
+            if (orderBy == null)
+            {
+                return null;
+            }
+
             string[] propertyNames = typeof(T).GetProperties().Select(x => x.Name).ToArray();
             IList<string> columnNames = new List<string>();
             foreach (string orderItem in orderBy)
@@ -1023,7 +1083,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                 {
                     propertyName = orderItem;
                 }
-                
+
                 if (propertyNames.Contains(propertyName))
                 {
                     PropertyInfo propertyInfo = typeof(T).GetProperty(propertyName);
@@ -1034,11 +1094,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                             .FirstOrDefault();
                         if (columnAttribute != null)
                         {
-                            columnName = columnAttribute.Name;
+                            columnName = "[" + columnAttribute.Name + "]";
                         }
                         else
                         {
-                            columnName = propertyName;
+                            columnName = "[" + propertyName + "]";
                         }
                     }
                 }
@@ -1060,13 +1120,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     columnNames.Add(columnName);
                 }
             }
-
-            if (columnNames.Count > 0)
-            {
-                return string.Join(", ", columnNames);
-            }
-
-            throw new InvalidOperationException("Error to create 'Order By' secuence.");
+            return string.Join(", ", columnNames);
         }
     }
 }

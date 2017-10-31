@@ -12,29 +12,19 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
         void SetSqlTransaction(SqlTransaction sqlTransaction);
     }
 
-    public interface IRepository<TEntity> : IRepository, IDisposable where TEntity : class
+    public interface IRepository<T> : IRepository, IDisposable where T : class
     {
-        IEnumerable<dynamic> Select(IList<string> columns);
+        IEnumerable<dynamic> Select(IList<string> columns, IList<string> orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<TEntity> Select(object conditions);
+        IEnumerable<T> Select(object conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<TEntity> Select(IDictionary<string, object> conditions);
+        IEnumerable<T> Select(IDictionary<string, object> conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, object conditions);
+        IEnumerable<dynamic> Select(IList<string> columns, object conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions);
+        IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, object conditions, IList<string> orderBy);
-
-        IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions, IList<string> orderBy);
-
-        IEnumerable<TEntity> Select(object conditions, IList<string> orderBy);
-
-
-        IEnumerable<TEntity> Select(IDictionary<string, object> conditions, IList<string> orderBy);
-
-
-        TEntity SelectById(object id);
+        T SelectById(object id);
 
         int Insert(object parameters);
 

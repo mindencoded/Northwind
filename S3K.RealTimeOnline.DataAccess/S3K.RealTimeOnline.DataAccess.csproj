@@ -89,9 +89,7 @@
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\IProductRepository.cs" />
     <Compile Include="Repositories\ProductRepository.cs" />
-    <Compile Include="Tools\InformationSchema.cs" />
-    <Compile Include="Tools\IQueryBuilder.cs" />
-    <Compile Include="Tools\QueryBuilder.cs" />
+    <Compile Include="Tools\DbInformation.cs" />
     <Compile Include="Tools\SqlNotificationRequestRegister.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
