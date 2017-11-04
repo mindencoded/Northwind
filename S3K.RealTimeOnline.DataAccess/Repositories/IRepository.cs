@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using S3K.RealTimeOnline.Commons;
 
 namespace S3K.RealTimeOnline.DataAccess.Repositories
 {
@@ -14,19 +13,21 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
     public interface IRepository<T> : IRepository, IDisposable where T : class
     {
-        IEnumerable<dynamic> Select(IList<string> columns, IList<string> orderBy = null, int? page = null, int? pageSize = null);
+        IEnumerable<dynamic> Select(IEnumerable<string> columns, string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<T> Select(object conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
+        IEnumerable<T> Select(object conditions, string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<T> Select(IDictionary<string, object> conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
+        IEnumerable<T> Select(IDictionary<string, object> conditions, string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, object conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
+        IEnumerable<dynamic> Select(IEnumerable<string> columns, object conditions, string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions, IList<string> orderBy = null, int? page = null, int? pageSize = null);
+        IEnumerable<dynamic> Select(IEnumerable<string> columns, IDictionary<string, object> conditions, string orderBy = null, int? page = null, int? pageSize = null);
 
         T SelectById(object id);
 
         int Insert(object parameters);
+
+        int Insert(IDictionary<string, object> parameters);
 
         int Update(object parameters);
 
@@ -40,6 +41,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         bool IsOpenConnection();
 
-        SqlDataAdapter SqlDataAdapter();
+        object IdentCurrent();
     }
 }

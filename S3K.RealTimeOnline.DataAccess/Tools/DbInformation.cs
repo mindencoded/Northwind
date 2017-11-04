@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using S3K.RealTimeOnline.Commons;
-using S3K.RealTimeOnline.Domain;
 
 namespace S3K.RealTimeOnline.DataAccess.Tools
 {

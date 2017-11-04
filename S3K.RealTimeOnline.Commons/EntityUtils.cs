@@ -6,7 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace S3K.RealTimeOnline.Domain
+namespace S3K.RealTimeOnline.Commons
 {
     public class EntityUtils
     {
@@ -42,12 +42,12 @@ namespace S3K.RealTimeOnline.Domain
             return string.Join(", ", columns);
         }
 
-        public static string JoinColumns<T>(IList<string> columns, bool useColumnAlias = false,
+        public static string JoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false,
             bool includeRowNumber = false) where T : class
         {
             Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
-            IList<string> columnAttributes = properties
+            IList<string> columnAttributeList = properties
                 .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
             IList<string> columnList = new List<string>();
             foreach (string item in columns)
@@ -62,7 +62,7 @@ namespace S3K.RealTimeOnline.Domain
                 }
                 else
                 {
-                    if (columnAttributes.Contains(propertyName))
+                    if (columnAttributeList.Contains(propertyName))
                     {
                         columnName = propertyName;
                         propertyName = UnderscoreCaseToTitleCase(propertyName);
@@ -120,11 +120,11 @@ namespace S3K.RealTimeOnline.Domain
             return string.Join(",", columns);
         }
 
-        public static string SimpleJoinColumns<T>(IList<string> columns, bool useColumnAlias = false) where T : class
+        public static string SimpleJoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false) where T : class
         {
             Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
-            IList<string> columnAttributes = properties
+            IList<string> columnAttributeList = properties
                 .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
             IList<string> columnList = new List<string>();
             foreach (string item in columns)
@@ -139,7 +139,7 @@ namespace S3K.RealTimeOnline.Domain
                 }
                 else
                 {
-                    if (columnAttributes.Contains(propertyName))
+                    if (columnAttributeList.Contains(propertyName))
                     {
                         columnName = "[" + propertyName + "]";
                         propertyName = UnderscoreCaseToTitleCase(propertyName);
@@ -188,7 +188,7 @@ namespace S3K.RealTimeOnline.Domain
             return type.Name;
         }
 
-        private static string UnderscoreCaseToTitleCase(string value)
+        public static string UnderscoreCaseToTitleCase(string value)
         {
             if (value == null)
             {
@@ -197,6 +197,80 @@ namespace S3K.RealTimeOnline.Domain
 
             TextInfo info = CultureInfo.CurrentCulture.TextInfo;
             return info.ToTitleCase(value.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
+        }
+
+        public static string CreateOrderByString<T>(IEnumerable<string> orderBy) where T : class
+        {
+            if (orderBy == null)
+            {
+                return null;
+            }
+            PropertyInfo[] properties = typeof(T).GetProperties();
+            string[] propertyNames = properties.Select(x => x.Name).ToArray();
+            IList<string> columnAttributeList = properties
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
+            IList<string> columnNames = new List<string>();
+            foreach (string orderItem in orderBy)
+            {
+                string propertyName;
+                string direction = null;
+                string columnName = null;
+                if (orderItem.Split(' ').Length > 1)
+                {
+                    propertyName = orderItem.Split(' ')[0];
+                    string ascOrDesc = orderItem.Split(' ')[1].ToUpper();
+                    if (ascOrDesc.Equals("DESC") || ascOrDesc.Equals("ASC"))
+                    {
+                        direction = ascOrDesc;
+                    }
+                }
+                else
+                {
+                    propertyName = orderItem;
+                }
+
+                if (propertyNames.Contains(propertyName))
+                {
+                    PropertyInfo propertyInfo = typeof(T).GetProperty(propertyName);
+                    if (propertyInfo != null)
+                    {
+                        ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false)
+                            .OfType<ColumnAttribute>()
+                            .FirstOrDefault();
+                        if (columnAttribute != null)
+                        {
+                            columnName = "[" + columnAttribute.Name + "]";
+                        }
+                        else
+                        {
+                            columnName = "[" + propertyName + "]";
+                        }
+                    }
+                }
+                else
+                {
+                    if (columnAttributeList.Contains(propertyName))
+                    {
+                        columnName = propertyName;
+                    }
+                }
+
+                if (columnName != null)
+                {
+                    if (direction != null)
+                    {
+                        columnName += ' ' + direction;
+                    }
+
+                    columnNames.Add(columnName);
+                }
+            }
+            return string.Join(", ", columnNames);
+        }
+
+        public static string CreateOrderByString<T>(IDictionary<string, OrderBy> orderBy) where T : class
+        {
+            throw new NotImplementedException();
         }
     }
 }

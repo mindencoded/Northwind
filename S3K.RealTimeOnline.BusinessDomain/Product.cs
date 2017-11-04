@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using S3K.RealTimeOnline.Commons;
 
-namespace S3K.RealTimeOnline.Domain
+namespace S3K.RealTimeOnline.BusinessDomain
 {
     [Table("PRODUCT")]
     public class Product : Entity

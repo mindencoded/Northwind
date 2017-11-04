@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using S3K.RealTimeOnline.Commons;
 
-namespace S3K.RealTimeOnline.Domain
+namespace S3K.RealTimeOnline.SecurityDomain
 {
     [Table("USER")]
     public class User : Entity

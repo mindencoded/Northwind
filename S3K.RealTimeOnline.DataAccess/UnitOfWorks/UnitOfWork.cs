@@ -23,10 +23,25 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         protected UnitOfWork(SqlConnection connection)
         {
             Connection = connection;
+            Initializer();
+        }
+
+        protected UnitOfWork(SqlConnection connection, bool isTransactionable)
+        {
+            Connection = connection;
+            if (isTransactionable)
+            {
+                Transaction = Connection.BeginTransaction();
+            }
+            Initializer();
+        }
+
+
+        private void Initializer()
+        {
             Connection.FireInfoMessageEventOnUserErrors = true;
             Connection.InfoMessage += OnInfoMessage;
             Connection.StateChange += OnStateChange;
-            Transaction = Connection.BeginTransaction();
             if (Connection.State == ConnectionState.Closed)
             {
                 Connection.Open();
@@ -51,7 +66,10 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         public IRepository<T> Repository<T>() where T : class
         {
             if (!Repositories.Keys.Contains(typeof(IRepository<T>)))
-                Repositories.Add(typeof(IRepository<T>), new Repository<T>(Connection, Transaction));
+            {
+                Repositories.Add(typeof(IRepository<T>),
+                    Transaction != null ? new Repository<T>(Connection, Transaction) : new Repository<T>(Connection));
+            }
             return Repositories[typeof(IRepository<T>)] as IRepository<T>;
         }
 
@@ -62,7 +80,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 
             if (!Repositories.ContainsKey(type))
             {
-                object instance = Activator.CreateInstance(type, Connection, Transaction);
+                object instance = Transaction != null ?  Activator.CreateInstance(type, Connection, Transaction) : Activator.CreateInstance(type, Connection);
                 Repositories.Add(type, instance);
             }
             return Repositories[type];
@@ -71,7 +89,10 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
         public void Register(IRepository repository)
         {
             repository.SetSqlConnection(Connection);
-            repository.SetSqlTransaction(Transaction);
+            if (Transaction != null)
+            {
+                repository.SetSqlTransaction(Transaction);
+            }
             if (!Repositories.ContainsKey(repository.GetType()))
                 Repositories.Add(repository.GetType(), repository);
         }
@@ -83,7 +104,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
                 if (disposing)
                     if (Connection != null)
                     {
-                        if (!IsCommited)
+                        if (Transaction != null && !IsCommited)
                             Transaction.Rollback();
 
                         Connection.Close();
@@ -116,10 +137,14 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             SqlCommand command = new SqlCommand
             {
                 Connection = Connection,
-                Transaction = Transaction,
                 CommandText = commandText,
                 CommandType = CommandType.Text
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Length > 0)
             {
@@ -134,10 +159,14 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             SqlCommand command = new SqlCommand
             {
                 Connection = Connection,
-                Transaction = Transaction,
                 CommandText = commandText,
                 CommandType = CommandType.Text
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Count > 0)
             {
@@ -153,9 +182,13 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             {
                 Connection = Connection,
                 CommandText = commandText,
-                Transaction = Transaction,
                 CommandType = CommandType.StoredProcedure
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Length > 0)
             {
@@ -171,9 +204,13 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             {
                 Connection = Connection,
                 CommandText = commandText,
-                Transaction = Transaction,
                 CommandType = CommandType.StoredProcedure
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Count > 0)
             {
@@ -189,9 +226,13 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             {
                 Connection = Connection,
                 CommandText = commandText,
-                Transaction = Transaction,
                 CommandType = CommandType.StoredProcedure
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Length > 0)
             {
@@ -207,9 +248,13 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             {
                 Connection = Connection,
                 CommandText = commandText,
-                Transaction = Transaction,
                 CommandType = CommandType.StoredProcedure
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Count > 0)
             {
@@ -236,9 +281,13 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             {
                 Connection = Connection,
                 CommandText = commandText,
-                Transaction = Transaction,
                 CommandType = CommandType.StoredProcedure
             };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
 
             if (values != null && values.Length > 0)
             {

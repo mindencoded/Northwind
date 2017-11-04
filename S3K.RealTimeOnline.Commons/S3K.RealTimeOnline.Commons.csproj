@@ -60,9 +60,12 @@
     <Compile Include="DecoratorBuildStrategy.cs" />
     <Compile Include="Decorator.cs" />
     <Compile Include="DecoratorTypeRegister.cs" />
+    <Compile Include="Entity.cs" />
+    <Compile Include="EntityUtils.cs" />
     <Compile Include="ExceptionManager.cs" />
     <Compile Include="OrderBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchemaAttribute.cs" />
     <Compile Include="StringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

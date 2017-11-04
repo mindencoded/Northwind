@@ -1,6 +1,6 @@
 ﻿using System.Data.SqlClient;
+using S3K.RealTimeOnline.BusinessDomain;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
-using S3K.RealTimeOnline.Domain;
 
 namespace S3K.RealTimeOnline.DataAccess.Repositories
 {

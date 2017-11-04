@@ -125,13 +125,17 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\S3K.RealTimeOnline.BusinessDomain\S3K.RealTimeOnline.BusinessDomain.csproj">
+      <Project>{77a65568-2d24-4d32-bad8-8a489ad1dd92}</Project>
+      <Name>S3K.RealTimeOnline.BusinessDomain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
       <Name>S3K.RealTimeOnline.Commons</Name>
     </ProjectReference>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Domain\S3K.RealTimeOnline.Domain.csproj">
-      <Project>{b47f25ec-d429-4da4-9330-94b871de729c}</Project>
-      <Name>S3K.RealTimeOnline.Domain</Name>
+    <ProjectReference Include="..\S3K.RealTimeOnline.SecurityDomain\S3K.RealTimeOnline.SecurityDomain.csproj">
+      <Project>{0c809519-c0f1-45f7-8815-676a18555ab8}</Project>
+      <Name>S3K.RealTimeOnline.SecurityDomain</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

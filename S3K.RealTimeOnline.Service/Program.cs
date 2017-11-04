@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
 using Microsoft.Practices.Unity;
+using S3K.RealTimeOnline.BusinessDomain;
 using S3K.RealTimeOnline.DataAccess.Commands;
 using S3K.RealTimeOnline.DataAccess.Commands.MoveCustomer;
 using S3K.RealTimeOnline.DataAccess.Decorators;
@@ -13,7 +14,7 @@ using S3K.RealTimeOnline.DataAccess.Queries.FindUsersBySearchText;
 using S3K.RealTimeOnline.DataAccess.Repositories;
 using S3K.RealTimeOnline.DataAccess.Tools;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
-using S3K.RealTimeOnline.Domain;
+using S3K.RealTimeOnline.SecurityDomain;
 using Serilog;
 
 namespace S3K.RealTimeOnline.Service

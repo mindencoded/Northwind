@@ -2,7 +2,7 @@
 using System.Linq;
 using S3K.RealTimeOnline.DataAccess.Repositories;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
-using S3K.RealTimeOnline.Domain;
+using S3K.RealTimeOnline.SecurityDomain;
 
 namespace S3K.RealTimeOnline.DataAccess.Queries.FindUsersBySearchText
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace S3K.RealTimeOnline.Domain
+namespace S3K.RealTimeOnline.Commons
 {
     public class SchemaAttribute : Attribute
     {

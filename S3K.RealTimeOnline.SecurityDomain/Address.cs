@@ -1,5 +1,5 @@
 ﻿
-namespace S3K.RealTimeOnline.Domain
+namespace S3K.RealTimeOnline.SecurityDomain
 {
     public class Address
     {

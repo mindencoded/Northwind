@@ -6,9 +6,9 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using S3K.RealTimeOnline.Commons;
 using S3K.RealTimeOnline.DataAccess.Tools;
 using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
-using S3K.RealTimeOnline.Domain;
 
 namespace S3K.RealTimeOnline.DataAccess.Repositories
 {
@@ -68,10 +68,10 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                 .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
-        public IEnumerable<dynamic> Select(IList<string> columns, IList<string> orderBy = null, int? page = null,
+        public IEnumerable<dynamic> Select(IEnumerable<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null)
         {
-            using (SqlCommand command = CreateCommandSelect(columns, CreateOrderByStatement(orderBy), page, pageSize))
+            using (SqlCommand command = CreateCommandSelect(columns, orderBy, page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -80,11 +80,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<T> Select(object conditions, IList<string> orderBy = null, int? page = null,
+        public virtual IEnumerable<T> Select(object conditions, string orderBy = null, int? page = null,
             int? pageSize = null)
         {
             using (SqlCommand command =
-                CreateCommandSelect(null, conditions, CreateOrderByStatement(orderBy), page, pageSize))
+                CreateCommandSelect(null, conditions, orderBy, page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -93,11 +93,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<T> Select(IDictionary<string, object> conditions, IList<string> orderBy = null,
+        public virtual IEnumerable<T> Select(IDictionary<string, object> conditions, string orderBy = null,
             int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
-                CreateCommandSelect(null, conditions, CreateOrderByStatement(orderBy), page, pageSize))
+                CreateCommandSelect(null, conditions, orderBy, page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -106,11 +106,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, object conditions,
-            IList<string> orderBy = null, int? page = null, int? pageSize = null)
+        public virtual IEnumerable<dynamic> Select(IEnumerable<string> columns, object conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
-                CreateCommandSelect(columns, conditions, CreateOrderByStatement(orderBy), page, pageSize))
+                CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -119,11 +119,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
-            IList<string> orderBy = null, int? page = null, int? pageSize = null)
+        public virtual IEnumerable<dynamic> Select(IEnumerable<string> columns, IDictionary<string, object> conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
-                CreateCommandSelect(columns, conditions, CreateOrderByStatement(orderBy), page, pageSize))
+                CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -154,6 +154,14 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             using (SqlCommand command = CreateCommandInsert(parameters))
             {
                 return (int) command.ExecuteScalar();
+            }
+        }
+
+        public virtual int Insert(IDictionary<string, object> parameters)
+        {
+            using (SqlCommand command = CreateCommandInsert(parameters))
+            {
+                return (int)command.ExecuteScalar();
             }
         }
 
@@ -198,8 +206,14 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
         {
             string query = @"SELECT OBJECTPROPERTY(OBJECT_ID('" + EntityUtils.GetSchema<T>() + ".[" +
                            EntityUtils.GetTableName<T>() + "]'), 'TableHasIdentity');";
-            SqlCommand command = new SqlCommand(query, Connection, Transaction);
-            return (int) command.ExecuteScalar() == 1;
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            using (command)
+            {
+                return (int) command.ExecuteScalar() == 1;
+            }
+
         }
 
         public void SetSqlConnection(SqlConnection sqlConnection)
@@ -212,48 +226,16 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             Transaction = sqlTransaction;
         }
 
-        public SqlDataAdapter SqlDataAdapter()
+        public object IdentCurrent()
         {
-
-            string selectCmdText = CreateSelectStatement();
-            string insertCmdText = CreateInsertStatement(out IList<SqlParameter> insertSqlParameterList);
-            string updateCmdText = CreateUpdateStatement(out IList<SqlParameter> updateSqlParameterList);
-            string deleteCmdText = CreateDeleteStatement(out IList<SqlParameter> deleteSqlParameterList);
-            SqlDataAdapter adapter = new SqlDataAdapter
+            string sql = "SELECT IDENT_CURRENT('" + EntityUtils.GetTableName<T>() + "');";
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(sql, Connection, Transaction)
+                : new SqlCommand(sql, Connection);
+            using (command)
             {
-                MissingSchemaAction = MissingSchemaAction.AddWithKey
-            };
-
-            if (Transaction != null)
-            {
-                adapter.SelectCommand = new SqlCommand(selectCmdText, Connection, Transaction);
-                adapter.InsertCommand = new SqlCommand(insertCmdText, Connection, Transaction);
-                adapter.UpdateCommand = new SqlCommand(updateCmdText, Connection, Transaction);
-                adapter.DeleteCommand = new SqlCommand(deleteCmdText, Connection, Transaction);
+                return command.ExecuteScalar();
             }
-            else
-            {
-                adapter.SelectCommand = new SqlCommand(selectCmdText, Connection);
-                adapter.InsertCommand = new SqlCommand(insertCmdText, Connection);
-                adapter.UpdateCommand = new SqlCommand(updateCmdText, Connection);
-                adapter.DeleteCommand = new SqlCommand(deleteCmdText, Connection);
-            }
-
-            if (insertSqlParameterList.Count > 0)
-            {
-                adapter.InsertCommand.Parameters.AddRange(insertSqlParameterList.ToArray());
-            }
-
-            if (updateSqlParameterList.Count > 0)
-            {
-                adapter.UpdateCommand.Parameters.AddRange(updateSqlParameterList.ToArray());
-            }
-
-            if (deleteSqlParameterList.Count > 0)
-            {
-                adapter.DeleteCommand.Parameters.AddRange(deleteSqlParameterList.ToArray());
-            }
-            return adapter;
         }
 
         public void Dispose()
@@ -269,45 +251,32 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                     Connection.Close();
         }
 
-        private string CreateSelectStatement(IList<string> columns = null, IList<SqlParameter> sqlParameterList = null,
-            string orderBy = null, int? page = null, int? pageSize = null)
+        private string CreateSelectStatement()
         {
-            IList<string> conditionList = new List<string>();
+            return @"SELECT " + EntityUtils.JoinColumns<T>() + " FROM " + EntityUtils.GetSchema<T>() + ".[" +
+                   EntityUtils.GetTableName<T>() + "]";
+        }
 
-            if (sqlParameterList != null)
+        private string CreateSelectStatement(
+            IEnumerable<string> columns,
+            out IList<SqlParameter> sqlParameterList,
+            string orderBy = null,
+            int? page = null, int?
+                pageSize = null)
+        {
+            string columnQuery;
+            if (columns != null)
             {
-                foreach (SqlParameter sqlParameter in sqlParameterList)
-                {
-                    if (sqlParameter.SqlDbType == SqlDbType.VarChar)
-                    {
-                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
-                                          EntityUtils.GetTableName<T>() +
-                                          "].[" + sqlParameter.SourceColumn + "] LIKE '%' + " +
-                                          sqlParameter.ParameterName +
-                                          " + '%'");
-                    }
-                    else
-                    {
-                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
-                                          EntityUtils.GetTableName<T>() +
-                                          "].[" + sqlParameter.SourceColumn + "] = " + sqlParameter.ParameterName);
-                    }
-                }
-            }
-
-            string columnsStr;
-
-            if (columns != null && columns.Count > 0)
-            {
+                string[] enumerable = columns as string[];
                 if (page != null && pageSize != null)
                 {
 
-                    columnsStr = EntityUtils.JoinColumns<T>(columns, true, true);
+                    columnQuery = EntityUtils.JoinColumns<T>(enumerable, true, true);
 
                 }
                 else
                 {
-                    columnsStr = EntityUtils.JoinColumns<T>(columns, true);
+                    columnQuery = EntityUtils.JoinColumns<T>(enumerable, true);
                 }
             }
             else
@@ -315,17 +284,203 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                 if (page != null && pageSize != null)
                 {
 
-                    columnsStr = EntityUtils.JoinColumns<T>(true);
+                    columnQuery = EntityUtils.JoinColumns<T>(true);
 
                 }
                 else
                 {
-                    columnsStr = EntityUtils.JoinColumns<T>();
+                    columnQuery = EntityUtils.JoinColumns<T>();
+                }
+            }
+
+            sqlParameterList = new List<SqlParameter>();
+
+
+
+            string query = @"SELECT " + columnQuery + " FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+
+
+            if (page != null && pageSize != null)
+            {
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@Page",
+                    SqlDbType = SqlDbType.Int,
+                    Value = page
+                });
+
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@PageSize",
+                    SqlDbType = SqlDbType.Int,
+                    Value = pageSize
+                });
+
+                if (columns != null)
+                {
+                    string[] enumerable = columns as string[];
+                    columnQuery = EntityUtils.SimpleJoinColumns<T>(enumerable, true);
+                }
+                else
+                {
+                    columnQuery = EntityUtils.SimpleJoinColumns<T>();
+                }
+
+                query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnQuery +
+                        " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+                //query = @"SELECT " + columnsStr + " FROM (" + query + ") AS PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+            }
+
+            if (!string.IsNullOrWhiteSpace(orderBy))
+            {
+                query += " ORDER BY " + orderBy;
+            }
+
+            return query;
+        }
+
+        private string CreateSelectStatement(
+            IEnumerable<string> columns,
+            object conditions,
+            out IList<SqlParameter> sqlParameterList,
+            string orderBy = null,
+            int? page = null, int?
+                pageSize = null)
+        {
+            string columnQuery;
+            if (columns != null)
+            {
+                string[] enumerable = columns as string[];
+                if (page != null && pageSize != null)
+                {
+
+                    columnQuery = EntityUtils.JoinColumns<T>(enumerable, true, true);
+
+                }
+                else
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>(enumerable, true);
+                }
+            }
+            else
+            {
+                if (page != null && pageSize != null)
+                {
+
+                    columnQuery = EntityUtils.JoinColumns<T>(true);
+
+                }
+                else
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>();
+                }
+            }
+
+            sqlParameterList = new List<SqlParameter>();
+            IList<string> conditionList = new List<string>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+                PropertyInfo[] properties = conditions.GetType().GetProperties();
+                foreach (PropertyInfo property in properties)
+                {
+                    if (!typeProperties.Select(x => x.Name).Contains(property.Name))
+                    {
+                        continue;
+                    }
+
+                    object value = property.GetValue(conditions, null);
+
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    PropertyInfo propertyInfo = typeProperties.First(x => x.Name == property.Name);
+                    Type propertyType = propertyInfo.PropertyType;
+                    ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false).OfType<ColumnAttribute>()
+                        .FirstOrDefault();
+                    string propertyName = propertyInfo.Name;
+                    string columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    IDictionary<string, object> parameters = new Dictionary<string, object>();
+                    if (value != null && value is string)
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                          EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] LIKE '%' + @" + propertyName +
+                                          " + '%'");
+
+                        parameters.Add("@" + propertyName, value);
+                    }
+                    else if (value != null && value.GetType().IsGenericType &&
+                             value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                    {
+
+                        conditionList.Add("(" + EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] BETWEEN @" + propertyName + "1 AND @" + propertyName +
+                                          "2)");
+                        foreach (var field in value.GetType().GetFields())
+                        {
+
+                            parameters.Add("@" + propertyName + "1", field.GetValue(value));
+                            parameters.Add("@" + propertyName + "2", field.GetValue(value));
+                        }
+
+                    }
+                    else if (value != null && value.GetType().IsArray)
+                    {
+                        object[] items = (object[]) value;
+                        IList<string> subConditionList = new List<string>();
+                        if (typeof(string).IsAssignableFrom(value.GetType().GetElementType()))
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                                     "].[" + columnName + "] LIKE '%' + @" + propertyName + i +
+                                                     " + '%'");
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+                            conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add("@" + propertyName + i);
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+                            conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                              "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
+                                              ")");
+                        }
+                    }
+                    else
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
+                                          columnName + "] = @" + propertyName);
+                        parameters.Add("@" + propertyName, value);
+                    }
+
+                    foreach (KeyValuePair<string, object> parameter in parameters)
+                    {
+                        SqlParameter sqlParameter = new SqlParameter
+                        {
+                            ParameterName = parameter.Key,
+                            SourceColumn = columnName,
+                            SqlDbType = TypeConvertor.ToSqlDbType(propertyType),
+                            Value = parameter.Value ?? DBNull.Value
+                        };
+                        sqlParameterList.Add(sqlParameter);
+                    }
                 }
             }
 
 
-            string query = @"SELECT " + columnsStr + " FROM " +
+            string query = @"SELECT " + columnQuery + " FROM " +
                            EntityUtils.GetSchema<T>() + ".[" +
                            EntityUtils.GetTableName<T>() + "]";
 
@@ -336,10 +491,227 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
             if (page != null && pageSize != null)
             {
-                columnsStr = columns != null && columns.Count > 0
-                    ? EntityUtils.SimpleJoinColumns<T>(columns, true)
-                    : EntityUtils.SimpleJoinColumns<T>();
-                query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnsStr +
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@Page",
+                    SqlDbType = SqlDbType.Int,
+                    Value = page
+                });
+
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@PageSize",
+                    SqlDbType = SqlDbType.Int,
+                    Value = pageSize
+                });
+
+                if (columns != null)
+                {
+                    string[] enumerable = columns as string[];
+                    columnQuery = EntityUtils.SimpleJoinColumns<T>(enumerable, true);
+                }
+                else
+                {
+                    columnQuery = EntityUtils.SimpleJoinColumns<T>();
+                }
+
+                query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnQuery +
+                        " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+                //query = @"SELECT " + columnsStr + " FROM (" + query + ") AS PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+            }
+
+            if (!string.IsNullOrWhiteSpace(orderBy))
+            {
+                query += " ORDER BY " + orderBy;
+            }
+
+            return query;
+        }
+
+        private string CreateSelectStatement(
+            IEnumerable<string> columns,
+            IDictionary<string, object> conditions,
+            out IList<SqlParameter> sqlParameterList,
+            string orderBy = null,
+            int? page = null, int?
+                pageSize = null)
+        {
+            string columnQuery;
+            if (columns != null)
+            {
+                string[] enumerable = columns as string[];
+                if (page != null && pageSize != null)
+                {
+
+                    columnQuery = EntityUtils.JoinColumns<T>(enumerable, true, true);
+
+                }
+                else
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>(enumerable, true);
+                }
+            }
+            else
+            {
+                if (page != null && pageSize != null)
+                {
+
+                    columnQuery = EntityUtils.JoinColumns<T>(true);
+
+                }
+                else
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>();
+                }
+            }
+
+            sqlParameterList = new List<SqlParameter>();
+            IList<string> conditionList = new List<string>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+
+                foreach (KeyValuePair<string, object> condition in conditions)
+                {
+                    object value = condition.Value;
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+                    string columnName = null;
+                    string propertyName = condition.Key.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
+
+                    if (typeProperties.Select(x => x.Name).Contains(propertyName))
+                    {
+                        PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
+                        ColumnAttribute columnAttribute =
+                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    }
+                    else
+                    {
+                        if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
+                        {
+                            columnName = propertyName;
+                        }
+                    }
+
+                    if (columnName == null)
+                    {
+                        continue;
+                    }
+
+                    IDictionary<string, object> parameters = new Dictionary<string, object>();
+                    if (value != null && value is string)
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                          EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] LIKE '%' + @" + propertyName +
+                                          " + '%'");
+
+                        parameters.Add("@" + propertyName, value);
+                    }
+                    else if (value != null && value.GetType().IsGenericType &&
+                             value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                    {
+
+                        conditionList.Add("(" + EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] BETWEEN @" + propertyName + "1 AND @" + propertyName +
+                                          "2)");
+                        foreach (var field in value.GetType().GetFields())
+                        {
+
+                            parameters.Add("@" + propertyName + "1", field.GetValue(value));
+                            parameters.Add("@" + propertyName + "2", field.GetValue(value));
+                        }
+
+                    }
+                    else if (value != null && value.GetType().IsArray)
+                    {
+                        object[] items = (object[]) value;
+                        IList<string> subConditionList = new List<string>();
+                        if (typeof(string).IsAssignableFrom(value.GetType().GetElementType()))
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                                     "].[" + columnName + "] LIKE '%' + @" + propertyName + i +
+                                                     " + '%'");
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+                            conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add("@" + propertyName + i);
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+                            conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                              "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
+                                              ")");
+                        }
+                    }
+                    else
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
+                                          columnName + "] = @" + propertyName);
+                        parameters.Add("@" + propertyName, value);
+                    }
+
+                    foreach (KeyValuePair<string, object> parameter in parameters)
+                    {
+                        SqlParameter sqlParameter = new SqlParameter
+                        {
+                            ParameterName = parameter.Key,
+                            SourceColumn = columnName,
+                            SqlDbType = TypeConvertor.ToSqlDbType(value.GetType()),
+                            Value = parameter.Value ?? DBNull.Value
+                        };
+                        sqlParameterList.Add(sqlParameter);
+                    }
+                }
+            }
+
+
+            string query = @"SELECT " + columnQuery + " FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+            {
+                query += " WHERE " + string.Join(" AND ", conditionList);
+            }
+
+            if (page != null && pageSize != null)
+            {
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@Page",
+                    SqlDbType = SqlDbType.Int,
+                    Value = page
+                });
+
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@PageSize",
+                    SqlDbType = SqlDbType.Int,
+                    Value = pageSize
+                });
+
+                if (columns != null)
+                {
+                    string[] enumerable = columns as string[];
+                    columnQuery = EntityUtils.SimpleJoinColumns<T>(enumerable, true);
+                }
+                else
+                {
+                    columnQuery = EntityUtils.SimpleJoinColumns<T>();
+                }
+
+                query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnQuery +
                         " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
                 //query = @"SELECT " + columnsStr + " FROM (" + query + ") AS PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
             }
@@ -381,9 +753,136 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
             return @"INSERT INTO " + EntityUtils.GetSchema<T>() + ".[" +
                    EntityUtils.GetTableName<T>() + "] (" +
-                   string.Join(", ", columnList) + ") VALUES(" +
+                   string.Join(", ", columnList) + ") VALUES (" +
                    string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
                    ");SELECT CAST(SCOPE_IDENTITY() AS int);";
+        }
+
+        private string CreateInsertStatement(object parameters, out IList<SqlParameter> sqlParameterList)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] typeProperties = type.GetProperties();
+            IList<string> columnNameList = new List<string>();
+            sqlParameterList = new List<SqlParameter>();
+            PropertyInfo[] properties = parameters.GetType().GetProperties();
+
+            foreach (PropertyInfo property in properties)
+            {
+                if (!typeProperties.Select(x => x.Name).Contains(property.Name))
+                {
+                    continue;
+                }
+
+                PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
+
+                Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
+                if (keyAttribute != null && IsIdentityInsert())
+                {
+                    continue;
+                }
+
+                object value = property.GetValue(parameters, null);
+                if (value == null && IgnoreNulls)
+                {
+                    continue;
+                }
+
+                string parameterName = '@' + typeProperty.Name;
+                ColumnAttribute columnAttribute =
+                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+                columnNameList.Add("[" + columnName + "]");
+
+                SqlParameter sqlParameter = new SqlParameter
+                {
+                    ParameterName = parameterName,
+                    SourceColumn = columnName
+                };
+
+                if (value != null)
+                {
+                    sqlParameter.Value = value;
+                    sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                }
+                else
+                {
+                    sqlParameter.Value = DBNull.Value;
+                }
+
+                sqlParameterList.Add(sqlParameter);
+            }
+
+           return @"INSERT INTO " + EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "] (" +
+                           string.Join(", ", columnNameList) + ") VALUES(" +
+                           string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
+                           "); SELECT CAST(SCOPE_IDENTITY() AS int);";
+        }
+
+        private string CreateInsertStatement(IDictionary<string, object> parameters,
+            out IList<SqlParameter> sqlParameterList)
+        {
+            PropertyInfo[] typeProperties = typeof(T).GetProperties();
+            IList<string> columnNameList = new List<string>();
+            sqlParameterList = new List<SqlParameter>();
+
+            foreach (KeyValuePair<string, object> parameter in parameters)
+            {
+                object value = parameter.Value;
+                if (value == null && IgnoreNulls)
+                {
+                    continue;
+                }
+
+                string propertyName = parameter.Key.TrimStart('@');
+                string columnName = null;
+                if (typeProperties.Select(x => x.Name).Contains(propertyName))
+                {
+                    PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
+                    ColumnAttribute columnAttribute =
+                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                }
+                else
+                {
+                    if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
+                    {
+                        columnName = propertyName;
+                    }
+                }
+
+                if (columnName == null)
+                {
+                    continue;
+                }
+                columnNameList.Add("[" + columnName + "]");
+                string parameterName = "@" + propertyName;
+
+                SqlParameter sqlParameter = new SqlParameter
+                {
+                    ParameterName = parameterName,
+                    SourceColumn = columnName
+                };
+
+                if (value != null)
+                {
+                    sqlParameter.Value = value;
+                    sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                }
+                else
+                {
+                    sqlParameter.Value = DBNull.Value;
+                }
+
+                sqlParameterList.Add(sqlParameter);
+            }
+
+
+            return @"INSERT INTO " + EntityUtils.GetSchema<T>() + ".[" +
+                   EntityUtils.GetTableName<T>() + "] (" +
+                   string.Join(", ", columnNameList) + ") VALUES(" +
+                   string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
+                   "); SELECT CAST(SCOPE_IDENTITY() AS int);";
         }
 
         private string CreateUpdateStatement(out IList<SqlParameter> sqlParameterList)
@@ -458,175 +957,45 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                    EntityUtils.GetTableName<T>() + "] WHERE " + string.Join(" AND ", conditionList);
         }
 
-        private IList<SqlParameter> CreateSelectParameters(object conditions, int? page = null, int? pageSize = null)
-        {
-            IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            PropertyInfo[] properties = conditions.GetType().GetProperties();
-            foreach (PropertyInfo property in properties)
-            {
-                if (!typeProperties.Select(x => x.Name).Contains(property.Name))
-                {
-                    continue;
-                }
-
-                object value = property.GetValue(conditions, null);
-
-                if (value == null && IgnoreNulls)
-                {
-                    continue;
-                }
-
-                PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
-                ColumnAttribute columnAttribute = typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>()
-                    .FirstOrDefault();
-                string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-                string parameterName = '@' + typeProperty.Name;
-
-                SqlParameter sqlParameter = new SqlParameter
-                {
-                    ParameterName = parameterName,
-                    SourceColumn = columnName,
-                    SqlDbType = TypeConvertor.ToSqlDbType(typeProperty.PropertyType),
-                    Value = value ?? DBNull.Value
-                };
-
-                sqlParameterList.Add(sqlParameter);
-            }
-
-            if (page != null && pageSize != null)
-            {
-                sqlParameterList.Add(new SqlParameter
-                {
-                    ParameterName = "@Page",
-                    SqlDbType = SqlDbType.Int,
-                    Value = page
-                });
-
-                sqlParameterList.Add(new SqlParameter
-                {
-                    ParameterName = "@PageSize",
-                    SqlDbType = SqlDbType.Int,
-                    Value = pageSize
-                });
-            }
-
-            return sqlParameterList;
-        }
-
-        private IList<SqlParameter> CreateSelectParameters(IDictionary<string, object> conditions, int? page = null,
+        private SqlCommand CreateCommandSelect(IEnumerable<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null)
         {
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
-
-            foreach (KeyValuePair<string, object> entry in conditions)
-            {
-                object value = entry.Value;
-                if (value == null && IgnoreNulls)
-                {
-                    continue;
-                }
-                string columnName = null;
-                string propertyName = entry.Key.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
-
-                if (typeProperties.Select(x => x.Name).Contains(propertyName))
-                {
-                    PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
-                    ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                    columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
-                }
-                else
-                {
-                    if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
-                    {
-                        columnName = propertyName;
-                    }
-                }
-
-                if (columnName == null)
-                {
-                    continue;
-                }
-
-                string parameterName = '@' + propertyName;
-
-                SqlParameter sqlParameter = new SqlParameter
-                {
-                    ParameterName = parameterName,
-                    SourceColumn = columnName,
-                    Value = value ?? DBNull.Value
-                };
-
-                if (value != null)
-                {
-                    sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
-                }
-
-                sqlParameterList.Add(sqlParameter);
-            }
-            if (page != null && pageSize != null)
-            {
-                sqlParameterList.Add(new SqlParameter
-                {
-                    ParameterName = "@Page",
-                    SqlDbType = SqlDbType.Int,
-                    Value = page
-                });
-
-                sqlParameterList.Add(new SqlParameter
-                {
-                    ParameterName = "@PageSize",
-                    SqlDbType = SqlDbType.Int,
-                    Value = pageSize
-                });
-            }
-            return sqlParameterList;
-        }
-
-        private SqlCommand CreateCommandSelect(IList<string> columns, string orderBy = null, int? page = null,
-            int? pageSize = null)
-        {
-            string query = CreateSelectStatement(columns, null, orderBy, page, pageSize);
+            string query = CreateSelectStatement(columns, out IList<SqlParameter> sqlParameterList, orderBy, page,
+                pageSize);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
             return command;
         }
 
-        private SqlCommand CreateCommandSelect(IList<string> columns, object conditions, string orderBy = null,
+        private SqlCommand CreateCommandSelect(IEnumerable<string> columns, object conditions, string orderBy = null,
             int? page = null, int? pageSize = null)
         {
-            IList<SqlParameter> sqlParameterList = CreateSelectParameters(conditions, page, pageSize);
-            string query = CreateSelectStatement(columns, sqlParameterList, orderBy, page, pageSize);
+            string query = CreateSelectStatement(columns, conditions, out IList<SqlParameter> sqlParameterList, orderBy,
+                page, pageSize);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
-
             if (sqlParameterList.Count > 0)
                 command.Parameters.AddRange(sqlParameterList.ToArray());
-
             return command;
         }
 
-        private SqlCommand CreateCommandSelect(IList<string> columns, IDictionary<string, object> conditions,
+        private SqlCommand CreateCommandSelect(IEnumerable<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
-            IList<SqlParameter> sqlParameterList = CreateSelectParameters(conditions, page, pageSize);
-            string query = CreateSelectStatement(columns, sqlParameterList, orderBy, page, pageSize);
+            string query = CreateSelectStatement(columns, conditions, out IList<SqlParameter> sqlParameterList, orderBy,
+                page, pageSize);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
-
             if (sqlParameterList.Count > 0)
                 command.Parameters.AddRange(sqlParameterList.ToArray());
-
             return command;
         }
-
+        
         private SqlCommand CreateCommandSelectById(object id)
         {
             Type type = typeof(T);
@@ -674,67 +1043,23 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         private SqlCommand CreateCommandInsert(object parameters)
         {
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            IList<string> columnNameList = new List<string>();
-            IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
-            PropertyInfo[] properties = parameters.GetType().GetProperties();
-
-            foreach (PropertyInfo property in properties)
-            {
-                if (!typeProperties.Select(x => x.Name).Contains(property.Name))
-                {
-                    continue;
-                }
-
-                PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
-
-                Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
-                if (keyAttribute != null && IsIdentityInsert())
-                {
-                    continue;
-                }
-
-                object value = property.GetValue(parameters, null);
-                if (value == null && IgnoreNulls)
-                {
-                    continue;
-                }
-
-                string parameterName = '@' + typeProperty.Name;
-                ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-                columnNameList.Add("[" + columnName + "]");
-
-                SqlParameter sqlParameter = new SqlParameter
-                {
-                    ParameterName = parameterName,
-                    SourceColumn = columnName
-                };
-
-                if (value != null)
-                {
-                    sqlParameter.Value = value;
-                    sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
-                }
-                else
-                {
-                    sqlParameter.Value = DBNull.Value;
-                }
-
-                sqlParameterList.Add(sqlParameter);
-            }
-
-            string query = @"INSERT INTO " + EntityUtils.GetSchema<T>() + ".[" +
-                           EntityUtils.GetTableName<T>() + "] (" +
-                           string.Join(", ", columnNameList) + ") VALUES(" +
-                           string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
-                           "); SELECT CAST(SCOPE_IDENTITY() AS int);";
-
+            string sql = CreateInsertStatement(parameters, out IList<SqlParameter> sqlParameterList);
             SqlCommand command = Transaction != null
-                ? new SqlCommand(query, Connection, Transaction)
-                : new SqlCommand(query, Connection);
+                ? new SqlCommand(sql, Connection, Transaction)
+                : new SqlCommand(sql, Connection);
+
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
+
+            return command;
+        }
+
+        private SqlCommand CreateCommandInsert(IDictionary<string, object> parameters)
+        {
+            string sql = CreateInsertStatement(parameters, out IList<SqlParameter> sqlParameterList);
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(sql, Connection, Transaction)
+                : new SqlCommand(sql, Connection);
 
             if (sqlParameterList.Count > 0)
                 command.Parameters.AddRange(sqlParameterList.ToArray());
@@ -802,18 +1127,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                 }
 
                 sqlParameterList.Add(sqlParameter);
-            }
-
-
-            if (parameterList.Count == 0)
-            {
-                throw new InvalidOperationException("Parameters list is empty.");
-            }
-
-
-            if (conditionList.Count == 0)
-            {
-                throw new InvalidOperationException("Conditions list is empty.");
             }
 
             string query = @"UPDATE " + EntityUtils.GetSchema<T>() + ".[" +
@@ -922,11 +1235,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
                     sqlParameterList.Add(sqlParameter);
                 }
-            }
-
-            if (parameterList.Count == 0)
-            {
-                throw new InvalidOperationException("Parameters list is empty.");
             }
 
             string query = @"UPDATE " + EntityUtils.GetSchema<T>() + ".[" +
@@ -1054,73 +1362,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
 
             return command;
-        }
-
-        private string CreateOrderByStatement(IList<string> orderBy)
-        {
-            if (orderBy == null)
-            {
-                return null;
-            }
-
-            string[] propertyNames = typeof(T).GetProperties().Select(x => x.Name).ToArray();
-            IList<string> columnNames = new List<string>();
-            foreach (string orderItem in orderBy)
-            {
-                string propertyName;
-                string direction = null;
-                string columnName = null;
-                if (orderItem.Split(' ').Length > 1)
-                {
-                    propertyName = orderItem.Split(' ')[0];
-                    string ascOrDesc = orderItem.Split(' ')[1].ToUpper();
-                    if (ascOrDesc.Equals("DESC") || ascOrDesc.Equals("ASC"))
-                    {
-                        direction = ascOrDesc;
-                    }
-                }
-                else
-                {
-                    propertyName = orderItem;
-                }
-
-                if (propertyNames.Contains(propertyName))
-                {
-                    PropertyInfo propertyInfo = typeof(T).GetProperty(propertyName);
-                    if (propertyInfo != null)
-                    {
-                        ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false)
-                            .OfType<ColumnAttribute>()
-                            .FirstOrDefault();
-                        if (columnAttribute != null)
-                        {
-                            columnName = "[" + columnAttribute.Name + "]";
-                        }
-                        else
-                        {
-                            columnName = "[" + propertyName + "]";
-                        }
-                    }
-                }
-                else
-                {
-                    if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
-                    {
-                        columnName = propertyName;
-                    }
-                }
-
-                if (columnName != null)
-                {
-                    if (direction != null)
-                    {
-                        columnName += ' ' + direction;
-                    }
-
-                    columnNames.Add(columnName);
-                }
-            }
-            return string.Join(", ", columnNames);
         }
     }
 }

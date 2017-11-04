@@ -1,4 +1,4 @@
-using S3K.RealTimeOnline.Domain;
+using S3K.RealTimeOnline.BusinessDomain;
 
 namespace S3K.RealTimeOnline.DataAccess.Repositories
 {
