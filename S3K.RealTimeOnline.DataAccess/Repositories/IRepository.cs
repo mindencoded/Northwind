@@ -39,6 +39,8 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         int Delete(object conditions);
 
+        int Delete(IDictionary<string, object> conditions);
+
         int DeleteById(object id);
 
         bool IsIdentityInsert();
@@ -46,5 +48,7 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
         bool IsOpenConnection();
 
         object IdentCurrent();
+
+        string CreateSelectStatement();
     }
 }

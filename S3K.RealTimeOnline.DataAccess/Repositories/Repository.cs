@@ -205,6 +205,14 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
+        public virtual int Delete(IDictionary<string, object> conditions)
+        {
+            using (SqlCommand command = CreateCommandDelete(conditions))
+            {
+                return command.ExecuteNonQuery();
+            }
+        }
+
         public virtual int DeleteById(object id)
         {
             using (SqlCommand command = CreateCommandDeleteById(id))
@@ -254,6 +262,12 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             }
         }
 
+        public string CreateSelectStatement()
+        {
+            return @"SELECT " + EntityUtils.JoinColumns<T>() + " FROM " + EntityUtils.GetSchema<T>() + ".[" +
+                   EntityUtils.GetTableName<T>() + "]";
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -265,12 +279,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             if (disposing)
                 if (Connection != null)
                     Connection.Close();
-        }
-
-        private string CreateSelectStatement()
-        {
-            return @"SELECT " + EntityUtils.JoinColumns<T>() + " FROM " + EntityUtils.GetSchema<T>() + ".[" +
-                   EntityUtils.GetTableName<T>() + "]";
         }
 
         private string CreateSelectStatement(
@@ -740,40 +748,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
             return query;
         }
 
-        private string CreateInsertStatement(out IList<SqlParameter> sqlParameterList)
-        {
-            sqlParameterList = new List<SqlParameter>();
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            IList<string> columnList = new List<string>();
-            foreach (PropertyInfo typeProperty in typeProperties)
-            {
-                Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
-                if (keyAttribute != null && IsIdentityInsert())
-                {
-                    continue;
-                }
-                ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-
-                SqlParameter sqlParameter = new SqlParameter
-                {
-                    ParameterName = '@' + typeProperty.Name,
-                    SourceColumn = columnName,
-                    SqlDbType = TypeConvertor.ToSqlDbType(typeProperty.PropertyType)
-                };
-
-                columnList.Add("[" + columnName + "]");
-                sqlParameterList.Add(sqlParameter);
-            }
-            return @"INSERT INTO " + EntityUtils.GetSchema<T>() + ".[" +
-                   EntityUtils.GetTableName<T>() + "] (" +
-                   string.Join(", ", columnList) + ") VALUES (" +
-                   string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
-                   ");SELECT CAST(SCOPE_IDENTITY() AS int);";
-        }
-
         private string CreateInsertStatement(object parameters, out IList<SqlParameter> sqlParameterList)
         {
             Type type = typeof(T);
@@ -899,47 +873,6 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                    string.Join(", ", columnNameList) + ") VALUES(" +
                    string.Join(", ", sqlParameterList.Select(x => x.ParameterName)) +
                    "); SELECT CAST(SCOPE_IDENTITY() AS int);";
-        }
-
-        private string CreateUpdateStatement(out IList<SqlParameter> sqlParameterList)
-        {
-            sqlParameterList = new List<SqlParameter>();
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            IList<string> parameters = new List<string>();
-            IList<string> conditions = new List<string>();
-            foreach (PropertyInfo typeProperty in typeProperties)
-            {
-                ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-                if (columnName.ToUpper().Equals("CREATED"))
-                {
-                    continue;
-                }
-                Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
-                string parameterName = '@' + typeProperty.Name;
-                SqlParameter sqlParameter = new SqlParameter
-                {
-                    ParameterName = parameterName,
-                    SourceColumn = columnName,
-                    SqlDbType = TypeConvertor.ToSqlDbType(typeProperty.PropertyType)
-                };
-
-                if (keyAttribute != null)
-                {
-                    conditions.Add("[" + columnName + "] = " + parameterName);
-                    sqlParameter.SourceVersion = DataRowVersion.Original;
-                }
-                else
-                {
-                    parameters.Add("[" + columnName + "] = " + parameterName);
-                }
-                sqlParameterList.Add(sqlParameter);
-            }
-            return @"UPDATE " + EntityUtils.GetSchema<T>() + ".[" +
-                   EntityUtils.GetTableName<T>() + "] SET " +
-                   string.Join(", ", parameters) + " WHERE " + string.Join(" AND ", conditions);
         }
 
         private string CreateUpdateStatement(object parameters, out IList<SqlParameter> sqlParameterList)
@@ -1285,35 +1218,174 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
                    string.Join(", ", parameterList) + " WHERE " + string.Join(" AND ", conditionList);
         }
 
-        private string CreateDeleteStatement(out IList<SqlParameter> sqlParameterList)
+        private string CreateDeleteStatement(object conditions, out IList<SqlParameter> sqlParameterList)
         {
-            sqlParameterList = new List<SqlParameter>();
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
             IList<string> conditionList = new List<string>();
-
-            foreach (PropertyInfo typeProperty in typeProperties)
+            sqlParameterList = new List<SqlParameter>();
+            if (conditions != null)
             {
-                ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-                Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
-                if (keyAttribute != null)
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+                PropertyInfo[] properties = conditions.GetType().GetProperties();
+                foreach (PropertyInfo property in properties)
                 {
+                    if (!typeProperties.Select(x => x.Name).Contains(property.Name))
+                    {
+                        continue;
+                    }
 
-                    conditionList.Add("[" + columnName + "] = " + '@' + typeProperty.Name);
+                    PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
+                    object value = property.GetValue(conditions, null);
+
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    string parameterName = '@' + typeProperty.Name;
+
+                    ColumnAttribute columnAttribute =
+                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+
+                    string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+
+                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                      EntityUtils.GetTableName<T>() +
+                                      "].[" + columnName + "] = " + parameterName);
+
                     SqlParameter sqlParameter = new SqlParameter
                     {
-                        ParameterName = '@' + typeProperty.Name,
-                        SourceColumn = columnName,
-                        SqlDbType = TypeConvertor.ToSqlDbType(typeProperty.PropertyType)
+                        ParameterName = parameterName,
+                        SourceColumn = columnName
                     };
+
+                    if (value != null)
+                    {
+                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        sqlParameter.Value = value;
+                    }
+                    else
+                    {
+                        sqlParameter.Value = DBNull.Value;
+                    }
 
                     sqlParameterList.Add(sqlParameter);
                 }
             }
-            return @"DELETE FROM " + EntityUtils.GetSchema<T>() + ".[" +
-                   EntityUtils.GetTableName<T>() + "] WHERE " + string.Join(" AND ", conditionList);
+
+            string query = @"DELETE FROM " + EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+                query += " WHERE " + string.Join(" AND ", conditionList);
+
+            return query;
+        }
+
+        private string CreateDeleteStatement(IDictionary<string, object> conditions, out IList<SqlParameter> sqlParameterList)
+        {
+            IList<string> conditionList = new List<string>();
+            sqlParameterList = new List<SqlParameter>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+                foreach (KeyValuePair<string, object> condition in conditions)
+                {
+                    object value = condition.Value;
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    string propertyName = condition.Key.TrimStart('@');
+                    string columnName = null;
+
+                    if (typeProperties.Select(x => x.Name).Contains(propertyName))
+                    {
+                        PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
+                        ColumnAttribute columnAttribute =
+                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    }
+                    else
+                    {
+                        if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
+                        {
+                            columnName = propertyName;
+                        }
+                    }
+
+                    if (columnName == null)
+                    {
+                        continue;
+                    }
+
+                    string parameterName = '@' + propertyName;
+
+                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                      EntityUtils.GetTableName<T>() +
+                                      "].[" + columnName + "] = " + parameterName);
+
+                    SqlParameter sqlParameter = new SqlParameter
+                    {
+                        ParameterName = parameterName,
+                        SourceColumn = columnName
+                    };
+
+                    if (value != null)
+                    {
+                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        sqlParameter.Value = value;
+                    }
+                    else
+                    {
+                        sqlParameter.Value = DBNull.Value;
+                    }
+
+                    sqlParameterList.Add(sqlParameter);
+                }
+            }
+
+            string query = @"DELETE FROM " + EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+                query += " WHERE " + string.Join(" AND ", conditionList);
+
+            return query;
+        }
+
+        private string CreatDeleteStatementById(object id, out string propertyName)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] typeProperties = type.GetProperties();
+            string condition = null;
+            propertyName = null;
+            if (id != null)
+            {
+                foreach (PropertyInfo typeProperty in typeProperties)
+                {
+                    Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
+                    if (keyAttribute == null) continue;
+                    propertyName = '@' + typeProperty.Name;
+                    ColumnAttribute columnAttribute =
+                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+                    condition = EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                "].[" + columnName + "] = " + propertyName;
+                    break;
+                }
+            }
+            string query = @"DELETE FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+            if (condition != null)
+            {
+                query += " WHERE " + condition;
+            }
+
+            return query;
         }
 
         private SqlCommand CreateCommandSelect(IEnumerable<string> columns, string orderBy = null, int? page = null,
@@ -1472,65 +1544,18 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         private SqlCommand CreateCommandDelete(object conditions)
         {
-            IList<string> conditionList = new List<string>();
-            IList<SqlParameter> sqlParameterList = new List<SqlParameter>();
-            if (conditions != null)
-            {
-                Type type = typeof(T);
-                PropertyInfo[] typeProperties = type.GetProperties();
-                PropertyInfo[] properties = conditions.GetType().GetProperties();
-                foreach (PropertyInfo property in properties)
-                {
-                    if (!typeProperties.Select(x => x.Name).Contains(property.Name))
-                    {
-                        continue;
-                    }
+            string query = CreateDeleteStatement(conditions, out IList<SqlParameter> sqlParameterList);
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
+            return command;
+        }
 
-                    PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
-                    object value = property.GetValue(conditions, null);
-
-                    if (value == null && IgnoreNulls)
-                    {
-                        continue;
-                    }
-
-                    string parameterName = '@' + typeProperty.Name;
-
-                    ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-
-                    string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-
-                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
-                                      EntityUtils.GetTableName<T>() +
-                                      "].[" + columnName + "] = " + parameterName);
-
-                    SqlParameter sqlParameter = new SqlParameter
-                    {
-                        ParameterName = parameterName,
-                        SourceColumn = columnName
-                    };
-
-                    if (value != null)
-                    {
-                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
-                        sqlParameter.Value = value;
-                    }
-                    else
-                    {
-                        sqlParameter.Value = DBNull.Value;
-                    }
-
-                    sqlParameterList.Add(sqlParameter);
-                }
-            }
-
-            string query = @"DELETE FROM " + EntityUtils.GetSchema<T>() + ".[" +
-                           EntityUtils.GetTableName<T>() + "]";
-
-            if (conditionList.Count > 0)
-                query += " WHERE " + string.Join(" AND ", conditionList);
-
+        private SqlCommand CreateCommandDelete(IDictionary<string, object> conditions)
+        {
+            string query = CreateDeleteStatement(conditions, out IList<SqlParameter> sqlParameterList);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
@@ -1541,42 +1566,14 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         private SqlCommand CreateCommandDeleteById(object id)
         {
-            Type type = typeof(T);
-            PropertyInfo[] typeProperties = type.GetProperties();
-            string condition = null;
-            string propertyName = null;
-            if (id != null)
-            {
-                foreach (PropertyInfo typeProperty in typeProperties)
-                {
-                    Attribute keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
-                    if (keyAttribute == null) continue;
-                    propertyName = '@' + typeProperty.Name;
-                    ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                    string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
-                    condition = EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
-                                "].[" + columnName + "] = " + propertyName;
-                    break;
-                }
-            }
-            string query = @"DELETE FROM " +
-                           EntityUtils.GetSchema<T>() + ".[" +
-                           EntityUtils.GetTableName<T>() + "]";
-            if (condition != null)
-            {
-                query += " WHERE " + condition;
-            }
-
+            string query = CreatDeleteStatementById(id, out string propertyName);
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);
-
             if (propertyName != null)
             {
                 command.Parameters.AddWithValue(propertyName, id);
             }
-
             return command;
         }
     }
