@@ -108,6 +108,7 @@
   <ItemGroup>
     <Content Include="Queries\FindUsersBySearchText\FindUsersBySearchText.sql" />
     <Content Include="Snippets.txt" />
+    <Content Include="SqlServerPagination.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

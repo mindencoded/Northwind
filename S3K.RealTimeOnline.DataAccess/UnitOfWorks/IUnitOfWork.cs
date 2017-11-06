@@ -28,5 +28,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
 
         Tuple<int, int> ExecuteNonQuery(string commandText, string returnParameterName,
             string outputParameterName, params object[] values);
+
+        void BeginTransaction();
     }
 }

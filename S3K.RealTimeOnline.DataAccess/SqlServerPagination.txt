@@ -1,0 +1,120 @@
+﻿--SQL 2000 Paging Method
+DECLARE @Start INT
+DECLARE @End INT
+SELECT @Start = 14000,@End = 14050
+
+            
+CREATE TABLE #employees (RowNumber INT IDENTITY(1,1),
+                LastName VARCHAR(100),FirstName VARCHAR(100),
+                EmailAddress VARCHAR(100))
+
+  
+INSERT INTO #employees (LastName, FirstName, EmailAddress)
+SELECT LastName, FirstName, EmailAddress 
+  FROM Employee 
+ ORDER BY LastName, FirstName, EmailAddress
+SELECT LastName, FirstName, EmailAddress 
+  FROM #employees
+ WHERE RowNumber > @Start AND RowNumber <= @End
+
+  
+DROP TABLE #employees
+
+  
+GO
+
+  
+--SQL 2005/2008 Paging Method Using Derived Table
+DECLARE @Start INT
+DECLARE @End INT
+SELECT @Start = 14000,@End = 14050
+
+  
+SELECT LastName, FirstName, EmailAddress
+FROM (SELECT LastName, FirstName, EmailAddress,
+      ROW_NUMBER() OVER (ORDER BY LastName, FirstName, EmailAddress) AS RowNumber
+      FROM Employee) EmployeePage
+WHERE RowNumber > @Start AND RowNumber <= @End
+ORDER BY LastName, FirstName, EmailAddress
+GO
+
+  
+--SQL 2005/2008 Paging Method Using CTE
+DECLARE @Start INT
+DECLARE @End INT
+SELECT @Start = 14000,@End = 14050;
+
+  
+WITH EmployeePage AS
+(SELECT LastName, FirstName, EmailAddress,
+ ROW_NUMBER() OVER (ORDER BY LastName, FirstName, EmailAddress) AS RowNumber
+ FROM Employee)
+SELECT LastName, FirstName, EmailAddress
+FROM EmployeePage
+WHERE RowNumber > @Start AND RowNumber <= @End
+ORDER BY LastName, FirstName, EmailAddress
+GO
+
+SELECT ees.*
+FROM Employees ees
+JOIN 
+(SELECT EmployeeID, rownum= ROW_NUMBER()
+FROM Employees
+ORDER BY EmployeeLastName, EmployeeFirstname) 
+eelist ON eelist.EmployeeID = ees.EmployeeID
+WHERE eelist.rownum BETWEEN 1000 AND 1050
+
+  
+--SQL SERVER 2012
+SELECT LastName, FirstName, EmailAddress
+FROM Employee
+ORDER BY LastName, FirstName, EmailAddress
+OFFSET 14000 ROWS
+FETCH NEXT 50 ROWS ONLY;
+
+USE AdventureWorks2012
+GO
+--------------------------------------------------
+-- SQL Server 2012
+--------------------------------------------------
+DECLARE @RowsPerPage INT = 10, @PageNumber INT = 6
+SELECT SalesOrderDetailID, SalesOrderID, ProductID
+FROM Sales.SalesOrderDetail
+ORDER BY SalesOrderDetailID
+OFFSET (@PageNumber-1)*@RowsPerPage ROWS
+FETCH NEXT @RowsPerPage ROWS ONLY
+GO
+--------------------------------------------------
+-- SQL Server 2008 / R2
+-- SQL Server 2005
+--------------------------------------------------
+DECLARE @RowsPerPage INT = 10, @PageNumber INT = 6
+SELECT SalesOrderDetailID, SalesOrderID, ProductID
+FROM (
+SELECT SalesOrderDetailID, SalesOrderID, ProductID,
+ROW_NUMBER() OVER (ORDER BY SalesOrderDetailID) AS RowNum
+FROM Sales.SalesOrderDetail ) AS SOD
+WHERE SOD.RowNum BETWEEN ((@PageNumber-1)*@RowsPerPage)+1
+AND @RowsPerPage*(@PageNumber)
+GO
+--------------------------------------------------
+-- SQL Server 2000
+--------------------------------------------------
+DECLARE @RowsPerPage INT = 10, @PageNumber INT = 6
+SELECT SalesOrderDetailID, SalesOrderID, ProductID
+FROM
+(
+SELECT TOP (@RowsPerPage)
+SalesOrderDetailID, SalesOrderID, ProductID
+FROM
+(
+SELECT TOP ((@PageNumber)*@RowsPerPage)
+SalesOrderDetailID, SalesOrderID, ProductID
+FROM Sales.SalesOrderDetail
+ORDER BY SalesOrderDetailID
+) AS SOD
+ORDER BY SalesOrderDetailID DESC
+) AS SOD2
+ORDER BY SalesOrderDetailID ASC
+GO
+

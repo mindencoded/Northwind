@@ -28,7 +28,8 @@ namespace S3K.RealTimeOnline.Commons
                 IList<string> keyNames = new List<string>();
                 foreach (PropertyInfo propertyInfo in properties)
                 {
-                    KeyAttribute attribute = (KeyAttribute)Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
+                    KeyAttribute attribute =
+                        (KeyAttribute) Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
                     if (attribute != null)
                     {
                         ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyInfo.Name)
@@ -87,7 +88,8 @@ namespace S3K.RealTimeOnline.Commons
                 IList<string> keyNames = new List<string>();
                 foreach (PropertyInfo propertyInfo in properties)
                 {
-                    KeyAttribute attribute = (KeyAttribute) Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
+                    KeyAttribute attribute =
+                        (KeyAttribute) Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
                     if (attribute != null)
                     {
                         ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyInfo.Name)
@@ -120,7 +122,8 @@ namespace S3K.RealTimeOnline.Commons
             return string.Join(",", columns);
         }
 
-        public static string SimpleJoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false) where T : class
+        public static string SimpleJoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false)
+            where T : class
         {
             Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
@@ -156,7 +159,7 @@ namespace S3K.RealTimeOnline.Commons
                     columnName += " AS '" + propertyName + "'";
                 }
                 columnList.Add(columnName);
-            }        
+            }
             return string.Join(", ", columnList);
         }
 
@@ -271,6 +274,32 @@ namespace S3K.RealTimeOnline.Commons
         public static string CreateOrderByString<T>(IDictionary<string, OrderBy> orderBy) where T : class
         {
             throw new NotImplementedException();
+        }
+
+        public static string GetColumnName<T>(string propertyName, bool extendedColumnName = false) where T : class
+        {
+            PropertyInfo[] propertyInfos = typeof(T).GetProperties();
+            string columnName = null;
+            foreach (PropertyInfo propertyInfo in propertyInfos)
+            {
+                if (propertyInfo.Name != propertyName) continue;
+                ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes
+                    (typeof(ColumnAttribute), false).Cast<ColumnAttribute>().FirstOrDefault();
+                if (columnAttribute != null)
+                {
+                    columnName = columnAttribute.Name;
+                    break;
+                }
+            }
+
+            if (columnName == null) return null;
+
+            if (extendedColumnName)
+            {
+                return GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnName + "]";
+
+            }
+            return "[" + columnName + "]";
         }
     }
 }

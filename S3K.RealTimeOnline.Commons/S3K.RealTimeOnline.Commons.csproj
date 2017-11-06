@@ -53,6 +53,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="AttributeExtensions.cs" />
     <Compile Include="ColumnInfo.cs" />
+    <Compile Include="ComparisonOperator.cs" />
     <Compile Include="Condition.cs" />
     <Compile Include="Container.cs" />
     <Compile Include="Decorating.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="DecoratorBuildStrategy.cs" />
     <Compile Include="Decorator.cs" />
     <Compile Include="DecoratorTypeRegister.cs" />
+    <Compile Include="DynamicExtensions.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="EntityUtils.cs" />
     <Compile Include="ExceptionManager.cs" />

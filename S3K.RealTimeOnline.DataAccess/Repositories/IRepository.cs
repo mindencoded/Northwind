@@ -31,7 +31,11 @@ namespace S3K.RealTimeOnline.DataAccess.Repositories
 
         int Update(object parameters);
 
+        int Update(IDictionary<string, object> parameters);
+
         int Update(object parameters, object conditions);
+
+        int Update(IDictionary<string, object> parameters, IDictionary<string, object> conditions);
 
         int Delete(object conditions);
 

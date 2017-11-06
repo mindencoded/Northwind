@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2005
+VisualStudioVersion = 15.0.27004.2006
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Commons", "S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
 EndProject
@@ -32,6 +32,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.BusinessDomain", "S3K.RealTimeOnline.BusinessDomain\S3K.RealTimeOnline.BusinessDomain.csproj", "{77A65568-2D24-4D32-BAD8-8A489AD1DD92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.SecurityDomain", "S3K.RealTimeOnline.SecurityDomain\S3K.RealTimeOnline.SecurityDomain.csproj", "{0C809519-C0F1-45F7-8815-676A18555AB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.DataTransferObjects", "S3K.RealTimeOnline.DataTransferObjects\S3K.RealTimeOnline.DataTransferObjects.csproj", "{B6896EDC-2F56-4DD2-AFE8-F424A17DC07B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -71,6 +73,10 @@ Global
 		{0C809519-C0F1-45F7-8815-676A18555AB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C809519-C0F1-45F7-8815-676A18555AB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C809519-C0F1-45F7-8815-676A18555AB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6896EDC-2F56-4DD2-AFE8-F424A17DC07B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6896EDC-2F56-4DD2-AFE8-F424A17DC07B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6896EDC-2F56-4DD2-AFE8-F424A17DC07B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6896EDC-2F56-4DD2-AFE8-F424A17DC07B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +89,7 @@ Global
 		{94CBFB90-729D-45CC-8A09-52E5B06D4EC8} = {1FBABEE5-EEA4-46CC-888A-38E834E4B042}
 		{77A65568-2D24-4D32-BAD8-8A489AD1DD92} = {173C9A31-8A98-42BD-BA82-D108DE004BA6}
 		{0C809519-C0F1-45F7-8815-676A18555AB8} = {173C9A31-8A98-42BD-BA82-D108DE004BA6}
+		{B6896EDC-2F56-4DD2-AFE8-F424A17DC07B} = {173C9A31-8A98-42BD-BA82-D108DE004BA6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DECA91E6-677C-458B-9E96-C0702324AC5E}

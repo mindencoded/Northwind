@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 namespace S3K.RealTimeOnline.DataAccess.Tools
 {
@@ -51,7 +52,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             return instance;
         }
 
-        public static IEnumerable<T> ConvertToEnumerable<T>(this SqlDataReader reader)
+        public static IList<T> ConvertToList<T>(this SqlDataReader reader)
         {
             Type type = typeof(T);
             T instance = (T)Activator.CreateInstance(type);
@@ -80,25 +81,41 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             return result;
         }
 
-        public static dynamic ConvertToDynamic(this SqlDataReader reader)
+        public static async Task<IList<T>> ConvertToListAsync<T>(this SqlDataReader reader)
         {
-            IList<string> names = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
-            IDictionary<string, object> expando = new ExpandoObject();
-            foreach (IDataRecord record in reader as IEnumerable)
+            Type type = typeof(T);
+            T instance = (T)Activator.CreateInstance(type);
+            PropertyInfo[] properties = type.GetProperties();
+            IList<T> result = new List<T>();
+            while (await reader.ReadAsync())
             {
-                foreach (var name in names)
+                foreach (PropertyInfo property in properties)
                 {
-                    expando[name] = record[name];
+                    try
+                    {
+                        ColumnAttribute attribute =
+                            property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        string name = attribute != null ? attribute.Name : property.Name;
+                        object value = reader[name];
+                        if (value is DBNull) continue;
+                        property.SetValue(instance, value);
+                    }
+                    catch (Exception)
+                    {
+                        // ignored
+                    }
                 }
-
+                result.Add(instance);
             }
-            return expando;
+            return result;
         }
 
-        public static IEnumerable<dynamic> ConvertToDynamicEnumerable(this SqlDataReader reader)
+        public static IList<dynamic> ConvertToDynamicList(this SqlDataReader reader)
         {
-            IList<string> names = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
+           
             IList<dynamic> result = new List<dynamic>();
+
+            IList<string> names = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
             foreach (IDataRecord record in reader as IEnumerable)
             {
                 IDictionary<string, object> expando = new ExpandoObject();
@@ -107,77 +124,6 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                     expando[name] = record[name];
                 }
                 result.Add(expando);
-            }
-            return result;
-        }
-
-        public static IEnumerable<Dictionary<string, object>> ConvertToDictionaryEnumerable(this SqlDataReader reader)
-        {
-            var names = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
-            foreach (IDataRecord record in reader as IEnumerable)
-                yield return names.ToDictionary(name => name, name => record[name]);
-        }
-
-        public static IEnumerable<ExpandoObject> ConvertToExpandoEnumerable(this SqlDataReader reader)
-        {
-            while (reader.Read())
-            {
-                yield return ConvertToExpando(reader);
-            }
-        }
-
-        public static ExpandoObject ConvertToExpando(IDataRecord record)
-        {
-            var expandoObject = new ExpandoObject() as IDictionary<string, object>;
-
-            for (var i = 0; i < record.FieldCount; i++)
-                expandoObject.Add(record.GetName(i), record[i]);
-
-            return (ExpandoObject) expandoObject;
-        }
-
-        public static IEnumerable<T> GetSqlData<T>(this SqlDataReader reader)
-        {
-            PropertyInfo[] propertyInfos = typeof(T).GetProperties();
-            IList<T> result = new List<T>();
-            while (reader.Read())
-            {
-                T instance = Activator.CreateInstance<T>();
-                foreach (PropertyInfo propertyInfo in propertyInfos)
-                {
-                    ColumnAttribute attribute =
-                        propertyInfo.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                    object o = null;
-                    if (attribute != null)
-                    {
-                        try
-                        {
-                            o = reader[attribute.Name];
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-
-                    if (o == null)
-                    {
-                        try
-                        {
-                            o = reader[propertyInfo.Name];
-                        }
-                        catch
-                        {
-                            // ignored
-                        }
-                    }
-
-                    if (o != null && o.GetType() != typeof(DBNull))
-                    {
-                        propertyInfo.SetValue(instance, o, null);
-                    }
-                }
-                result.Add(instance);
             }
             return result;
         }

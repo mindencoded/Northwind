@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using S3K.RealTimeOnline.Commons;
 
 namespace S3K.RealTimeOnline.DataAccess.Tools
@@ -46,9 +47,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    results = new List<ColumnInfo>();
-                    while (reader.Read())
-                        results.Add(reader.ConvertTo<ColumnInfo>());
+                    results = reader.ConvertToList<ColumnInfo>();
                 }
             }
             return results;
@@ -71,7 +70,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
                     information_schema.columns
                 WHERE 
                     Table_Name = '" + EntityUtils.GetTableName<T>() + "' AND Column_Name = '" + columnName + "'";
-            ColumnInfo columnInfo = null;
+            ColumnInfo columnInfo;
             SqlCommand command = _transaction != null
                 ? new SqlCommand(query, _connection, _transaction)
                 : new SqlCommand(query, _connection);
@@ -79,10 +78,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
-                    {
-                        columnInfo = reader.ConvertTo<ColumnInfo>();
-                    }
+                    columnInfo = reader.ConvertToList<ColumnInfo>().FirstOrDefault();
                 }
             }
             return columnInfo;

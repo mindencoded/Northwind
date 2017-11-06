@@ -15,7 +15,7 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
     public abstract class UnitOfWork : IUnitOfWork
     {
         protected readonly SqlConnection Connection;
-        protected readonly SqlTransaction Transaction;
+        protected SqlTransaction Transaction;
         protected bool IsCommited;
         protected bool IsDisposed;
         protected IDictionary<Type, object> Repositories = new Dictionary<Type, object>();
@@ -306,6 +306,14 @@ namespace S3K.RealTimeOnline.DataAccess.UnitOfWorks
             int outPutValue = (int)command.Parameters[outputParameterName].Value;
 
             return new Tuple<int, int>(returnValue, outPutValue);
+        }
+
+        public void BeginTransaction()
+        {
+            if (Transaction == null)
+            {
+                Transaction = Connection.BeginTransaction();
+            }
         }
 
         private T ExecuteCommand<T>(SqlCommand command)

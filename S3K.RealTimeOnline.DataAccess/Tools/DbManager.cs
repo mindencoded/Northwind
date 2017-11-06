@@ -44,9 +44,7 @@ namespace S3K.RealTimeOnline.DataAccess.Tools
         public static SqlConnection GetSqlConnection(string connectionName)
         {
             var connectionString = GetConnectionString(connectionName);
-            var connection = new SqlConnection(connectionString);
-            connection.Open();
-            return connection;
+            return new SqlConnection(connectionString);
         }
     }
 }
