@@ -2,7 +2,7 @@
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
-using Microsoft.Practices.Unity;
+using Unity;
 
 namespace S3K.RealTimeOnline.Service
 {
@@ -26,18 +26,11 @@ namespace S3K.RealTimeOnline.Service
 
         public void ReleaseInstance(InstanceContext instanceContext, object instance)
         {
-            Container.Teardown(instance);
+            throw new NotImplementedException();
         }
 
-        protected Type ServiceType
-        {
-            get;
-            set;
-        }
+        protected Type ServiceType { get; set; }
 
-        private IUnityContainer Container
-        {
-            get;
-        }
+        private IUnityContainer Container { get; }
     }
 }

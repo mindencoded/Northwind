@@ -1,5 +1,4 @@
-﻿
-using Microsoft.Practices.Unity;
+﻿using Unity;
 
 namespace S3K.RealTimeOnline.Commons
 {

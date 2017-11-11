@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using S3K.RealTimeOnline.Commons;
+using S3K.RealTimeOnline.GenericDomain;
 
 namespace S3K.RealTimeOnline.SecurityDomain
 {

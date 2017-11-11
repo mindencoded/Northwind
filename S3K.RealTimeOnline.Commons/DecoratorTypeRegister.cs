@@ -51,7 +51,8 @@ namespace S3K.RealTimeOnline.Commons
             if (_decoratedTypes.TryGetValue(typeToDecorate, out registeredDecoratorTypes))
                 result.AddRange(registeredDecoratorTypes);
             if (typeToDecorate.IsGenericType)
-                if (_decoratedTypes.TryGetValue(typeToDecorate.GetGenericTypeDefinition(), out registeredDecoratorTypes))
+                if (_decoratedTypes.TryGetValue(typeToDecorate.GetGenericTypeDefinition(),
+                    out registeredDecoratorTypes))
                     result.AddRange(registeredDecoratorTypes);
             return result;
         }
@@ -64,7 +65,8 @@ namespace S3K.RealTimeOnline.Commons
         public bool HasDecorators(Type decoratorType)
         {
             return _decoratedTypes.ContainsKey(decoratorType) ||
-                   (decoratorType.IsGenericType && _decoratedTypes.ContainsKey(decoratorType.GetGenericTypeDefinition()));
+                   (decoratorType.IsGenericType &&
+                    _decoratedTypes.ContainsKey(decoratorType.GetGenericTypeDefinition()));
         }
 
         internal void CopyFrom(DecoratorTypeRegister register)

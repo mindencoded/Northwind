@@ -40,9 +40,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj">
-      <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>S3K.RealTimeOnline.Commons</Name>
+    <ProjectReference Include="..\S3K.RealTimeOnline.GenericDomain\S3K.RealTimeOnline.GenericDomain.csproj">
+      <Project>{2f3d9931-be6d-43ce-8a03-73eebfdd877e}</Project>
+      <Name>S3K.RealTimeOnline.GenericDomain</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

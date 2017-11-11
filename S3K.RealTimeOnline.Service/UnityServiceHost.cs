@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ServiceModel;
-using Microsoft.Practices.Unity;
+using Unity;
 
 namespace S3K.RealTimeOnline.Service
 {
@@ -22,10 +22,6 @@ namespace S3K.RealTimeOnline.Service
             base.OnOpening();
         }
 
-        protected IUnityContainer Container
-        {
-            get;
-            set;
-        }
+        protected IUnityContainer Container { get; set; }
     }
 }

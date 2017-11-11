@@ -2,12 +2,19 @@
 {
     public enum ComparisonOperator
     {
-        EqualTo, NotEqualTo, LessThan, LessThanOrEqualTo, GreaterThan, GreaterThanOrEqualTo, Like, Contains, Between
+        EqualTo,
+        NotEqualTo,
+        LessThan,
+        LessThanOrEqualTo,
+        GreaterThan,
+        GreaterThanOrEqualTo,
+        Like,
+        Contains,
+        Between
     }
 
     public static class ComparisonOperatorExtension
     {
-
         public static string Value(this ComparisonOperator comparisonOperator)
         {
             switch (comparisonOperator)

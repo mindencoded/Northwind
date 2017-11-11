@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.ObjectBuilder2;
-using Microsoft.Practices.Unity;
+using Unity.Builder;
+using Unity.Builder.Strategy;
+using Unity.Interception.Utilities;
+using Unity.Resolution;
 
 namespace S3K.RealTimeOnline.Commons
 {
     public class DecoratingBuildStrategy : BuilderStrategy
     {
         readonly DecoratorTypeRegister _register;
+
         internal DecoratingBuildStrategy(DecoratorTypeRegister register)
         {
             _register = register;
@@ -44,6 +47,5 @@ namespace S3K.RealTimeOnline.Commons
                 context.Existing = context.NewBuildUp(new NamedTypeBuildKey(actualTypeToBuild));
             });
         }
-
     }
 }

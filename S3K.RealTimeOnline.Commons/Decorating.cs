@@ -1,6 +1,8 @@
 ﻿using System;
-using Microsoft.Practices.Unity;
-using Microsoft.Practices.Unity.ObjectBuilder;
+using Unity;
+using Unity.Builder;
+using Unity.Events;
+using Unity.Extension;
 
 namespace S3K.RealTimeOnline.Commons
 {
@@ -9,7 +11,8 @@ namespace S3K.RealTimeOnline.Commons
         DecoratorTypeRegister _register;
 
         public Decorating()
-        { }
+        {
+        }
 
         internal Decorating(IUnityContainer container, DecoratorTypeRegister register)
         {

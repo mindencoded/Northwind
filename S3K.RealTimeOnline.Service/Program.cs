@@ -4,18 +4,21 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using Microsoft.Practices.Unity;
+using S3K.RealTimeOnline.BusinessDataAccess.Commands.MoveCustomer;
+using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.BusinessDomain;
-using S3K.RealTimeOnline.DataAccess.Commands;
-using S3K.RealTimeOnline.DataAccess.Commands.MoveCustomer;
-using S3K.RealTimeOnline.DataAccess.Decorators;
-using S3K.RealTimeOnline.DataAccess.Queries;
-using S3K.RealTimeOnline.DataAccess.Queries.FindUsersBySearchText;
-using S3K.RealTimeOnline.DataAccess.Repositories;
-using S3K.RealTimeOnline.DataAccess.Tools;
-using S3K.RealTimeOnline.DataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.GenericDataAccess.Commands;
+using S3K.RealTimeOnline.GenericDataAccess.Decorators;
+using S3K.RealTimeOnline.GenericDataAccess.Queries;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
+using S3K.RealTimeOnline.SecurityDataAccess.Queries.FindUsersBySearchText;
+using S3K.RealTimeOnline.SecurityDataAccess.Repositories;
+using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.SecurityDomain;
 using Serilog;
+using Unity;
+using Unity.Injection;
+using Unity.Lifetime;
 
 namespace S3K.RealTimeOnline.Service
 {
@@ -44,19 +47,21 @@ namespace S3K.RealTimeOnline.Service
             //SelectProductByName(Container);
 
             FindUsersBySearchTextQuery parameter =
-                new FindUsersBySearchTextQuery { SearchText = "MIKE", IncludeInactiveUsers = false };
+                new FindUsersBySearchTextQuery {SearchText = "MIKE", IncludeInactiveUsers = false};
             IQueryProcessor queryProcessor = new QueryProcessor(Container);
             User[] users = queryProcessor.Process<IQuery<User[]>, User[]>(parameter);
 
             var commandHandler = Container.Resolve<ICommandHandler<MoveCustomerCommand>>();
 
-            var transactionCommandHandler = Container.Resolve<ICommandHandler<MoveCustomerCommand>>("TransactionCommand");
+            var transactionCommandHandler =
+                Container.Resolve<ICommandHandler<MoveCustomerCommand>>("TransactionCommand");
 
             var deadlockRetryHandler = Container.Resolve<ICommandHandler<MoveCustomerCommand>>("DeadlockRetryCommand");
 
             var queryHandler = Container.Resolve<IQueryHandler<FindUsersBySearchTextQuery, User[]>>();
 
-            var validationQueryHandler = Container.Resolve<IQueryHandler<FindUsersBySearchTextQuery, User[]>>("ValidationQuery");
+            var validationQueryHandler =
+                Container.Resolve<IQueryHandler<FindUsersBySearchTextQuery, User[]>>("ValidationQuery");
 
 
             //Print out the ID of the executing thread

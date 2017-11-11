@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.ObjectBuilder2;
-using Microsoft.Practices.Unity;
+using Unity.Builder;
+using Unity.Builder.Strategy;
+using Unity.Interception.Utilities;
+using Unity.Resolution;
 
 namespace S3K.RealTimeOnline.Commons
 {
     public class DecoratorBuildStrategy : BuilderStrategy
     {
-      
         private readonly Dictionary<Type, List<Type>> _typeStacks;
 
         public DecoratorBuildStrategy(Dictionary<Type, List<Type>> typeStacks)

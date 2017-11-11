@@ -4,7 +4,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
-using Microsoft.Practices.Unity;
+using Unity;
 
 namespace S3K.RealTimeOnline.Service
 {
@@ -43,9 +43,9 @@ namespace S3K.RealTimeOnline.Service
 
                 foreach (EndpointDispatcher ed in cd.Endpoints)
                 {
-                    ed.DispatchRuntime.InstanceProvider =  new UnityInstanceProvider(Container, serviceDescription.ServiceType);
+                    ed.DispatchRuntime.InstanceProvider =
+                        new UnityInstanceProvider(Container, serviceDescription.ServiceType);
                 }
-
             }
         }
 
