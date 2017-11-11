@@ -1,4 +1,4 @@
-﻿namespace S3K.RealTimeOnline.Services.InsertUser
+﻿namespace S3K.RealTimeOnline.Transactions.InsertUser
 {
     public class InsertUserCommand
     {

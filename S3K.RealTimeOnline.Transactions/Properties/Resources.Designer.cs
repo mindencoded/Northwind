@@ -8,10 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace S3K.RealTimeOnline.Services.Properties {
-    using System;
-    
-    
+namespace S3K.RealTimeOnline.Transactions.Properties {
     /// <summary>
     ///   Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
     /// </summary>

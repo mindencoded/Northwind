@@ -4,7 +4,7 @@ using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDomain;
 
-namespace S3K.RealTimeOnline.Services.InsertUser
+namespace S3K.RealTimeOnline.Transactions.InsertUser
 {
     public class InsertUserCommandHandler : ICommandHandler<InsertUserCommand>
     {

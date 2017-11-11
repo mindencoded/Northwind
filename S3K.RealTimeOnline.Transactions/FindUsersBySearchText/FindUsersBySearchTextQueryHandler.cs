@@ -5,7 +5,7 @@ using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDomain;
 
-namespace S3K.RealTimeOnline.Services.FindUsersBySearchText
+namespace S3K.RealTimeOnline.Transactions.FindUsersBySearchText
 {
     public class FindUsersBySearchTextQueryHandler : IQueryHandler<FindUsersBySearchTextQuery, User[]>
     {
