@@ -1,8 +1,7 @@
 ﻿using System.Data.SqlClient;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
-using S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.SecurityDomain;
-using ISecurityUnitOfWork = S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks.ISecurityUnitOfWork;
+using ISecurityUnitOfWork = S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork.ISecurityUnitOfWork;
 
 namespace S3K.RealTimeOnline.SecurityDataAccess.Repositories
 {

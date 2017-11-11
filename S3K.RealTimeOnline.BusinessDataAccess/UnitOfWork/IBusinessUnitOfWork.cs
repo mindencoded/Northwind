@@ -1,7 +1,7 @@
 ﻿using S3K.RealTimeOnline.BusinessDataAccess.Repositories;
-using S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 
-namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
 {
     public interface IBusinessUnitOfWork : IUnitOfWork
     {

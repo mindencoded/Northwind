@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 
-namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 {
     public interface IUnitOfWork : IDisposable
     {

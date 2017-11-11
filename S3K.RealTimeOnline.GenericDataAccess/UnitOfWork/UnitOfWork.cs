@@ -10,7 +10,7 @@ using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using Serilog;
 
-namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 {
     public abstract class UnitOfWork : IUnitOfWork
     {

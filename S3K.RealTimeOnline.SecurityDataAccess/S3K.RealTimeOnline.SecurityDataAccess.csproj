@@ -70,8 +70,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
-    <Compile Include="UnitOfWorks\ISecurityUnitOfWork.cs" />
-    <Compile Include="UnitOfWorks\SecurityUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\ISecurityUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\SecurityUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

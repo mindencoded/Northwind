@@ -1,10 +1,9 @@
 ﻿using System.Data.SqlClient;
-using S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.SecurityDataAccess.Repositories;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork
 {
-    public class SecurityUnitOfWork : UnitOfWork, ISecurityUnitOfWork
+    public class SecurityUnitOfWork : GenericDataAccess.UnitOfWork.UnitOfWork, ISecurityUnitOfWork
     {
         public SecurityUnitOfWork(SqlConnection connection) : base(connection)
         {

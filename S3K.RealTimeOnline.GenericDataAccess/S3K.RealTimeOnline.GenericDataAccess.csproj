@@ -91,8 +91,8 @@
     <Compile Include="Tools\DbManager.cs" />
     <Compile Include="Tools\SqlDependencyEx.cs" />
     <Compile Include="Tools\TypeConvertor.cs" />
-    <Compile Include="UnitOfWorks\IUnitOfWork.cs" />
-    <Compile Include="UnitOfWorks\UnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets.txt" />

@@ -1,5 +1,5 @@
 ﻿using System.Data.SqlClient;
-using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.BusinessDomain;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 

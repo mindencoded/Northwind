@@ -7,7 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
-using S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks;
+using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.GenericDomain;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Repositories

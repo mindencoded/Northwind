@@ -1,7 +1,7 @@
-﻿using S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks;
+﻿using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDataAccess.Repositories;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork
 {
     public interface ISecurityUnitOfWork : IUnitOfWork
     {

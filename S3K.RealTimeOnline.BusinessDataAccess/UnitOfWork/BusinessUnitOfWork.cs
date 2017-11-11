@@ -1,10 +1,9 @@
 ﻿using System.Data.SqlClient;
 using S3K.RealTimeOnline.BusinessDataAccess.Repositories;
-using S3K.RealTimeOnline.GenericDataAccess.UnitOfWorks;
 
-namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWorks
+namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
 {
-    public class BusinessUnitOfWork : UnitOfWork, IBusinessUnitOfWork
+    public class BusinessUnitOfWork : GenericDataAccess.UnitOfWork.UnitOfWork, IBusinessUnitOfWork
     {
         public BusinessUnitOfWork(SqlConnection connection) : base(connection)
         {
