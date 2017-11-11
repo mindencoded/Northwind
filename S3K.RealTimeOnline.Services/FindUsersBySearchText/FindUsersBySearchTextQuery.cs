@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using S3K.RealTimeOnline.GenericDataAccess.Queries;
 using S3K.RealTimeOnline.SecurityDomain;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.Queries.FindUsersBySearchText
+namespace S3K.RealTimeOnline.Services.FindUsersBySearchText
 {
     public class FindUsersBySearchTextQuery : IQuery<User[]>
     {

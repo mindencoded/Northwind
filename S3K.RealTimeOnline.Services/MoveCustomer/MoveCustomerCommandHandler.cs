@@ -1,7 +1,7 @@
 ﻿using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.GenericDataAccess.Commands;
 
-namespace S3K.RealTimeOnline.BusinessDataAccess.Commands.MoveCustomer
+namespace S3K.RealTimeOnline.Services.MoveCustomer
 {
     public class MoveCustomerCommandHandler : ICommandHandler<MoveCustomerCommand>
     {

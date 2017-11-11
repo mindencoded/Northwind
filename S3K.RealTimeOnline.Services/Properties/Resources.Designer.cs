@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.Properties {
+namespace S3K.RealTimeOnline.Services.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("S3K.RealTimeOnline.SecurityDataAccess.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("S3K.RealTimeOnline.Services.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

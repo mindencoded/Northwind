@@ -1,6 +1,6 @@
 ﻿using S3K.RealTimeOnline.GenericDomain;
 
-namespace S3K.RealTimeOnline.BusinessDataAccess.Commands.MoveCustomer
+namespace S3K.RealTimeOnline.Services.MoveCustomer
 {
     public class MoveCustomerCommand
     {

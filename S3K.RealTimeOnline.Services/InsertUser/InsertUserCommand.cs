@@ -1,4 +1,4 @@
-﻿namespace S3K.RealTimeOnline.SecurityDataAccess.Commands.InsertUser
+﻿namespace S3K.RealTimeOnline.Services.InsertUser
 {
     public class InsertUserCommand
     {

@@ -4,23 +4,23 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Threading;
-using S3K.RealTimeOnline.BusinessDataAccess.Commands.MoveCustomer;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.BusinessDomain;
 using S3K.RealTimeOnline.GenericDataAccess.Commands;
 using S3K.RealTimeOnline.GenericDataAccess.Decorators;
 using S3K.RealTimeOnline.GenericDataAccess.Queries;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
-using S3K.RealTimeOnline.SecurityDataAccess.Queries.FindUsersBySearchText;
 using S3K.RealTimeOnline.SecurityDataAccess.Repositories;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.SecurityDomain;
+using S3K.RealTimeOnline.Services.FindUsersBySearchText;
+using S3K.RealTimeOnline.Services.MoveCustomer;
 using Serilog;
 using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
 
-namespace S3K.RealTimeOnline.Service
+namespace S3K.RealTimeOnline.ConsoleService
 {
     internal class Program
     {

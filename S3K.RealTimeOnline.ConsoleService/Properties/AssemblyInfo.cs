@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Cambie estos valores de atributo para modificar la información
 // asociada con un ensamblado.
 
-[assembly: AssemblyTitle("S3K.RealTimeServiceOnline.WindowsService")]
+[assembly: AssemblyTitle("S3K.RealTimeServiceOnline.ConsoleService")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("S3K.RealTimeServiceOnline.WindowsService")]
+[assembly: AssemblyProduct("S3K.RealTimeServiceOnline.ConsoleService")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

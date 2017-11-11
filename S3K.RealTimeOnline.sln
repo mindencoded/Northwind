@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Commons"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.GenericDataAccess", "S3K.RealTimeOnline.GenericDataAccess\S3K.RealTimeOnline.GenericDataAccess.csproj", "{6515754E-5242-49EB-B81E-6D29B24E60A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Service", "S3K.RealTimeOnline.Service\S3K.RealTimeOnline.Service.csproj", "{DE3F8993-D5DB-4F11-8DD4-65B16B6A7439}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.ConsoleService", "S3K.RealTimeOnline.ConsoleService\S3K.RealTimeOnline.ConsoleService.csproj", "{DE3F8993-D5DB-4F11-8DD4-65B16B6A7439}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Core", "2. Core", "{F9BA9756-22AD-430A-AB3C-09E706D44AFD}"
 EndProject
@@ -42,6 +42,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.BusinessDataAccess", "S3K.RealTimeOnline.BusinessDataAccess\S3K.RealTimeOnline.BusinessDataAccess.csproj", "{AFD08370-3843-4A08-B6F0-09748137AD79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.SecurityDataAccess", "S3K.RealTimeOnline.SecurityDataAccess\S3K.RealTimeOnline.SecurityDataAccess.csproj", "{B10E408A-8049-4689-8CC2-46C4D5D390F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Services", "S3K.RealTimeOnline.Services\S3K.RealTimeOnline.Services.csproj", "{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,10 @@ Global
 		{B10E408A-8049-4689-8CC2-46C4D5D390F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B10E408A-8049-4689-8CC2-46C4D5D390F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B10E408A-8049-4689-8CC2-46C4D5D390F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -113,6 +119,7 @@ Global
 		{2F3D9931-BE6D-43CE-8A03-73EEBFDD877E} = {200B31B4-4787-41B0-91F7-F4EBBE2FEC2F}
 		{AFD08370-3843-4A08-B6F0-09748137AD79} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
 		{B10E408A-8049-4689-8CC2-46C4D5D390F2} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
+		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081} = {F9BA9756-22AD-430A-AB3C-09E706D44AFD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DECA91E6-677C-458B-9E96-C0702324AC5E}

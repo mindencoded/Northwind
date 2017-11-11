@@ -2,10 +2,10 @@
 using System.Linq;
 using S3K.RealTimeOnline.GenericDataAccess.Queries;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
+using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.SecurityDomain;
-using ISecurityUnitOfWork = S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks.ISecurityUnitOfWork;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.Queries.FindUsersBySearchText
+namespace S3K.RealTimeOnline.Services.FindUsersBySearchText
 {
     public class FindUsersBySearchTextQueryHandler : IQueryHandler<FindUsersBySearchTextQuery, User[]>
     {

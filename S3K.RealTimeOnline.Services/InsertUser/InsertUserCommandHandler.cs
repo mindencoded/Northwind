@@ -1,10 +1,10 @@
 ﻿using System;
 using S3K.RealTimeOnline.GenericDataAccess.Commands;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
+using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks;
 using S3K.RealTimeOnline.SecurityDomain;
-using ISecurityUnitOfWork = S3K.RealTimeOnline.SecurityDataAccess.UnitOfWorks.ISecurityUnitOfWork;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.Commands.InsertUser
+namespace S3K.RealTimeOnline.Services.InsertUser
 {
     public class InsertUserCommandHandler : ICommandHandler<InsertUserCommand>
     {
