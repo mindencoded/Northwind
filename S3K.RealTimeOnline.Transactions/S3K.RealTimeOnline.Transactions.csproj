@@ -68,8 +68,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomerCommandHandlers\CustomerDeleteCommandHandler.cs" />
+    <Compile Include="FindCustomers\FindCustomersQueryHandler.cs" />
     <Compile Include="FindUsersBySearchText\FindUsersBySearchTextQuery.cs" />
     <Compile Include="FindUsersBySearchText\FindUsersBySearchTextQueryHandler.cs" />
+    <Compile Include="CustomerCommandHandlers\CustomerInsertCommandHandler.cs" />
     <Compile Include="InsertUser\InsertUserCommand.cs" />
     <Compile Include="InsertUser\InsertUserCommandHandler.cs" />
     <Compile Include="MoveCustomer\MoveCustomerCommand.cs" />
@@ -80,6 +83,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="CustomerCommandHandlers\CustomerUpdateCommandHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FindUsersBySearchText\FindUsersBySearchText.sql" />
@@ -127,5 +131,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

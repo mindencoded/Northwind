@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using S3K.RealTimeOnline.Commons;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.GenericDomain;
@@ -106,6 +107,18 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public IEnumerable<T> Select(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(null, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    return reader.ConvertToList<T>();
+                }
+            }
+        }
+
         public virtual IEnumerable<dynamic> Select(IList<string> columns, object conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
@@ -121,6 +134,18 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
         public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    return reader.ConvertToDynamicList();
+                }
+            }
+        }
+
+        public IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
                 CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
@@ -711,6 +736,248 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnQuery +
                         " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
                 //query = @"SELECT " + columnsStr + " FROM (" + query + ") AS PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
+            }
+
+            if (!string.IsNullOrWhiteSpace(orderBy))
+            {
+                query += " ORDER BY " + orderBy;
+            }
+
+            return query;
+        }
+
+        private string CreateSelectStatement(
+            IList<string> columns,
+            IList<ParameterBuilder> conditions,
+            out IList<SqlParameter> sqlParameterList,
+            string orderBy = null,
+            int? page = null, int?
+                pageSize = null)
+        {
+            string columnQuery;
+
+            if (columns != null)
+            {
+                if (page != null && pageSize != null)
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>(columns, true, true);
+                }
+                else
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>(columns, true);
+                }
+            }
+            else
+            {
+                if (page != null && pageSize != null)
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>(true);
+                }
+                else
+                {
+                    columnQuery = EntityUtils.JoinColumns<T>();
+                }
+            }
+
+            sqlParameterList = new List<SqlParameter>();
+            IList<string> conditionList = new List<string>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+
+                foreach (ParameterBuilder condition in conditions)
+                {
+                    if (condition.ParameterName == null) continue;
+                    object value = condition.Value;
+                    if (value == null && IgnoreNulls) continue;
+                    string columnName = null;
+                    string propertyName = condition.ParameterName.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
+                    string parameterName = '@' + propertyName;
+                    if (typeProperties.Select(x => x.Name).Contains(propertyName))
+                    {
+                        PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
+                        ColumnAttribute columnAttribute =
+                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    }
+                    else
+                    {
+                        if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
+                        {
+                            columnName = propertyName;
+                        }
+                    }
+
+                    if (columnName == null)
+                    {
+                        continue;
+                    }
+
+                    IDictionary<string, object> parameters = new Dictionary<string, object>();
+                   
+                        if (condition.Operator == Comparison.Between)
+                        {
+                            if (value != null)
+                            {
+                                bool typeValid = false;
+                                if (value.GetType().IsGenericType &&
+                                    value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                                {
+                                    foreach (FieldInfo field in value.GetType().GetFields())
+                                    {
+                                        parameters.Add(parameterName + "1", field.GetValue(value));
+                                        parameters.Add(parameterName + "2", field.GetValue(value));
+                                    }
+                                    typeValid = true;
+                                }
+
+                                if (value.GetType().IsArray)
+                                {
+                                    object[] items = value as object[];
+                                    if (items.Length >= 2)
+                                    {
+                                        parameters.Add(parameterName + "1", items[0]);
+                                        parameters.Add(parameterName + "2", items[1]);
+                                    }
+                                    typeValid = true;
+                                }
+
+                                if (typeValid)
+                                {
+                                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                      EntityUtils.GetTableName<T>() +
+                                                      "].[" + columnName + "] BETWEEN  " + parameterName + "1" +
+                                                      " AND " +
+                                                      parameterName + "2");
+                                }
+                            }
+
+                        }
+                        else if (condition.Operator == Comparison.Contains)
+                    {
+                        if (value != null)
+                        {
+                            if (value.GetType().IsArray)
+                            {
+                                object[] items = value as object[];
+
+                                for (int i = 0; i < items.Length; i++)
+                                {
+                                    parameters.Add(parameterName + i, items[i]);
+                                }
+                                conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                  EntityUtils.GetTableName<T>() +
+                                                  "].[" + columnName + "] IN (" +
+                                                  string.Join(", ", parameters.Keys) + ")");
+                            }
+                            else
+                            {
+                                parameters.Add(parameterName, value);
+                                conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                  EntityUtils.GetTableName<T>() +
+                                                  "].[" + columnName + "] IN (" +
+                                                  string.Join(", ", parameterName) + ")");
+                            }
+                        }
+                    }
+                    else if (condition.Operator == Comparison.Like)
+                    {
+                        if (value != null)
+                        {
+                            if (value.GetType().IsArray &&
+                                typeof(string).IsAssignableFrom(value.GetType().GetElementType()))
+                            {
+                                object[] items = value as object[];
+                                IList<string> subConditionList = new List<string>();
+                                for (int i = 0; i < items.Length; i++)
+                                {
+                                    subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                         EntityUtils.GetTableName<T>() +
+                                                         "].[" + columnName + "] LIKE '%' + " +
+                                                         parameterName + i +
+                                                         " + '%'");
+                                    parameters.Add(parameterName + i, items[i]);
+                                }
+                                conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
+                            }
+                            else
+                            {
+                                if (value is string)
+                                {
+                                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                      EntityUtils.GetTableName<T>() +
+                                                      "].[" + columnName + "] LIKE '%' + " + parameterName +
+                                                      " + '%'");
+                                    parameters.Add(parameterName, value);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (value != null || value == null &&
+                            (condition.Operator == Comparison.EqualTo || condition.Operator == Comparison.NotEqualTo))
+                        {
+                            conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                              EntityUtils.GetTableName<T>() +
+                                              "].[" + columnName + "] " + condition.Operator.Value() + " " +
+                                              parameterName);
+                            parameters.Add(parameterName, value);
+                        }
+                    }
+
+                    foreach (KeyValuePair<string, object> parameter in parameters)
+                    {
+                        SqlParameter sqlParameter = new SqlParameter
+                        {
+                            ParameterName = parameter.Key,
+                            SourceColumn = columnName,                     
+                            Value = parameter.Value ?? DBNull.Value
+                        };
+
+                        if (value != null)
+                        {
+                            sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        }
+
+                        sqlParameterList.Add(sqlParameter);
+                    }
+                }
+            }
+
+
+            string query = @"SELECT " + columnQuery + " FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+            {
+                query += " WHERE " + string.Join(" AND ", conditionList);
+            }
+
+            if (page != null && pageSize != null)
+            {
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@Page",
+                    SqlDbType = SqlDbType.Int,
+                    Value = page
+                });
+
+                sqlParameterList.Add(new SqlParameter
+                {
+                    ParameterName = "@PageSize",
+                    SqlDbType = SqlDbType.Int,
+                    Value = pageSize
+                });
+
+                columnQuery = columns != null
+                    ? EntityUtils.SimpleJoinColumns<T>(columns, true)
+                    : EntityUtils.SimpleJoinColumns<T>();
+
+                query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnQuery +
+                        " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";
             }
 
             if (!string.IsNullOrWhiteSpace(orderBy))
@@ -1389,6 +1656,19 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         }
 
         private SqlCommand CreateCommandSelect(IList<string> columns, IDictionary<string, object> conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            string query = CreateSelectStatement(columns, conditions, out IList<SqlParameter> sqlParameterList, orderBy,
+                page, pageSize);
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
+            return command;
+        }
+
+        private SqlCommand CreateCommandSelect(IList<string> columns, IList<ParameterBuilder> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
             string query = CreateSelectStatement(columns, conditions, out IList<SqlParameter> sqlParameterList, orderBy,

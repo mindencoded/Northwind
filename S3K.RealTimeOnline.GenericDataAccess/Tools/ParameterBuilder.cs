@@ -2,38 +2,35 @@
 using System.Collections.Generic;
 using S3K.RealTimeOnline.Commons;
 
-namespace S3K.RealTimeOnline.DataTransferObjects
+namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {
-    public class ParameterDto
+    public class ParameterBuilder
     {
+        public ParameterBuilder()
+        {
+            Operator = Comparison.EqualTo;
+        }
+
         public string ParameterName { get; set; }
 
         public string SourceColumn { get; set; }
 
-        public ComparisonOperator Operator { get; set; }
+        public Comparison Operator { get; set; }
 
         public object Value { get; set; }
 
         public override string ToString()
         {
-            string parameterName;
-            if (!ParameterName.StartsWith("@"))
+            string parameterName = !ParameterName.StartsWith("@") ? '@' + ParameterName : ParameterName;
+          
+            if (Operator == Comparison.Between)
             {
-                parameterName = '@' + ParameterName;
-            }
-            else
-            {
-                parameterName = ParameterName;
-            }
-
-            if (Operator == ComparisonOperator.Between)
-            {
-                return SourceColumn + " " + ComparisonOperator.Between.Value() + " " + parameterName + "1" + " AND " +
+                return "[" + SourceColumn + "]" + " " + Comparison.Between.Value() + " " + parameterName + "1" + " AND " +
                        parameterName + "2";
             }
             IList<string> parameters = new List<string>();
             Type valueType = Value != null ? Value.GetType() : typeof(string);
-            if (Operator == ComparisonOperator.Contains)
+            if (Operator == Comparison.Contains)
             {
                 if (valueType.IsArray)
                 {
@@ -44,14 +41,14 @@ namespace S3K.RealTimeOnline.DataTransferObjects
                         {
                             parameters.Add(parameterName + i);
                         }
-                        return SourceColumn + " " + Operator.Value() + " (" + string.Join(", ", parameters) + ")";
+                        return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" + string.Join(", ", parameters) + ")";
                     }
                 }
 
-                return SourceColumn + " " + Operator.Value() + " (" + parameterName + ")";
+                return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" + parameterName + ")";
             }
 
-            if (Operator == ComparisonOperator.Like)
+            if (Operator == Comparison.Like)
             {
                 if (valueType.IsArray)
                 {
@@ -60,16 +57,16 @@ namespace S3K.RealTimeOnline.DataTransferObjects
                     {
                         for (int i = 0; i < values.Length; i++)
                         {
-                            parameters.Add(SourceColumn + " " + Operator.Value() + " '%' + " + parameterName + i +
+                            parameters.Add("[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " + parameterName + i +
                                            " + '%'");
                         }
                         return "(" + string.Join(" OR ", parameters) + ")";
                     }
                 }
-                return SourceColumn + " " + Operator.Value() + " '%' + " + parameterName + " + '%'";
+                return "[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " + parameterName + " + '%'";
             }
 
-            return SourceColumn + " " + Operator.Value() + " " + parameterName;
+            return "[" + SourceColumn + "]" + " " + Operator.Value() + " " + parameterName;
         }
     }
 }

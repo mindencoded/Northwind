@@ -1,6 +1,6 @@
 ﻿using Unity;
 
-namespace S3K.RealTimeOnline.GenericDataAccess.Queries
+namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {
     public sealed class QueryProcessor : IQueryProcessor
     {

@@ -59,11 +59,17 @@
     <Folder Include="Properties" />
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
+    <Folder Include="dbo\Constraints" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\PRODUCT.sql" />
+    <Build Include="dbo\Tables\CUSTOMER.sql" />
+    <Build Include="dbo\Constraints\PK_CUSTOMER.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="S3K.RealTimeOnline.BusinessDb.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="S3K.RealTimeOnline.BusinessDb.publish.xml" />
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
-using S3K.RealTimeOnline.GenericDataAccess.Commands;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDomain;
 
@@ -28,9 +28,9 @@ namespace S3K.RealTimeOnline.Transactions.InsertUser
 
             using (_unitOfWork)
             {
+                _unitOfWork.Open();
                 IRepository<User> repository = _unitOfWork.Repository<User>();
                 repository.Insert(user);
-                _unitOfWork.Commit();
             }
         }
     }

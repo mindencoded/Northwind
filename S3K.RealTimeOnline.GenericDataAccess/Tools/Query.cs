@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace S3K.RealTimeOnline.GenericDataAccess.Queries
+namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {
     public class Query<TResult> : IQuery<TResult>
     {

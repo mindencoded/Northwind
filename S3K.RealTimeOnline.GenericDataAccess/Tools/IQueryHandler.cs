@@ -1,4 +1,4 @@
-﻿namespace S3K.RealTimeOnline.GenericDataAccess.Queries
+﻿namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {
     public interface IQueryHandler<TQuery, TResult> where TQuery : IQuery<TResult>
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 {
@@ -21,11 +22,17 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         IEnumerable<T> Select(IDictionary<string, object> conditions, string orderBy = null, int? page = null,
             int? pageSize = null);
 
+        IEnumerable<T> Select(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
+            int? pageSize = null);
+
         IEnumerable<dynamic> Select(IList<string> columns, object conditions, string orderBy = null, int? page = null,
             int? pageSize = null);
 
         IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null);
+
+        IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
+            int? pageSize = null);
 
         T SelectById(object id);
 

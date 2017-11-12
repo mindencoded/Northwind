@@ -1,4 +1,4 @@
-﻿namespace S3K.RealTimeOnline.GenericDataAccess.Commands
+﻿namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {
     public interface ICommandHandler<TCommand>
     {

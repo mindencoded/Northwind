@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.ConsoleS
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Core", "3. Core", "{F9BA9756-22AD-430A-AB3C-09E706D44AFD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "7. Utils", "7. Utils", "{173C9A31-8A98-42BD-BA82-D108DE004BA6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. Utils", "6. Utils", "{173C9A31-8A98-42BD-BA82-D108DE004BA6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA904C89-8435-491E-8224-91D3AF09AC76}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. DataAccess", "4. DataAcc
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "S3K.RealTimeOnline.SecurityDb", "S3K.RealTimeOnline.SecurityDb\S3K.RealTimeOnline.SecurityDb.sqlproj", "{6D21CD73-808B-42A2-A4E1-3583AB6BBF23}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. DataBases", "6. DataBases", "{1FBABEE5-EEA4-46CC-888A-38E834E4B042}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "7. DataBases", "7. DataBases", "{1FBABEE5-EEA4-46CC-888A-38E834E4B042}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "S3K.RealTimeOnline.BusinessDb", "S3K.RealTimeOnline.BusinessDb\S3K.RealTimeOnline.BusinessDb.sqlproj", "{94CBFB90-729D-45CC-8A09-52E5B06D4EC8}"
 EndProject

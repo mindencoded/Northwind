@@ -182,8 +182,7 @@ namespace S3K.RealTimeOnline.GenericDomain
 
             if (temp.Length > 0)
             {
-                var tableAttribute = temp[0] as TableAttribute;
-                if (tableAttribute != null)
+                if (temp[0] is TableAttribute tableAttribute)
                     return tableAttribute.Name;
             }
 
@@ -199,75 +198,6 @@ namespace S3K.RealTimeOnline.GenericDomain
 
             TextInfo info = CultureInfo.CurrentCulture.TextInfo;
             return info.ToTitleCase(value.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
-        }
-
-        public static string CreateOrderByString<T>(IEnumerable<string> orderBy) where T : class
-        {
-            if (orderBy == null)
-            {
-                return null;
-            }
-            PropertyInfo[] properties = typeof(T).GetProperties();
-            string[] propertyNames = properties.Select(x => x.Name).ToArray();
-            IList<string> columnAttributeList = properties
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
-            IList<string> columnNames = new List<string>();
-            foreach (string orderItem in orderBy)
-            {
-                string propertyName;
-                string direction = null;
-                string columnName = null;
-                if (orderItem.Split(' ').Length > 1)
-                {
-                    propertyName = orderItem.Split(' ')[0];
-                    string ascOrDesc = orderItem.Split(' ')[1].ToUpper();
-                    if (ascOrDesc.Equals("DESC") || ascOrDesc.Equals("ASC"))
-                    {
-                        direction = ascOrDesc;
-                    }
-                }
-                else
-                {
-                    propertyName = orderItem;
-                }
-
-                if (propertyNames.Contains(propertyName))
-                {
-                    PropertyInfo propertyInfo = typeof(T).GetProperty(propertyName);
-                    if (propertyInfo != null)
-                    {
-                        ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false)
-                            .OfType<ColumnAttribute>()
-                            .FirstOrDefault();
-                        if (columnAttribute != null)
-                        {
-                            columnName = "[" + columnAttribute.Name + "]";
-                        }
-                        else
-                        {
-                            columnName = "[" + propertyName + "]";
-                        }
-                    }
-                }
-                else
-                {
-                    if (columnAttributeList.Contains(propertyName))
-                    {
-                        columnName = propertyName;
-                    }
-                }
-
-                if (columnName != null)
-                {
-                    if (direction != null)
-                    {
-                        columnName += ' ' + direction;
-                    }
-
-                    columnNames.Add(columnName);
-                }
-            }
-            return string.Join(", ", columnNames);
         }
 
         public static string GetColumnName<T>(string propertyName, bool extendedColumnName = false) where T : class

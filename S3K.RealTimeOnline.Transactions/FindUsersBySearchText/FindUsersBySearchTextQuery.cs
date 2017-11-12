@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using S3K.RealTimeOnline.GenericDataAccess.Queries;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDomain;
 
 namespace S3K.RealTimeOnline.Transactions.FindUsersBySearchText

@@ -72,16 +72,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Tools\ICommandHandler.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\TransactionCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationQueryHandlerDecorator.cs" />
-    <Compile Include="Queries\IQuery.cs" />
-    <Compile Include="Queries\IQueryHandler.cs" />
-    <Compile Include="Queries\IQueryProcessor.cs" />
-    <Compile Include="Queries\Query.cs" />
-    <Compile Include="Queries\QueryProcessor.cs" />
+    <Compile Include="Tools\IQuery.cs" />
+    <Compile Include="Tools\IQueryHandler.cs" />
+    <Compile Include="Tools\IQueryProcessor.cs" />
+    <Compile Include="Tools\ParameterBuilder.cs" />
+    <Compile Include="Tools\Query.cs" />
+    <Compile Include="Tools\QueryBuilder.cs" />
+    <Compile Include="Tools\QueryProcessor.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Tools\DbInformation.cs" />
     <Compile Include="Tools\SqlNotificationRequestRegister.cs" />
@@ -101,9 +103,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Notifiers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>

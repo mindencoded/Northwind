@@ -1,5 +1,5 @@
 ﻿using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
-using S3K.RealTimeOnline.GenericDataAccess.Commands;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.Transactions.MoveCustomer
 {

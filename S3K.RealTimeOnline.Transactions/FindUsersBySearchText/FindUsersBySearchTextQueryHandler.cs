@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using S3K.RealTimeOnline.GenericDataAccess.Queries;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDomain;
 
@@ -36,25 +36,13 @@ namespace S3K.RealTimeOnline.Transactions.FindUsersBySearchText
             };
 
 
-            //using (_unitOfWork)
-            //{
-            //    _unitOfWork.Open();
-            //    IRepository<User> userRepository = _unitOfWork.Repository<User>();
-            //    IEnumerable<dynamic> users = userRepository.Select(columns, parameters);
-            //    dynamic[] array = users.ToArray();
-            //    return null;
-            //}
-            try
+            using (_unitOfWork)
             {
                 _unitOfWork.Open();
                 IRepository<User> userRepository = _unitOfWork.Repository<User>();
                 IEnumerable<dynamic> users = userRepository.Select(columns, parameters);
                 dynamic[] array = users.ToArray();
                 return null;
-            }
-            finally
-            {
-                _unitOfWork.Close();
             }
         }
     }
