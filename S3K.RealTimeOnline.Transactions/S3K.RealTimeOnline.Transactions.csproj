@@ -69,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomerCommandHandlers\CustomerDeleteCommandHandler.cs" />
-    <Compile Include="FindCustomers\FindCustomersQueryHandler.cs" />
     <Compile Include="FindUsersBySearchText\FindUsersBySearchTextQuery.cs" />
     <Compile Include="FindUsersBySearchText\FindUsersBySearchTextQueryHandler.cs" />
     <Compile Include="CustomerCommandHandlers\CustomerInsertCommandHandler.cs" />

@@ -72,6 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tools\GenericQueryHandler.cs" />
     <Compile Include="Tools\ICommandHandler.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\TransactionCommandHandlerDecorator.cs" />

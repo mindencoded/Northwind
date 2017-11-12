@@ -22,10 +22,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         public override string ToString()
         {
             string parameterName = !ParameterName.StartsWith("@") ? '@' + ParameterName : ParameterName;
-          
+
             if (Operator == Comparison.Between)
             {
-                return "[" + SourceColumn + "]" + " " + Comparison.Between.Value() + " " + parameterName + "1" + " AND " +
+                return "[" + SourceColumn + "]" + " " + Comparison.Between.Value() + " " + parameterName + "1" +
+                       " AND " +
                        parameterName + "2";
             }
             IList<string> parameters = new List<string>();
@@ -41,7 +42,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                         {
                             parameters.Add(parameterName + i);
                         }
-                        return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" + string.Join(", ", parameters) + ")";
+                        return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" +
+                               string.Join(", ", parameters) + ")";
                     }
                 }
 
@@ -57,7 +59,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     {
                         for (int i = 0; i < values.Length; i++)
                         {
-                            parameters.Add("[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " + parameterName + i +
+                            parameters.Add("[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " +
+                                           parameterName + i +
                                            " + '%'");
                         }
                         return "(" + string.Join(" OR ", parameters) + ")";

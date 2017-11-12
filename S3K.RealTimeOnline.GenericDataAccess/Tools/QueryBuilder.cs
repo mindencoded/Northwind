@@ -48,7 +48,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                 ParameterBuilder parameterBuilder = new ParameterBuilder
                 {
                     ParameterName = condition.Key,
-                    Value = condition.Value, 
+                    Value = condition.Value,
                     Operator = Comparison.EqualTo,
                     SourceColumn = condition.Key.ToUnderscoreCase()
                 };

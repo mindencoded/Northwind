@@ -107,7 +107,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public IEnumerable<T> Select(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null, int? pageSize = null)
+        public IEnumerable<T> Select(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
+            int? pageSize = null)
         {
             using (SqlCommand command =
                 CreateCommandSelect(null, conditions, orderBy, page, pageSize))
@@ -145,7 +146,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null, int? page = null, int? pageSize = null)
+        public IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
                 CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
@@ -815,46 +817,45 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     }
 
                     IDictionary<string, object> parameters = new Dictionary<string, object>();
-                   
-                        if (condition.Operator == Comparison.Between)
+
+                    if (condition.Operator == Comparison.Between)
+                    {
+                        if (value != null)
                         {
-                            if (value != null)
+                            bool typeValid = false;
+                            if (value.GetType().IsGenericType &&
+                                value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
                             {
-                                bool typeValid = false;
-                                if (value.GetType().IsGenericType &&
-                                    value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                                foreach (FieldInfo field in value.GetType().GetFields())
                                 {
-                                    foreach (FieldInfo field in value.GetType().GetFields())
-                                    {
-                                        parameters.Add(parameterName + "1", field.GetValue(value));
-                                        parameters.Add(parameterName + "2", field.GetValue(value));
-                                    }
-                                    typeValid = true;
+                                    parameters.Add(parameterName + "1", field.GetValue(value));
+                                    parameters.Add(parameterName + "2", field.GetValue(value));
                                 }
-
-                                if (value.GetType().IsArray)
-                                {
-                                    object[] items = value as object[];
-                                    if (items.Length >= 2)
-                                    {
-                                        parameters.Add(parameterName + "1", items[0]);
-                                        parameters.Add(parameterName + "2", items[1]);
-                                    }
-                                    typeValid = true;
-                                }
-
-                                if (typeValid)
-                                {
-                                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
-                                                      EntityUtils.GetTableName<T>() +
-                                                      "].[" + columnName + "] BETWEEN  " + parameterName + "1" +
-                                                      " AND " +
-                                                      parameterName + "2");
-                                }
+                                typeValid = true;
                             }
 
+                            if (value.GetType().IsArray)
+                            {
+                                object[] items = value as object[];
+                                if (items.Length >= 2)
+                                {
+                                    parameters.Add(parameterName + "1", items[0]);
+                                    parameters.Add(parameterName + "2", items[1]);
+                                }
+                                typeValid = true;
+                            }
+
+                            if (typeValid)
+                            {
+                                conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                  EntityUtils.GetTableName<T>() +
+                                                  "].[" + columnName + "] BETWEEN  " + parameterName + "1" +
+                                                  " AND " +
+                                                  parameterName + "2");
+                            }
                         }
-                        else if (condition.Operator == Comparison.Contains)
+                    }
+                    else if (condition.Operator == Comparison.Contains)
                     {
                         if (value != null)
                         {
@@ -932,7 +933,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                         SqlParameter sqlParameter = new SqlParameter
                         {
                             ParameterName = parameter.Key,
-                            SourceColumn = columnName,                     
+                            SourceColumn = columnName,
                             Value = parameter.Value ?? DBNull.Value
                         };
 

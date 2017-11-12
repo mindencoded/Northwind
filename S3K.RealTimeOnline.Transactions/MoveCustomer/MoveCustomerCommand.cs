@@ -2,7 +2,7 @@
 
 namespace S3K.RealTimeOnline.Transactions.MoveCustomer
 {
-    public class MoveCustomerCommand 
+    public class MoveCustomerCommand
     {
         public int CustomerId { get; set; }
 

@@ -31,7 +31,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
+        IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null,
+            int? page = null,
             int? pageSize = null);
 
         T SelectById(object id);
