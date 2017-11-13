@@ -18,7 +18,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<ExpandoObject>> HandleAsync(QueryBuilder query)
+        public async Task<IEnumerable<ExpandoObject>> Handle(QueryBuilder query)
         {
             using (_unitOfWork)
             {

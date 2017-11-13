@@ -14,7 +14,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.CommandHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task HandleAsync(object command)
+        public async Task Handle(object command)
         {
             using (_unitOfWork)
             {
