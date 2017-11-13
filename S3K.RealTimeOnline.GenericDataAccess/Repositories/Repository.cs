@@ -6,7 +6,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
-using S3K.RealTimeOnline.Commons;
+using System.Threading.Tasks;
+using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.GenericDomain;
@@ -69,7 +70,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
-        public IEnumerable<dynamic> Select(IList<string> columns, string orderBy = null, int? page = null,
+        public virtual IEnumerable<dynamic> Select(IList<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null)
         {
             using (SqlCommand command = CreateCommandSelect(columns, orderBy, page, pageSize))
@@ -77,6 +78,18 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     return reader.ConvertToDynamicList();
+                }
+            }
+        }
+
+        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, string orderBy = null,
+            int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command = CreateCommandSelect(columns, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToDynamicListAsync();
                 }
             }
         }
@@ -94,6 +107,19 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public virtual async Task<IEnumerable<T>> SelectAsync(object conditions, string orderBy = null,
+            int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(null, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToListAsync<T>();
+                }
+            }
+        }
+
         public virtual IEnumerable<T> Select(IDictionary<string, object> conditions, string orderBy = null,
             int? page = null, int? pageSize = null)
         {
@@ -107,7 +133,21 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public IEnumerable<T> Select(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
+        public virtual async Task<IEnumerable<T>> SelectAsync(IDictionary<string, object> conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(null, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToListAsync<T>();
+                }
+            }
+        }
+
+        public virtual IEnumerable<T> Select(IList<ParameterBuilder> conditions, string orderBy = null,
+            int? page = null,
             int? pageSize = null)
         {
             using (SqlCommand command =
@@ -116,6 +156,19 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     return reader.ConvertToList<T>();
+                }
+            }
+        }
+
+        public virtual async Task<IEnumerable<T>> SelectAsync(IList<ParameterBuilder> conditions, string orderBy = null,
+            int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(null, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToListAsync<T>();
                 }
             }
         }
@@ -133,6 +186,19 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, object conditions,
+            string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToDynamicListAsync();
+                }
+            }
+        }
+
         public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
@@ -146,7 +212,20 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions,
+        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns,
+            IDictionary<string, object> conditions, string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToDynamicListAsync();
+                }
+            }
+        }
+
+        public virtual IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -155,6 +234,19 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     return reader.ConvertToDynamicList();
+                }
+            }
+        }
+
+        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns,
+            IList<ParameterBuilder> conditions, string orderBy = null, int? page = null, int? pageSize = null)
+        {
+            using (SqlCommand command =
+                CreateCommandSelect(columns, conditions, orderBy, page, pageSize))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    return await reader.ConvertToDynamicListAsync();
                 }
             }
         }
@@ -176,11 +268,36 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             return result;
         }
 
+        public virtual async Task<T> SelectByIdAsync(object id)
+        {
+            T result = null;
+            using (SqlCommand command = CreateCommandSelectById(id))
+            {
+                using (SqlDataReader reader = await command.ExecuteReaderAsync())
+                {
+                    while (reader.Read())
+                    {
+                        result = await reader.ConvertToAsync<T>();
+                        break;
+                    }
+                }
+            }
+            return result;
+        }
+
         public virtual int Insert(object parameters)
         {
             using (SqlCommand command = CreateCommandInsert(parameters))
             {
                 return (int) command.ExecuteScalar();
+            }
+        }
+
+        public virtual async Task<int> InsertAsync(object parameters)
+        {
+            using (SqlCommand command = CreateCommandInsert(parameters))
+            {
+                return (int) await command.ExecuteScalarAsync();
             }
         }
 
@@ -192,11 +309,27 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public virtual async Task<int> InsertAsync(IDictionary<string, object> parameters)
+        {
+            using (SqlCommand command = CreateCommandInsert(parameters))
+            {
+                return (int) await command.ExecuteScalarAsync();
+            }
+        }
+
         public virtual int Update(object parameters)
         {
             using (SqlCommand command = CreateCommandUpdate(parameters))
             {
                 return command.ExecuteNonQuery();
+            }
+        }
+
+        public virtual async Task<int> UpdateAsync(object parameters)
+        {
+            using (SqlCommand command = CreateCommandUpdate(parameters))
+            {
+                return await command.ExecuteNonQueryAsync();
             }
         }
 
@@ -208,11 +341,27 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public virtual async Task<int> UpdateAsync(IDictionary<string, object> parameters)
+        {
+            using (SqlCommand command = CreateCommandUpdate(parameters))
+            {
+                return await command.ExecuteNonQueryAsync();
+            }
+        }
+
         public virtual int Update(object parameters, object conditions)
         {
             using (SqlCommand command = CreateCommandUpdate(parameters, conditions))
             {
                 return command.ExecuteNonQuery();
+            }
+        }
+
+        public virtual async Task<int> UpdateAsync(object parameters, object conditions)
+        {
+            using (SqlCommand command = CreateCommandUpdate(parameters, conditions))
+            {
+                return await command.ExecuteNonQueryAsync();
             }
         }
 
@@ -224,11 +373,28 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public virtual async Task<int> UpdateAsync(IDictionary<string, object> parameters,
+            IDictionary<string, object> conditions)
+        {
+            using (SqlCommand command = CreateCommandUpdate(parameters, conditions))
+            {
+                return await command.ExecuteNonQueryAsync();
+            }
+        }
+
         public virtual int Delete(object conditions)
         {
             using (SqlCommand command = CreateCommandDelete(conditions))
             {
                 return command.ExecuteNonQuery();
+            }
+        }
+
+        public virtual async Task<int> DeleteAsync(object conditions)
+        {
+            using (SqlCommand command = CreateCommandDelete(conditions))
+            {
+                return await command.ExecuteNonQueryAsync();
             }
         }
 
@@ -240,11 +406,27 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
+        public virtual async Task<int> DeleteAsync(IDictionary<string, object> conditions)
+        {
+            using (SqlCommand command = CreateCommandDelete(conditions))
+            {
+                return await command.ExecuteNonQueryAsync();
+            }
+        }
+
         public virtual int DeleteById(object id)
         {
             using (SqlCommand command = CreateCommandDeleteById(id))
             {
                 return command.ExecuteNonQuery();
+            }
+        }
+
+        public virtual async Task<int> DeleteByIdAsync(object id)
+        {
+            using (SqlCommand command = CreateCommandDeleteById(id))
+            {
+                return await command.ExecuteNonQueryAsync();
             }
         }
 
@@ -263,6 +445,20 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (command)
             {
                 return (int) command.ExecuteScalar() == 1;
+            }
+        }
+
+        public async Task<bool> IsIdentityInsertAsync()
+        {
+            string query = @"SELECT OBJECTPROPERTY(OBJECT_ID('" + EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]'), 'TableHasIdentity');";
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            using (command)
+            {
+                object result = await command.ExecuteScalarAsync();
+                return (int) result == 1;
             }
         }
 
@@ -285,6 +481,18 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (command)
             {
                 return command.ExecuteScalar();
+            }
+        }
+
+        public async Task<object> IdentCurrentAsync()
+        {
+            string query = "SELECT IDENT_CURRENT('" + EntityUtils.GetTableName<T>() + "');";
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            using (command)
+            {
+                return await command.ExecuteScalarAsync();
             }
         }
 
@@ -1022,6 +1230,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 ColumnAttribute columnAttribute =
                     typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+
                 columnNameList.Add("[" + columnName + "]");
 
                 SqlParameter sqlParameter = new SqlParameter
@@ -1086,6 +1295,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 {
                     continue;
                 }
+
                 columnNameList.Add("[" + columnName + "]");
                 string parameterName = "@" + propertyName;
 
@@ -1234,6 +1444,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     continue;
                 }
 
+                if (columnName.ToUpper().Equals("CREATED"))
+                {
+                    continue;
+                }
+
                 string parameterName = '@' + propertyName;
 
                 if (keyAttribute != null)
@@ -1288,6 +1503,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
+
+                if (columnName.ToUpper().Equals("CREATED"))
+                {
+                    continue;
+                }
 
                 object value = property.GetValue(parameters, null);
 
@@ -1412,6 +1632,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 }
 
                 if (columnName == null)
+                {
+                    continue;
+                }
+
+                if (columnName.ToUpper().Equals("CREATED"))
                 {
                     continue;
                 }

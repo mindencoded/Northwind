@@ -1,4 +1,5 @@
-﻿using Unity;
+﻿using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
+using Unity;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {

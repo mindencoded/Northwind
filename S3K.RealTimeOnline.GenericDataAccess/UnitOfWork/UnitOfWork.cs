@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using Serilog;
@@ -76,11 +77,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             }
         }
 
-        public void OpenAsync()
+        public async Task OpenAsync()
         {
             if (Connection.State == ConnectionState.Closed)
             {
-                Connection.OpenAsync();
+                await Connection.OpenAsync();
             }
         }
 

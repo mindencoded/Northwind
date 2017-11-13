@@ -72,14 +72,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tools\GenericQueryHandler.cs" />
+    <Compile Include="CommandHandlers\GenericDeleteByIdCommandHandlerAsync.cs" />
+    <Compile Include="CommandHandlers\GenericDeleteByIdCommandHandler.cs" />
+    <Compile Include="CommandHandlers\GenericDeleteCommandHandlerAsync.cs" />
+    <Compile Include="CommandHandlers\GenericDeleteCommandHandler.cs" />
+    <Compile Include="CommandHandlers\GenericInsertCommandHandlerAsync.cs" />
+    <Compile Include="CommandHandlers\GenericInsertCommandHandler.cs" />
+    <Compile Include="CommandHandlers\GenericUpdateCommandHandlerAsync.cs" />
+    <Compile Include="QueryHandlers\GenericQueryHandler.cs" />
+    <Compile Include="CommandHandlers\GenericUpdateCommandHandler.cs" />
     <Compile Include="Tools\ICommandHandler.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\TransactionCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationQueryHandlerDecorator.cs" />
+    <Compile Include="Tools\ICommandHandlerAsync.cs" />
+    <Compile Include="QueryHandlers\GenericQueryHandlerAsync.cs" />
     <Compile Include="Tools\IQuery.cs" />
     <Compile Include="Tools\IQueryHandler.cs" />
+    <Compile Include="Tools\IQueryHandlerAsync.cs" />
     <Compile Include="Tools\IQueryProcessor.cs" />
     <Compile Include="Tools\ParameterBuilder.cs" />
     <Compile Include="Tools\Query.cs" />
@@ -87,6 +98,7 @@
     <Compile Include="Tools\QueryProcessor.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Tools\DbInformation.cs" />
+    <Compile Include="Tools\SortDirection.cs" />
     <Compile Include="Tools\SqlNotificationRequestRegister.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Tools\SqlDataReaderExtensions.cs" />
@@ -104,19 +116,18 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj">
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>S3K.RealTimeOnline.Commons</Name>
+      <Name>S3K.RealTimeOnline.CommonUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.GenericDomain\S3K.RealTimeOnline.GenericDomain.csproj">
       <Project>{2f3d9931-be6d-43ce-8a03-73eebfdd877e}</Project>
       <Name>S3K.RealTimeOnline.GenericDomain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

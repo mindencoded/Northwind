@@ -1,17 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+VisualStudioVersion = 15.0.27004.2008
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Commons", "S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.CommonUtils", "S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.GenericDataAccess", "S3K.RealTimeOnline.GenericDataAccess\S3K.RealTimeOnline.GenericDataAccess.csproj", "{6515754E-5242-49EB-B81E-6D29B24E60A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.ConsoleService", "S3K.RealTimeOnline.ConsoleService\S3K.RealTimeOnline.ConsoleService.csproj", "{DE3F8993-D5DB-4F11-8DD4-65B16B6A7439}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. Core", "3. Core", "{F9BA9756-22AD-430A-AB3C-09E706D44AFD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. Utils", "6. Utils", "{173C9A31-8A98-42BD-BA82-D108DE004BA6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Utils", "5. Utils", "{173C9A31-8A98-42BD-BA82-D108DE004BA6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA904C89-8435-491E-8224-91D3AF09AC76}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		snippets.txt = snippets.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. DataAccess", "4. DataAccess", "{A94F0B4B-97FC-44F6-9609-16F2CC889026}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. DataAccess", "3. DataAccess", "{A94F0B4B-97FC-44F6-9609-16F2CC889026}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "S3K.RealTimeOnline.SecurityDb", "S3K.RealTimeOnline.SecurityDb\S3K.RealTimeOnline.SecurityDb.sqlproj", "{6D21CD73-808B-42A2-A4E1-3583AB6BBF23}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "7. DataBases", "7. DataBases", "{1FBABEE5-EEA4-46CC-888A-38E834E4B042}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6. DataBases", "6. DataBases", "{1FBABEE5-EEA4-46CC-888A-38E834E4B042}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "S3K.RealTimeOnline.BusinessDb", "S3K.RealTimeOnline.BusinessDb\S3K.RealTimeOnline.BusinessDb.sqlproj", "{94CBFB90-729D-45CC-8A09-52E5B06D4EC8}"
 EndProject
@@ -37,13 +35,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1. Clients", "1. Clients", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.GenericDomain", "S3K.RealTimeOnline.GenericDomain\S3K.RealTimeOnline.GenericDomain.csproj", "{2F3D9931-BE6D-43CE-8A03-73EEBFDD877E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Domains", "5. Domains", "{200B31B4-4787-41B0-91F7-F4EBBE2FEC2F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4. Domains", "4. Domains", "{200B31B4-4787-41B0-91F7-F4EBBE2FEC2F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.BusinessDataAccess", "S3K.RealTimeOnline.BusinessDataAccess\S3K.RealTimeOnline.BusinessDataAccess.csproj", "{AFD08370-3843-4A08-B6F0-09748137AD79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.SecurityDataAccess", "S3K.RealTimeOnline.SecurityDataAccess\S3K.RealTimeOnline.SecurityDataAccess.csproj", "{B10E408A-8049-4689-8CC2-46C4D5D390F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Transactions", "S3K.RealTimeOnline.Transactions\S3K.RealTimeOnline.Transactions.csproj", "{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.CommonDataAccess", "S3K.RealTimeOnline.CommonDataAccess\S3K.RealTimeOnline.CommonDataAccess.csproj", "{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{510D1F31-AA06-4077-96FB-381809F1277F}"
 EndProject
@@ -121,7 +119,7 @@ Global
 		{2F3D9931-BE6D-43CE-8A03-73EEBFDD877E} = {200B31B4-4787-41B0-91F7-F4EBBE2FEC2F}
 		{AFD08370-3843-4A08-B6F0-09748137AD79} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
 		{B10E408A-8049-4689-8CC2-46C4D5D390F2} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
-		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081} = {F9BA9756-22AD-430A-AB3C-09E706D44AFD}
+		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DECA91E6-677C-458B-9E96-C0702324AC5E}

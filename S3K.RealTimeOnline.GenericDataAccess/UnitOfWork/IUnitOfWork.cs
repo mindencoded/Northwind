@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
@@ -14,7 +15,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 
         void Open();
 
-        void OpenAsync();
+        Task OpenAsync();
 
         IRepository<T> Repository<T>() where T : class;
 

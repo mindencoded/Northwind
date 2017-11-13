@@ -67,7 +67,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommandHandlers\InsertUser\InsertUserCommand.cs" />
+    <Compile Include="CommandHandlers\InsertUser\InsertUserCommandHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchTextQuery.cs" />
+    <Compile Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchTextQueryHandler.cs" />
     <Compile Include="Repositories\IUserRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="UnitOfWork\ISecurityUnitOfWork.cs" />
@@ -80,9 +89,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj">
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>S3K.RealTimeOnline.Commons</Name>
+      <Name>S3K.RealTimeOnline.CommonUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.GenericDataAccess\S3K.RealTimeOnline.GenericDataAccess.csproj">
       <Project>{6515754e-5242-49eb-b81e-6d29b24e60a6}</Project>
@@ -96,6 +105,15 @@
       <Project>{0c809519-c0f1-45f7-8815-676a18555ab8}</Project>
       <Name>S3K.RealTimeOnline.SecurityDomain</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchText.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

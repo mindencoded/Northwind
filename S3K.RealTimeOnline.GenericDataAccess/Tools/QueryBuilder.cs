@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Reflection;
-using S3K.RealTimeOnline.Commons;
+using S3K.RealTimeOnline.CommonUtils;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {

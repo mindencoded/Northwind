@@ -6,5 +6,9 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
     public interface IBusinessUnitOfWork : IUnitOfWork
     {
         IProductRepository ProductRepository { get; }
+
+        ICustomerRepository CustomerRepository { get; }
+
+        IEmployeeRepository EmployeeRepository { get; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Threading;
+using S3K.RealTimeOnline.GenericDataAccess.CommandHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Decorators

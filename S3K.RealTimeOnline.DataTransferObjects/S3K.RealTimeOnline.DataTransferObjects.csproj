@@ -39,9 +39,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj">
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>S3K.RealTimeOnline.Commons</Name>
+      <Name>S3K.RealTimeOnline.CommonUtils</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

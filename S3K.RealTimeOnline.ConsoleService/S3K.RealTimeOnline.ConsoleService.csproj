@@ -147,9 +147,13 @@
       <Project>{77a65568-2d24-4d32-bad8-8a489ad1dd92}</Project>
       <Name>S3K.RealTimeOnline.BusinessDomain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Commons\S3K.RealTimeOnline.Commons.csproj">
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonDataAccess\S3K.RealTimeOnline.CommonDataAccess.csproj">
+      <Project>{f96fac62-7a5d-4c01-ab00-c003f7ee4081}</Project>
+      <Name>S3K.RealTimeOnline.CommonDataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>S3K.RealTimeOnline.Commons</Name>
+      <Name>S3K.RealTimeOnline.CommonUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.DataTransferObjects\S3K.RealTimeOnline.DataTransferObjects.csproj">
       <Project>{b6896edc-2f56-4dd2-afe8-f424a17dc07b}</Project>
@@ -170,10 +174,6 @@
     <ProjectReference Include="..\S3K.RealTimeOnline.SecurityDomain\S3K.RealTimeOnline.SecurityDomain.csproj">
       <Project>{0c809519-c0f1-45f7-8815-676a18555ab8}</Project>
       <Name>S3K.RealTimeOnline.SecurityDomain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\S3K.RealTimeOnline.Transactions\S3K.RealTimeOnline.Transactions.csproj">
-      <Project>{f96fac62-7a5d-4c01-ab00-c003f7ee4081}</Project>
-      <Name>S3K.RealTimeOnline.Transactions</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

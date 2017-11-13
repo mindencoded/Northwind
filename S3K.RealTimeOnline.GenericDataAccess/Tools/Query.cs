@@ -5,9 +5,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 {
     public class Query<TResult> : IQuery<TResult>
     {
-        public int OffSet { get; set; } = 0;
+        public int OffSet { get; set; }
 
-        public int Limit { get; set; } = 100;
+        public int Limit { get; set; }
 
         public string OrderBy { get; set; }
 
@@ -20,11 +20,5 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             }
             OrderBy = string.Join(",", orderBy.ToArray());
         }
-    }
-
-    public enum SortDirection
-    {
-        Asc,
-        Desc
     }
 }

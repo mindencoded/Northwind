@@ -19,5 +19,39 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                 return (IProductRepository) Repositories[typeof(ProductRepository)];
             }
         }
+
+        public ICustomerRepository CustomerRepository
+        {
+            get
+            {
+                if (!Repositories.ContainsKey(typeof(CustomerRepository)))
+                    Repositories.Add(typeof(CustomerRepository), new CustomerRepository(Connection, Transaction));
+
+                return (ICustomerRepository) Repositories[typeof(CustomerRepository)];
+            }
+        }
+
+        public IEmployeeRepository EmployeeRepository
+        {
+            get
+            {
+                if (!Repositories.ContainsKey(typeof(EmployeeRepository)))
+                    Repositories.Add(typeof(EmployeeRepository), new EmployeeRepository(Connection, Transaction));
+
+                return (IEmployeeRepository) Repositories[typeof(EmployeeRepository)];
+            }
+        }
+
+        public IInventoryTransactionTypeRepository InventoryTransactionTypeRepository
+        {
+            get
+            {
+                if (!Repositories.ContainsKey(typeof(InventoryTransactionTypeRepository)))
+                    Repositories.Add(typeof(InventoryTransactionTypeRepository),
+                        new InventoryTransactionTypeRepository(Connection, Transaction));
+
+                return (IInventoryTransactionTypeRepository) Repositories[typeof(InventoryTransactionTypeRepository)];
+            }
+        }
     }
 }
