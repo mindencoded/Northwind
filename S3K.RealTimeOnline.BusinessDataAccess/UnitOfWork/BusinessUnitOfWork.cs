@@ -53,5 +53,17 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                 return (IInventoryTransactionTypeRepository) Repositories[typeof(InventoryTransactionTypeRepository)];
             }
         }
+
+        public IShipperRepository ShipperRepository
+        {
+            get
+            {
+                if (!Repositories.ContainsKey(typeof(ShipperRepository)))
+                    Repositories.Add(typeof(ShipperRepository),
+                        new ShipperRepository(Connection, Transaction));
+
+                return (IShipperRepository)Repositories[typeof(ShipperRepository)];
+            }
+        }
     }
 }

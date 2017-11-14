@@ -77,7 +77,9 @@
     <Compile Include="Repositories\IInventoryTransactionTypeRepository.cs" />
     <Compile Include="Repositories\InventoryTransactionTypeRepository.cs" />
     <Compile Include="Repositories\IProductRepository.cs" />
+    <Compile Include="Repositories\IShipperRepository.cs" />
     <Compile Include="Repositories\ProductRepository.cs" />
+    <Compile Include="Repositories\ShipperRepository.cs" />
     <Compile Include="UnitOfWork\BusinessUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IBusinessUnitOfWork.cs" />
   </ItemGroup>

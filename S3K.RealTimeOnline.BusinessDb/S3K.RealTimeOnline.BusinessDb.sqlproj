@@ -59,13 +59,13 @@
     <Folder Include="Properties" />
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
-    <Folder Include="dbo\Constraints" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\PRODUCT.sql" />
     <Build Include="dbo\Tables\CUSTOMER.sql" />
     <Build Include="dbo\Tables\EMPLOYEE.sql" />
     <Build Include="dbo\Tables\INVENTORY_TRANSACTION_TYPES.sql" />
+    <Build Include="dbo\Tables\SHIPPER.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="S3K.RealTimeOnline.BusinessDb.refactorlog" />

@@ -58,6 +58,18 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
     }
 }
 
+/*
+  public void BuildOrderBy(Dictionary<string, SortDirection> entries)
+        {
+            IList<string> orderBy = new List<string>();
+            foreach (KeyValuePair<string, SortDirection> entry in entries)
+            {
+                orderBy.Add(entry.Key + " " + entry.Value.ToString().ToUpper());
+            }
+            OrderBy = string.Join(",", orderBy.ToArray());
+        }
+ */
+
 /*public static string CreateOrderByString<T>(IEnumerable<string> orderBy) where T : class
 {
     if (orderBy == null)
