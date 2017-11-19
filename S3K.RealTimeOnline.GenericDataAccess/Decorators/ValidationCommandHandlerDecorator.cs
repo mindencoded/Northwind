@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using S3K.RealTimeOnline.GenericDataAccess.CommandHandlers;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
@@ -18,6 +18,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
             var validationContext = new ValidationContext(command, null, null);
             Validator.ValidateObject(command, validationContext, true);
             _decorated.Handle(command);
+        }
+
+        public Task HandleAsync(object command)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

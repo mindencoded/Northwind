@@ -1,4 +1,5 @@
-﻿using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
+﻿using System.Threading.Tasks;
+using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer
@@ -14,6 +15,11 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer
 
         public virtual void Handle(MoveCustomerCommand command)
         {
+        }
+
+        public Task HandleAsync(object command)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

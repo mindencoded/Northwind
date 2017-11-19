@@ -1,4 +1,5 @@
 ﻿using System.Data.SqlClient;
+using S3K.RealTimeOnline.BusinessDataAccess.Repositories.Contracts;
 using S3K.RealTimeOnline.BusinessDomain;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
@@ -19,7 +20,8 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.Repositories
         {
         }
 
-        public ShipperRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public ShipperRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(
+            connection, transaction, ignoreNulls)
         {
         }
 

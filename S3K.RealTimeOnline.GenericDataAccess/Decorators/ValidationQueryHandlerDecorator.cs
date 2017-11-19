@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
@@ -20,6 +20,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
             var validationContext = new ValidationContext(query, null, null);
             Validator.ValidateObject(query, validationContext, true);
             return _decorated.Handle(query);
+        }
+
+        public Task<TResult> HandleAsync(TQuery query)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

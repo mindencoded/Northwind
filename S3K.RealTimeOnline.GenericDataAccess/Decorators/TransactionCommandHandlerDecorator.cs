@@ -1,5 +1,5 @@
-﻿using System.Transactions;
-using S3K.RealTimeOnline.GenericDataAccess.CommandHandlers;
+﻿using System.Threading.Tasks;
+using System.Transactions;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
@@ -20,6 +20,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
                 _decorated.Handle(command);
                 scope.Complete();
             }
+        }
+
+        public Task HandleAsync(object command)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

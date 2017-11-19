@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Common;
 using System.Threading;
-using S3K.RealTimeOnline.GenericDataAccess.CommandHandlers;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
@@ -18,6 +18,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
         public void Handle(TCommand command)
         {
             HandleWithCountDown(command, 5);
+        }
+
+        public Task HandleAsync(object command)
+        {
+            throw new NotImplementedException();
         }
 
         private void HandleWithCountDown(TCommand command, int count)

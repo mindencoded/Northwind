@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
@@ -32,6 +33,11 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.CommandHandlers.InsertUser
                 IRepository<User> repository = _unitOfWork.Repository<User>();
                 repository.Insert(user);
             }
+        }
+
+        public Task HandleAsync(object command)
+        {
+            throw new NotImplementedException();
         }
     }
 }

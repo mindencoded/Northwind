@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
@@ -44,6 +45,11 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUsersBySearchT
                 dynamic[] array = users.ToArray();
                 return null;
             }
+        }
+
+        public Task<User[]> HandleAsync(FindUsersBySearchTextQuery query)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

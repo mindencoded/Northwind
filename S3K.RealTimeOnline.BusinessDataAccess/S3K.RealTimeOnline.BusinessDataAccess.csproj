@@ -70,21 +70,44 @@
     <Compile Include="CommandHandlers\MoveCustomer\MoveCustomerCommand.cs" />
     <Compile Include="CommandHandlers\MoveCustomer\MoveCustomerCommandHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\Contracts\IInventoryTransactionRepository.cs" />
+    <Compile Include="Repositories\Contracts\IInvoiceRepository.cs" />
+    <Compile Include="Repositories\Contracts\IOrderDetailRepository.cs" />
+    <Compile Include="Repositories\Contracts\IOrderDetailStatusRepository.cs" />
+    <Compile Include="Repositories\Contracts\IOrderTaxStatusRepository.cs" />
+    <Compile Include="Repositories\Contracts\IPurchaseOrderDetailRepository.cs" />
+    <Compile Include="Repositories\Contracts\IPurchaseOrderRepository.cs" />
+    <Compile Include="Repositories\Contracts\ISupplierRepository.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
     <Compile Include="Repositories\EmployeeRepository.cs" />
-    <Compile Include="Repositories\ICustomerRepository.cs" />
-    <Compile Include="Repositories\IEmployeeRepository.cs" />
-    <Compile Include="Repositories\IInventoryTransactionTypeRepository.cs" />
+    <Compile Include="Repositories\Contracts\ICustomerRepository.cs" />
+    <Compile Include="Repositories\Contracts\IEmployeeRepository.cs" />
+    <Compile Include="Repositories\Contracts\IInventoryTransactionTypeRepository.cs" />
+    <Compile Include="Repositories\InventoryTransactionRepository.cs" />
     <Compile Include="Repositories\InventoryTransactionTypeRepository.cs" />
-    <Compile Include="Repositories\IProductRepository.cs" />
-    <Compile Include="Repositories\IShipperRepository.cs" />
+    <Compile Include="Repositories\Contracts\IOrderRepository.cs" />
+    <Compile Include="Repositories\Contracts\IOrderStatusRepository.cs" />
+    <Compile Include="Repositories\Contracts\IProductRepository.cs" />
+    <Compile Include="Repositories\Contracts\IShipperRepository.cs" />
+    <Compile Include="Repositories\InvoiceRepository.cs" />
+    <Compile Include="Repositories\OrderDetailRepository.cs" />
+    <Compile Include="Repositories\OrderDetailStatusRepository.cs" />
+    <Compile Include="Repositories\OrderRepository.cs" />
+    <Compile Include="Repositories\OrderStatusRepository.cs" />
+    <Compile Include="Repositories\OrderTaxStatusRepository.cs" />
     <Compile Include="Repositories\ProductRepository.cs" />
+    <Compile Include="Repositories\PurchaseOrderDetailRepository.cs" />
+    <Compile Include="Repositories\PurchaseOrderRepository.cs" />
     <Compile Include="Repositories\ShipperRepository.cs" />
+    <Compile Include="Repositories\SupplierRepository.cs" />
     <Compile Include="UnitOfWork\BusinessUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IBusinessUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="QueryHandlers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\S3K.RealTimeOnline.BusinessDomain\S3K.RealTimeOnline.BusinessDomain.csproj">
@@ -103,9 +126,6 @@
       <Project>{2f3d9931-be6d-43ce-8a03-73eebfdd877e}</Project>
       <Name>S3K.RealTimeOnline.GenericDomain</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="QueryHandlers\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
