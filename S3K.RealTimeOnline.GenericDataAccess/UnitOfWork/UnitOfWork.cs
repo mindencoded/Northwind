@@ -162,7 +162,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
                 args.OriginalState, args.CurrentState);
         }
 
-        public T ExecuteQuery<T>(string commandText, params object[] values)
+        public virtual T ExecuteQuery<T>(string commandText, params object[] values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -184,7 +184,29 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             return ExecuteCommand<T>(command);
         }
 
-        public T ExecuteQuery<T>(string commandText, IDictionary<string, object> values)
+        public virtual async Task<T> ExecuteQueryAsync<T>(string commandText, params object[] values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.Text
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Length > 0)
+            {
+                SetQueryParameters(command, values);
+            }
+
+            return await ExecuteCommandAsync<T>(command);
+        }
+
+        public virtual T ExecuteQuery<T>(string commandText, IDictionary<string, object> values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -206,7 +228,29 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             return ExecuteCommand<T>(command);
         }
 
-        public T ExecuteFunction<T>(string commandText, params object[] values)
+        public virtual async Task<T> ExecuteQueryAsync<T>(string commandText, IDictionary<string, object> values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.Text
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Count > 0)
+            {
+                SetParameters(command, values);
+            }
+
+            return await ExecuteCommandAsync<T>(command);
+        }
+
+        public virtual T ExecuteFunction<T>(string commandText, params object[] values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -228,7 +272,29 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             return ExecuteCommand<T>(command);
         }
 
-        public T ExecuteFunction<T>(string commandText, IDictionary<string, object> values)
+        public virtual async Task<T> ExecuteFunctionAsync<T>(string commandText, params object[] values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Length > 0)
+            {
+                SetFunctionParameters(command, values);
+            }
+
+            return await ExecuteCommandAsync<T>(command);
+        }
+
+        public virtual T ExecuteFunction<T>(string commandText, IDictionary<string, object> values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -246,11 +312,31 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             {
                 SetParameters(command, values);
             }
-
             return ExecuteCommand<T>(command);
         }
 
-        public int ExecuteNonQuery(string commandText, params object[] values)
+        public virtual async Task<T> ExecuteFunctionAsync<T>(string commandText, IDictionary<string, object> values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Count > 0)
+            {
+                SetParameters(command, values);
+            }
+            return await ExecuteCommandAsync<T>(command);
+        }
+
+        public virtual int ExecuteNonQuery(string commandText, params object[] values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -272,7 +358,29 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             return command.ExecuteNonQuery();
         }
 
-        public int ExecuteNonQuery(string commandText, IDictionary<string, object> values)
+        public virtual async Task<int> ExecuteNonQueryAsync(string commandText, params object[] values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Length > 0)
+            {
+                SetFunctionParameters(command, values);
+            }
+
+            return await command.ExecuteNonQueryAsync();
+        }
+
+        public virtual int ExecuteNonQuery(string commandText, IDictionary<string, object> values)
         {
             SqlCommand command = new SqlCommand
             {
@@ -294,19 +402,31 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             return command.ExecuteNonQuery();
         }
 
-        public Tuple<int, int> ExecuteNonQuery(string commandText, string returnParameterName,
+        public virtual async Task<int> ExecuteNonQueryAsync(string commandText, IDictionary<string, object> values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Count > 0)
+            {
+                SetParameters(command, values);
+            }
+
+            return await command.ExecuteNonQueryAsync();
+        }
+
+        public virtual Tuple<int, int> ExecuteNonQuery(string commandText, string returnParameterName,
             string outputParameterName, params object[] values)
         {
-            if (returnParameterName == null)
-            {
-                throw new ArgumentNullException(nameof(returnParameterName));
-            }
-
-            if (outputParameterName == null)
-            {
-                throw new ArgumentNullException(nameof(outputParameterName));
-            }
-
             SqlCommand command = new SqlCommand
             {
                 Connection = Connection,
@@ -334,6 +454,40 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 
             int returnValue = (int) command.Parameters[returnParameterName].Value;
             int outPutValue = (int) command.Parameters[outputParameterName].Value;
+
+            return new Tuple<int, int>(returnValue, outPutValue);
+        }
+
+        public virtual async Task<Tuple<int, int>> ExecuteNonQueryAsync(string commandText, string returnParameterName,
+            string outputParameterName, params object[] values)
+        {
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.StoredProcedure
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            if (values != null && values.Length > 0)
+            {
+                SetFunctionParameters(command, values);
+            }
+
+            SqlParameter returnSqlParameter = command.Parameters.Add(returnParameterName, SqlDbType.Int);
+            returnSqlParameter.Direction = ParameterDirection.ReturnValue;
+
+            SqlParameter outputSqlParameter = command.Parameters.Add(outputParameterName, SqlDbType.Int);
+            outputSqlParameter.Direction = ParameterDirection.Output;
+
+            await command.ExecuteNonQueryAsync();
+
+            int returnValue = (int)command.Parameters[returnParameterName].Value;
+            int outPutValue = (int)command.Parameters[outputParameterName].Value;
 
             return new Tuple<int, int>(returnValue, outPutValue);
         }
@@ -370,6 +524,43 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             else
             {
                 returnInstance = (T) command.ExecuteScalar();
+            }
+
+            return returnInstance;
+        }
+
+        private async Task<T> ExecuteCommandAsync<T>(SqlCommand command)
+        {
+            Type returnType = typeof(T);
+            T returnInstance = default(T);
+
+            if (returnType.IsGenericType &&
+                returnType.GetGenericTypeDefinition() == typeof(IList<>) ||
+                returnType.GetGenericTypeDefinition() == typeof(IEnumerable<>) ||
+                returnType.GetGenericTypeDefinition() == typeof(ICollection<>))
+            {
+                SqlDataReader reader = command.ExecuteReader();
+                Type entityType = returnType.GetGenericArguments()[0];
+                Type sqlDataReaderType = typeof(SqlDataReaderExtensions);
+                MethodInfo convertToMethod =
+                    sqlDataReaderType.GetMethod("ConvertTo", BindingFlags.Public | BindingFlags.Static);
+                if (convertToMethod != null)
+                {
+                    MethodInfo convertToGenericMethod = convertToMethod.MakeGenericMethod(entityType);
+                    Type listType = typeof(List<>);
+                    Type constructedListType = listType.MakeGenericType(entityType);
+                    IList listInstance = (IList)Activator.CreateInstance(constructedListType, null);
+                    while (await reader.ReadAsync())
+                    {
+                        object entity = convertToGenericMethod.Invoke(reader, new object[] { reader });
+                        listInstance.Add(entity);
+                    }
+                    returnInstance = (T)listInstance;
+                }
+            }
+            else
+            {
+                returnInstance = (T) await command.ExecuteScalarAsync();
             }
 
             return returnInstance;

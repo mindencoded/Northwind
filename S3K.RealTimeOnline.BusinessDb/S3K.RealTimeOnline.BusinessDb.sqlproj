@@ -101,9 +101,6 @@
     <Build Include="dbo\Foreign keys\FK_PURCHASE_ORDER_DETAIL__PURCHASE_ORDER.sql" />
   </ItemGroup>
   <ItemGroup>
-    <RefactorLog Include="S3K.RealTimeOnline.BusinessDb.refactorlog" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="S3K.RealTimeOnline.BusinessDb.publish.xml" />
   </ItemGroup>
 </Project>

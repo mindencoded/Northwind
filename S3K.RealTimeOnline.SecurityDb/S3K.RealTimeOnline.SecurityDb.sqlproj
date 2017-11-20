@@ -78,7 +78,4 @@
   <ItemGroup>
     <None Include="S3K.RealTimeOnline.SecurityDb.publish.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="S3K.RealTimeOnline.SecurityDb.refactorlog" />
-  </ItemGroup>
 </Project>
