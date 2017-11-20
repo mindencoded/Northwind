@@ -91,10 +91,6 @@
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
       <Name>S3K.RealTimeOnline.CommonUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\S3K.RealTimeOnline.DataTransferObjects\S3K.RealTimeOnline.DataTransferObjects.csproj">
-      <Project>{b6896edc-2f56-4dd2-afe8-f424a17dc07b}</Project>
-      <Name>S3K.RealTimeOnline.DataTransferObjects</Name>
-    </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.GenericDataAccess\S3K.RealTimeOnline.GenericDataAccess.csproj">
       <Project>{6515754e-5242-49eb-b81e-6d29b24e60a6}</Project>
       <Name>S3K.RealTimeOnline.GenericDataAccess</Name>
