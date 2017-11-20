@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27004.2009
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.CommonUtils", "S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
 EndProject
@@ -44,6 +44,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.CommonDataAccess", "S3K.RealTimeOnline.CommonDataAccess\S3K.RealTimeOnline.CommonDataAccess.csproj", "{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2. Services", "2. Services", "{510D1F31-AA06-4077-96FB-381809F1277F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.CoreService", "S3K.RealTimeOnline.CoreService\S3K.RealTimeOnline.CoreService.csproj", "{9BC66157-EB3C-4E72-9DBF-3133F8DF2E88}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BC66157-EB3C-4E72-9DBF-3133F8DF2E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BC66157-EB3C-4E72-9DBF-3133F8DF2E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BC66157-EB3C-4E72-9DBF-3133F8DF2E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BC66157-EB3C-4E72-9DBF-3133F8DF2E88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -120,6 +126,7 @@ Global
 		{AFD08370-3843-4A08-B6F0-09748137AD79} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
 		{B10E408A-8049-4689-8CC2-46C4D5D390F2} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
 		{F96FAC62-7A5D-4C01-AB00-C003F7EE4081} = {A94F0B4B-97FC-44F6-9609-16F2CC889026}
+		{9BC66157-EB3C-4E72-9DBF-3133F8DF2E88} = {510D1F31-AA06-4077-96FB-381809F1277F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DECA91E6-677C-458B-9E96-C0702324AC5E}
