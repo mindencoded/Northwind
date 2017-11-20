@@ -6,6 +6,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
     {
         void Handle(TCommand command);
 
-        Task HandleAsync(object command);
+        Task HandleAsync(TCommand command);
     }
 }

@@ -22,9 +22,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
             return _decorated.Handle(query);
         }
 
-        public Task<TResult> HandleAsync(TQuery query)
+        public async Task<TResult> HandleAsync(TQuery query)
         {
-            throw new System.NotImplementedException();
+            var validationContext = new ValidationContext(query, null, null);
+            Validator.ValidateObject(query, validationContext, true);
+            return await _decorated.HandleAsync(query);
         }
     }
 }

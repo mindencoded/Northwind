@@ -20,9 +20,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
             _decorated.Handle(command);
         }
 
-        public Task HandleAsync(object command)
+        public async Task HandleAsync(TCommand command)
         {
-            throw new System.NotImplementedException();
+            var validationContext = new ValidationContext(command, null, null);
+            Validator.ValidateObject(command, validationContext, true);
+            await _decorated.HandleAsync(command);
         }
     }
 }

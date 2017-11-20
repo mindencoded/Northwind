@@ -17,7 +17,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer
         {
         }
 
-        public Task HandleAsync(object command)
+        public virtual Task HandleAsync(MoveCustomerCommand command)
         {
             throw new System.NotImplementedException();
         }

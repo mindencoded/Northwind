@@ -22,9 +22,13 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
             }
         }
 
-        public Task HandleAsync(object command)
+        public async Task HandleAsync(TCommand command)
         {
-            throw new System.NotImplementedException();
+            using (var scope = new TransactionScope())
+            {
+                await _decorated.HandleAsync(command);
+                scope.Complete();
+            }
         }
     }
 }

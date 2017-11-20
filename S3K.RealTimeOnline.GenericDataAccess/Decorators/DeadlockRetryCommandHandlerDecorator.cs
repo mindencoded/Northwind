@@ -20,9 +20,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
             HandleWithCountDown(command, 5);
         }
 
-        public Task HandleAsync(object command)
+        public async Task HandleAsync(TCommand command)
         {
-            throw new NotImplementedException();
+            await HandleWithCountDownAsync(command, 5);
         }
 
         private void HandleWithCountDown(TCommand command, int count)
@@ -37,6 +37,23 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Decorators
                     throw;
 
                 Thread.Sleep(300);
+
+                HandleWithCountDown(command, count - 1);
+            }
+        }
+
+        private async Task HandleWithCountDownAsync(TCommand command, int count)
+        {
+            try
+            {
+                await _decorated.HandleAsync(command);
+            }
+            catch (Exception ex)
+            {
+                if (count <= 0 || !IsDeadlockException(ex))
+                    throw;
+
+                await Task.Delay(300);
 
                 HandleWithCountDown(command, count - 1);
             }

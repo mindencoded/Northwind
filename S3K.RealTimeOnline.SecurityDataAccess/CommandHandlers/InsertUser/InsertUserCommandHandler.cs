@@ -33,7 +33,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.CommandHandlers.InsertUser
             }
         }
 
-        public Task HandleAsync(object command)
+        public Task HandleAsync(InsertUserCommand command)
         {
             throw new NotImplementedException();
         }
