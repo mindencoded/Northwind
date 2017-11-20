@@ -22,8 +22,6 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.CommandHandlers.InsertUser
             {
                 Username = command.Name,
                 Active = true,
-                Created = DateTime.Now,
-                LastModified = DateTime.Now,
                 Password = command.Password
             };
 

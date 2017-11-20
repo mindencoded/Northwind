@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using S3K.RealTimeOnline.GenericDomain;
 
-namespace S3K.RealTimeOnline.BusinessDomain
+namespace S3K.RealTimeOnline.GenericDomain
 {
-    public abstract class Person : Entity
+    public class Person : Entity
     {
         [Key]
         [Column("ID")]

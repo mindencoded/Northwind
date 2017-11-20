@@ -77,6 +77,7 @@
     <Compile Include="Repositories\Contracts\IOrderTaxStatusRepository.cs" />
     <Compile Include="Repositories\Contracts\IPurchaseOrderDetailRepository.cs" />
     <Compile Include="Repositories\Contracts\IPurchaseOrderRepository.cs" />
+    <Compile Include="Repositories\Contracts\IPurchaseOrderStatusRepository.cs" />
     <Compile Include="Repositories\Contracts\ISupplierRepository.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
     <Compile Include="Repositories\EmployeeRepository.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Repositories\ProductRepository.cs" />
     <Compile Include="Repositories\PurchaseOrderDetailRepository.cs" />
     <Compile Include="Repositories\PurchaseOrderRepository.cs" />
+    <Compile Include="Repositories\PurchaseOrderStatusRepository.cs" />
     <Compile Include="Repositories\ShipperRepository.cs" />
     <Compile Include="Repositories\SupplierRepository.cs" />
     <Compile Include="UnitOfWork\BusinessUnitOfWork.cs" />

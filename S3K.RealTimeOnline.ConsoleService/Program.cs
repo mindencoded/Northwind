@@ -13,6 +13,7 @@ using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUsersBySearchText;
 using S3K.RealTimeOnline.SecurityDataAccess.Repositories;
+using S3K.RealTimeOnline.SecurityDataAccess.Repositories.Contracts;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDomain;
 using Serilog;

@@ -37,7 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Role.cs" />
+    <Compile Include="RoleDetail.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="UserType.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\S3K.RealTimeOnline.GenericDomain\S3K.RealTimeOnline.GenericDomain.csproj">

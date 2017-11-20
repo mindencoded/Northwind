@@ -163,6 +163,18 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
             }
         }
 
+        public IPurchaseOrderStatusRepository PurchaseOrderStatusRepository
+        {
+            get
+            {
+                if (!Repositories.ContainsKey(typeof(PurchaseOrderStatusRepository)))
+                    Repositories.Add(typeof(PurchaseOrderStatusRepository),
+                        new PurchaseOrderStatusRepository(Connection, Transaction));
+
+                return (IPurchaseOrderStatusRepository)Repositories[typeof(PurchaseOrderStatusRepository)];
+            }
+        }
+
         public IInventoryTransactionRepository InventoryTransactionRepository
         {
             get
