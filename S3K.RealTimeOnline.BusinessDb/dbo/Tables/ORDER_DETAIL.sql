@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ORDER_DETAIL]
 (
-	ID                  INT NOT NULL IDENTITY,
+	ID                  INT NOT NULL IDENTITY(1,1),
 	ORDER_ID            INT NOT NULL,
 	PRODUCT_ID          INT,
 	QUANTITY            DECIMAL(19,4) NOT NULL DEFAULT '0.0000',

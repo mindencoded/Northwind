@@ -135,7 +135,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                     Repositories.Add(typeof(SupplierRepository),
                         new SupplierRepository(Connection, Transaction));
 
-                return (ISupplierRepository)Repositories[typeof(SupplierRepository)];
+                return (ISupplierRepository) Repositories[typeof(SupplierRepository)];
             }
         }
 
@@ -147,7 +147,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                     Repositories.Add(typeof(PurchaseOrderRepository),
                         new PurchaseOrderRepository(Connection, Transaction));
 
-                return (IPurchaseOrderRepository)Repositories[typeof(PurchaseOrderRepository)];
+                return (IPurchaseOrderRepository) Repositories[typeof(PurchaseOrderRepository)];
             }
         }
 
@@ -159,7 +159,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                     Repositories.Add(typeof(PurchaseOrderDetailRepository),
                         new PurchaseOrderDetailRepository(Connection, Transaction));
 
-                return (IPurchaseOrderDetailRepository)Repositories[typeof(PurchaseOrderDetailRepository)];
+                return (IPurchaseOrderDetailRepository) Repositories[typeof(PurchaseOrderDetailRepository)];
             }
         }
 
@@ -171,7 +171,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                     Repositories.Add(typeof(PurchaseOrderStatusRepository),
                         new PurchaseOrderStatusRepository(Connection, Transaction));
 
-                return (IPurchaseOrderStatusRepository)Repositories[typeof(PurchaseOrderStatusRepository)];
+                return (IPurchaseOrderStatusRepository) Repositories[typeof(PurchaseOrderStatusRepository)];
             }
         }
 
@@ -183,7 +183,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                     Repositories.Add(typeof(InventoryTransactionRepository),
                         new InventoryTransactionRepository(Connection, Transaction));
 
-                return (IInventoryTransactionRepository)Repositories[typeof(InventoryTransactionRepository)];
+                return (IInventoryTransactionRepository) Repositories[typeof(InventoryTransactionRepository)];
             }
         }
 
@@ -195,7 +195,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork
                     Repositories.Add(typeof(InvoiceRepository),
                         new InvoiceRepository(Connection, Transaction));
 
-                return (IInvoiceRepository)Repositories[typeof(InvoiceRepository)];
+                return (IInvoiceRepository) Repositories[typeof(InvoiceRepository)];
             }
         }
     }

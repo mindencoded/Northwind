@@ -20,7 +20,8 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.Repositories
         {
         }
 
-        public SupplierRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public SupplierRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(
+            connection, transaction, ignoreNulls)
         {
         }
 

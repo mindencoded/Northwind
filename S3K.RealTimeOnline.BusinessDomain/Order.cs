@@ -99,7 +99,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
         public virtual ICollection<Invoice> Invoices { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        
+
         public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; }
     }
 }

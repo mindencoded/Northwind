@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[SUPPLIER]
 (
-	[ID]             INT NOT NULL IDENTITY,
+	[ID]             INT NOT NULL IDENTITY(1,1),
 	[COMPANY]         VARCHAR(50) ,
 	[LAST_NAME]       VARCHAR(50) ,
 	[FIRST_NAME]      VARCHAR(50) ,

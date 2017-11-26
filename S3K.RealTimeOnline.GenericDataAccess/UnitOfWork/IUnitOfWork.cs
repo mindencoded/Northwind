@@ -52,5 +52,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 
         Task<Tuple<int, int>> ExecuteNonQueryAsync(string commandText, string returnParameterName,
             string outputParameterName, params object[] values);
+
+        int NextIdentity<T>() where T : class;
+
+        Task<int> NextIdentityAsync<T>() where T : class;
     }
 }

@@ -16,11 +16,13 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.Repositories
         {
         }
 
-        public RoleDetailRepository(SqlConnection connection, SqlTransaction transaction) : base(connection, transaction)
+        public RoleDetailRepository(SqlConnection connection, SqlTransaction transaction) : base(connection,
+            transaction)
         {
         }
 
-        public RoleDetailRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public RoleDetailRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(
+            connection, transaction, ignoreNulls)
         {
         }
 

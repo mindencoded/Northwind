@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[ORDER]
 (
-	[ID]              INT NOT NULL IDENTITY,
+	[ID]              INT NOT NULL IDENTITY(1,1),
 	[EMPLOYEE_ID]     INT,
 	[CUSTOMER_ID]     INT,
 	[ORDER_DATE]      DATETIME,

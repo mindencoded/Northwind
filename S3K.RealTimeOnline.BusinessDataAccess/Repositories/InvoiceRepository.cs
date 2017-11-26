@@ -1,5 +1,4 @@
-﻿
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using S3K.RealTimeOnline.BusinessDataAccess.Repositories.Contracts;
 using S3K.RealTimeOnline.BusinessDomain;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
@@ -21,7 +20,8 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.Repositories
         {
         }
 
-        public InvoiceRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public InvoiceRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(
+            connection, transaction, ignoreNulls)
         {
         }
 

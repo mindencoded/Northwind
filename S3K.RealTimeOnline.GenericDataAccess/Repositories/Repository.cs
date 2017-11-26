@@ -474,7 +474,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
         public object IdentCurrent()
         {
-            string query = "SELECT IDENT_CURRENT('" + EntityUtils.GetTableName<T>() + "');";
+            string query = "SELECT IDENT_CURRENT('" + EntityUtils.GetSchema<T>() + "." + EntityUtils.GetTableName<T>() +
+                           "');";
             SqlCommand command = Transaction != null
                 ? new SqlCommand(query, Connection, Transaction)
                 : new SqlCommand(query, Connection);

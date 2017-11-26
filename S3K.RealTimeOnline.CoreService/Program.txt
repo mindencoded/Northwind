@@ -21,7 +21,7 @@ using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
 
-namespace S3K.RealTimeOnline.ConsoleService
+namespace S3K.RealTimeOnline.WindowsService
 {
     internal class Program
     {

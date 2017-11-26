@@ -26,7 +26,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork
             {
                 if (!Repositories.ContainsKey(typeof(RoleRepository)))
                     Repositories.Add(typeof(RoleRepository), new RoleRepository(Connection, Transaction));
-                return (IRoleRepository)Repositories[typeof(RoleRepository)];
+                return (IRoleRepository) Repositories[typeof(RoleRepository)];
             }
         }
 
@@ -36,7 +36,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork
             {
                 if (!Repositories.ContainsKey(typeof(RoleDetailRepository)))
                     Repositories.Add(typeof(RoleDetailRepository), new RoleDetailRepository(Connection, Transaction));
-                return (IRoleDetailRepository)Repositories[typeof(RoleDetailRepository)];
+                return (IRoleDetailRepository) Repositories[typeof(RoleDetailRepository)];
             }
         }
 
@@ -46,7 +46,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork
             {
                 if (!Repositories.ContainsKey(typeof(UserTypeRepository)))
                     Repositories.Add(typeof(UserTypeRepository), new UserTypeRepository(Connection, Transaction));
-                return (IUserTypeRepository)Repositories[typeof(UserTypeRepository)];
+                return (IUserTypeRepository) Repositories[typeof(UserTypeRepository)];
             }
         }
     }

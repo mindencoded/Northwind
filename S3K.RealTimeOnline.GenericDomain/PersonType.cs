@@ -1,8 +1,12 @@
-﻿
-namespace S3K.RealTimeOnline.GenericDomain
+﻿namespace S3K.RealTimeOnline.GenericDomain
 {
     public enum PersonType
     {
-        Employee, Customer, Shipper, Supplier, Legal, Physical
+        Employee,
+        Customer,
+        Shipper,
+        Supplier,
+        Legal,
+        Physical
     }
 }

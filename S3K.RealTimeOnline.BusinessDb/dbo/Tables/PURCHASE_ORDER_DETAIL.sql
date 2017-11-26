@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[PURCHASE_ORDER_DETAIL]
 (
-	[ID]                  INT NOT NULL IDENTITY,
+	[ID]                  INT NOT NULL IDENTITY(1,1),
 	[PURCHASE_ORDER_ID]   INT,
 	[PRODUCT_ID]          INT,
 	[INVENTORY_ID]        INT,

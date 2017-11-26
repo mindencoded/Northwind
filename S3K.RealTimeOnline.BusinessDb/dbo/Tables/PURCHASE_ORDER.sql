@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[PURCHASE_ORDER]
 (
-	[ID]              INT NOT NULL IDENTITY,
+	[ID]              INT NOT NULL IDENTITY(1,1),
 	[SUPPLIER_ID]     INT,
 	[CREATED_BY]      INT,
 	[CREATION_DATE]   DATETIME,

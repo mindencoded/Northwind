@@ -12,15 +12,18 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.Repositories
         {
         }
 
-        public InventoryTransactionRepository(SqlConnection connection, bool ignoreNulls) : base(connection, ignoreNulls)
+        public InventoryTransactionRepository(SqlConnection connection, bool ignoreNulls) : base(connection,
+            ignoreNulls)
         {
         }
 
-        public InventoryTransactionRepository(SqlConnection connection, SqlTransaction transaction) : base(connection, transaction)
+        public InventoryTransactionRepository(SqlConnection connection, SqlTransaction transaction) : base(connection,
+            transaction)
         {
         }
 
-        public InventoryTransactionRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public InventoryTransactionRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) :
+            base(connection, transaction, ignoreNulls)
         {
         }
 

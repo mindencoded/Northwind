@@ -16,11 +16,13 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.Repositories
         {
         }
 
-        public PurchaseOrderDetailRepository(SqlConnection connection, SqlTransaction transaction) : base(connection, transaction)
+        public PurchaseOrderDetailRepository(SqlConnection connection, SqlTransaction transaction) : base(connection,
+            transaction)
         {
         }
 
-        public PurchaseOrderDetailRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public PurchaseOrderDetailRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) :
+            base(connection, transaction, ignoreNulls)
         {
         }
 

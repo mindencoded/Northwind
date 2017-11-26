@@ -43,7 +43,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Column("POSTED_TO_INVENTORY")]
         public bool PostedToInventory { get; set; }
 
-        public virtual  InventoryTransaction InventoryTransaction { get; set; }
+        public virtual InventoryTransaction InventoryTransaction { get; set; }
 
         public virtual Product Product { get; set; }
 

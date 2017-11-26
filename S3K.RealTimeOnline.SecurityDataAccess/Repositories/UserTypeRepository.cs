@@ -20,7 +20,8 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.Repositories
         {
         }
 
-        public UserTypeRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(connection, transaction, ignoreNulls)
+        public UserTypeRepository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls) : base(
+            connection, transaction, ignoreNulls)
         {
         }
 

@@ -43,7 +43,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
         public virtual Product Product { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-        
+
         public virtual ICollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
     }
 }

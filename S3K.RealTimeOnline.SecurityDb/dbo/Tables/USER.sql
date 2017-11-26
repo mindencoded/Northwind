@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[USER] (
-    [ID]            INT NOT NULL IDENTITY,
+    [ID]            INT NOT NULL IDENTITY(1,1),
     [USERNAME]      VARCHAR (50) NOT NULL,
     [PASSWORD]      VARCHAR (32) NOT NULL,
 	[ACTIVE]        BIT NOT NULL DEFAULT '1',

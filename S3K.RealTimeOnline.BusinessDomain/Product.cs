@@ -66,6 +66,5 @@ namespace S3K.RealTimeOnline.BusinessDomain
 
 
         public virtual ICollection<PurchaseOrderDetail> PurchaseOrderDetails { get; set; }
-        
     }
 }

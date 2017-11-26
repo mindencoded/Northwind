@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[INVOICE]
 (
-	[ID]            INT NOT NULL IDENTITY,
+	[ID]            INT NOT NULL IDENTITY(1,1),
 	[ORDER_ID]      INT,
 	[INVOICE_DATE]  DATETIME,
 	[DUE_DATE]      DATETIME,

@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Repositories;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
+using S3K.RealTimeOnline.GenericDomain;
 using Serilog;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
@@ -486,10 +487,54 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 
             await command.ExecuteNonQueryAsync();
 
-            int returnValue = (int)command.Parameters[returnParameterName].Value;
-            int outPutValue = (int)command.Parameters[outputParameterName].Value;
+            int returnValue = (int) command.Parameters[returnParameterName].Value;
+            int outPutValue = (int) command.Parameters[outputParameterName].Value;
 
             return new Tuple<int, int>(returnValue, outPutValue);
+        }
+
+        public int NextIdentity<T>() where T : class
+        {
+            string commandText = @"SELECT CASE WHEN(SELECT COUNT(1) FROM " + EntityUtils.GetSchema<T>() + ".[" +
+                                 EntityUtils.GetTableName<T>() + "]) = 0 THEN 1 ELSE IDENT_CURRENT('" +
+                                 EntityUtils.GetSchema<T>() + "." + EntityUtils.GetTableName<T>() +
+                                 "') + 1 END AS NextIdentity;";
+
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.Text
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            return (int) command.ExecuteScalar();
+        }
+
+        public async Task<int> NextIdentityAsync<T>() where T : class
+        {
+            string commandText = @"SELECT CASE WHEN(SELECT COUNT(1) FROM " + EntityUtils.GetSchema<T>() + ".[" +
+                                 EntityUtils.GetTableName<T>() + "]) = 0 THEN 1 ELSE IDENT_CURRENT('" +
+                                 EntityUtils.GetSchema<T>() + "." + EntityUtils.GetTableName<T>() +
+                                 "') + 1 END AS NextIdentity;";
+
+            SqlCommand command = new SqlCommand
+            {
+                Connection = Connection,
+                CommandText = commandText,
+                CommandType = CommandType.Text
+            };
+
+            if (Transaction != null)
+            {
+                command.Transaction = Transaction;
+            }
+
+            return (int) await command.ExecuteScalarAsync();
         }
 
         private T ExecuteCommand<T>(SqlCommand command)
@@ -549,13 +594,13 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
                     MethodInfo convertToGenericMethod = convertToMethod.MakeGenericMethod(entityType);
                     Type listType = typeof(List<>);
                     Type constructedListType = listType.MakeGenericType(entityType);
-                    IList listInstance = (IList)Activator.CreateInstance(constructedListType, null);
+                    IList listInstance = (IList) Activator.CreateInstance(constructedListType, null);
                     while (await reader.ReadAsync())
                     {
-                        object entity = convertToGenericMethod.Invoke(reader, new object[] { reader });
+                        object entity = convertToGenericMethod.Invoke(reader, new object[] {reader});
                         listInstance.Add(entity);
                     }
-                    returnInstance = (T)listInstance;
+                    returnInstance = (T) listInstance;
                 }
             }
             else
