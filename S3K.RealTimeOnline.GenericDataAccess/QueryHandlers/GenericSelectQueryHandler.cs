@@ -7,7 +7,7 @@ using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
 {
     public class
-        GenericSelectQueryHandler<TEntity, TUnitOfWork> : IQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>
+        GenericSelectQueryHandler<TUnitOfWork, TEntity> : IQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>
         where TEntity : class
         where TUnitOfWork : IUnitOfWork
     {
