@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -70,7 +71,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, string orderBy = null, int? page = null,
+        public virtual IEnumerable<ExpandoObject> Select(IList<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null)
         {
             using (SqlCommand command = CreateCommandSelect(columns, orderBy, page, pageSize))
@@ -82,7 +83,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, string orderBy = null,
+        public virtual async Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, string orderBy = null,
             int? page = null, int? pageSize = null)
         {
             using (SqlCommand command = CreateCommandSelect(columns, orderBy, page, pageSize))
@@ -173,7 +174,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, object conditions,
+        public virtual IEnumerable<ExpandoObject> Select(IList<string> columns, object conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -186,7 +187,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, object conditions,
+        public virtual async Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, object conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -199,7 +200,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
+        public virtual IEnumerable<ExpandoObject> Select(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -212,7 +213,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns,
+        public virtual async Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns,
             IDictionary<string, object> conditions, string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -225,7 +226,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions,
+        public virtual IEnumerable<ExpandoObject> Select(IList<string> columns, IList<ParameterBuilder> conditions,
             string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -238,7 +239,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             }
         }
 
-        public virtual async Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns,
+        public virtual async Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns,
             IList<ParameterBuilder> conditions, string orderBy = null, int? page = null, int? pageSize = null)
         {
             using (SqlCommand command =
@@ -540,7 +541,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             {
                 if (page != null && pageSize != null)
                 {
-                    columnQuery = EntityUtils.JoinColumns<T>(true);
+                    columnQuery = EntityUtils.JoinColumns<T>(false, true);
                 }
                 else
                 {
@@ -620,7 +621,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             {
                 if (page != null && pageSize != null)
                 {
-                    columnQuery = EntityUtils.JoinColumns<T>(true);
+                    columnQuery = EntityUtils.JoinColumns<T>(false, true);
                 }
                 else
                 {
@@ -799,7 +800,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             {
                 if (page != null && pageSize != null)
                 {
-                    columnQuery = EntityUtils.JoinColumns<T>(true);
+                    columnQuery = EntityUtils.JoinColumns<T>(false, true);
                 }
                 else
                 {
@@ -982,11 +983,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             {
                 if (page != null && pageSize != null)
                 {
-                    columnQuery = EntityUtils.JoinColumns<T>(true);
+                    columnQuery = EntityUtils.JoinColumns<T>(true, true);
                 }
                 else
                 {
-                    columnQuery = EntityUtils.JoinColumns<T>();
+                    columnQuery = EntityUtils.JoinColumns<T>(true);
                 }
             }
 
@@ -1183,8 +1184,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 });
 
                 columnQuery = columns != null
-                    ? EntityUtils.SimpleJoinColumns<T>(columns, true)
-                    : EntityUtils.SimpleJoinColumns<T>();
+                    ? EntityUtils.SimpleJoinProperties<T>(columns)
+                    : EntityUtils.SimpleJoinProperties<T>();
 
                 query = @"WITH PageNumbers AS (" + query + ") SELECT " + columnQuery +
                         " FROM  PageNumbers WITH (NOLOCK) WHERE RowNumber BETWEEN ((@Page - 1) * @PageSize + 1) AND (@Page * @PageSize)";

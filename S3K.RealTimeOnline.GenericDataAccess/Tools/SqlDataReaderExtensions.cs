@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
@@ -129,7 +128,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             return result;
         }
 
-        public static IList<dynamic> ConvertToDynamicList(this SqlDataReader reader)
+        /*public static IList<dynamic> ConvertToDynamicList(this SqlDataReader reader)
         {
             IList<dynamic> result = new List<dynamic>();
             IList<string> names = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
@@ -161,6 +160,36 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                 dynamicList.Add((dynamic) expandoObject);
             }
             return dynamicList;
+        }*/
+
+        public static IList<ExpandoObject> ConvertToDynamicList(this SqlDataReader reader)
+        {
+            IList<ExpandoObject> expandoList = new List<ExpandoObject>();
+            while (reader.Read())
+            {
+                expandoList.Add(ConvertToExpando(reader));
+            }
+            return expandoList;
+        }
+
+        public static async Task<IList<ExpandoObject>> ConvertToDynamicListAsync(this SqlDataReader reader)
+        {
+            IList<ExpandoObject> expandoList = new List<ExpandoObject>();
+            while (await reader.ReadAsync())
+            {
+                expandoList.Add(ConvertToExpando(reader));
+            }
+            return expandoList;
+        }
+
+        public static ExpandoObject ConvertToExpando(IDataRecord record)
+        {
+            var expandoObject = new ExpandoObject() as IDictionary<string, object>;
+
+            for (var i = 0; i < record.FieldCount; i++)
+                expandoObject.Add(record.GetName(i), record[i]);
+
+            return (ExpandoObject)expandoObject;
         }
     }
 }

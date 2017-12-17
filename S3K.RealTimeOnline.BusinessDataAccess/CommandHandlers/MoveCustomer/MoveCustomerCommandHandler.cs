@@ -15,6 +15,7 @@ namespace S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer
 
         public virtual void Handle(MoveCustomerCommand command)
         {
+
         }
 
         public virtual Task HandleAsync(MoveCustomerCommand command)

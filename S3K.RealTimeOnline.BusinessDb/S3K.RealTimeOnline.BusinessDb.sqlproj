@@ -61,6 +61,7 @@
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\Foreign keys" />
     <Folder Include="dbo\Stored procedures" />
+    <Folder Include="dbo\Data" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\CUSTOMER.sql" />
@@ -103,5 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="S3K.RealTimeOnline.BusinessDb.publish.xml" />
+    <None Include="dbo\Data\CUSTOMER.sql" />
   </ItemGroup>
 </Project>

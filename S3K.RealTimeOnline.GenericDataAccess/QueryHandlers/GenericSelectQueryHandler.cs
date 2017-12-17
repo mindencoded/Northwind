@@ -23,14 +23,13 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                IEnumerable<ExpandoObject> result = _unitOfWork.Repository<TEntity>().Select(
+                return _unitOfWork.Repository<TEntity>().Select(
                     query.Columns,
                     query.Conditions,
                     query.OrderBy,
                     query.Page,
                     query.PageSize
-                ) as IEnumerable<ExpandoObject>;
-                return result;
+                );
             }
         }
 
@@ -39,14 +38,13 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             using (_unitOfWork)
             {
                 await _unitOfWork.OpenAsync();
-                IEnumerable<ExpandoObject> result = await _unitOfWork.Repository<TEntity>().SelectAsync(
+                return await _unitOfWork.Repository<TEntity>().SelectAsync(
                     query.Columns,
                     query.Conditions,
                     query.OrderBy,
                     query.Page,
                     query.PageSize
-                ) as IEnumerable<ExpandoObject>;
-                return result;
+                );
             }
         }
     }

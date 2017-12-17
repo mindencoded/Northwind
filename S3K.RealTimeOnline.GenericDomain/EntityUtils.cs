@@ -10,7 +10,7 @@ namespace S3K.RealTimeOnline.GenericDomain
 {
     public class EntityUtils
     {
-        public static string JoinColumns<T>(bool includeRowNumber = false) where T : class
+        public static string JoinColumns<T>(bool useColumnAlias = false, bool includeRowNumber = false) where T : class
         {
             Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
@@ -19,23 +19,32 @@ namespace S3K.RealTimeOnline.GenericDomain
             {
                 ColumnAttribute attribute =
                     property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                string columnName = attribute != null ? attribute.Name : property.Name;
-                columns.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnName + "]");
+                if (attribute != null)
+                {
+                    string column = GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + attribute.Name + "]";
+                    if (useColumnAlias)
+                    {
+                        column = column + " AS '" + property.Name + "'";
+                    }
+                    columns.Add(column);
+                }          
             }
 
             if (includeRowNumber)
             {
                 IList<string> keyNames = new List<string>();
-                foreach (PropertyInfo propertyInfo in properties)
+                foreach (PropertyInfo property in properties)
                 {
                     KeyAttribute attribute =
-                        (KeyAttribute) Attribute.GetCustomAttribute(propertyInfo, typeof(KeyAttribute));
+                        (KeyAttribute) Attribute.GetCustomAttribute(property, typeof(KeyAttribute));
                     if (attribute != null)
                     {
-                        ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyInfo.Name)
-                            .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                        string keyName = columnAttribute != null ? columnAttribute.Name : propertyInfo.Name;
-                        keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + keyName + "]");
+                        ColumnAttribute columnAttribute = properties.First(x => x.Name == property.Name)
+                            .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();                
+                        if (columnAttribute != null)
+                        {
+                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name + "]");
+                        }                       
                     }
                 }
                 columns.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
@@ -59,7 +68,10 @@ namespace S3K.RealTimeOnline.GenericDomain
                 {
                     ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyName)
                         .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                    columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    if (columnAttribute != null)
+                    {
+                        columnName = columnAttribute.Name;
+                    }
                 }
                 else
                 {
@@ -94,8 +106,10 @@ namespace S3K.RealTimeOnline.GenericDomain
                     {
                         ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyInfo.Name)
                             .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                        string keyName = columnAttribute != null ? columnAttribute.Name : propertyInfo.Name;
-                        keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + keyName + "]");
+                        if (columnAttribute != null)
+                        {
+                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name + "]");
+                        } 
                     }
                 }
                 columnList.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
@@ -103,7 +117,7 @@ namespace S3K.RealTimeOnline.GenericDomain
             return string.Join(", ", columnList);
         }
 
-        public static string SimpleJoinColumns<T>() where T : class
+        public static string SimpleJoinColumns<T>(bool useColumnAlias = false) where T : class
         {
             var type = typeof(T);
             var properties = type.GetProperties();
@@ -114,12 +128,21 @@ namespace S3K.RealTimeOnline.GenericDomain
                     property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                 if (attribute != null)
-                    columns.Add("[" + attribute.Name + "]");
-                else
-                    columns.Add(property.Name);
+                {
+                    string column = "[" + attribute.Name + "]";
+                    if (useColumnAlias)
+                    {
+                        column += " AS " + property.Name;
+                    }
+                    columns.Add(column);
+                }
+
             }
+            
             return string.Join(",", columns);
         }
+
+
 
         public static string SimpleJoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false)
             where T : class
@@ -137,7 +160,10 @@ namespace S3K.RealTimeOnline.GenericDomain
                 {
                     ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyName)
                         .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
-                    columnName = columnAttribute != null ? "[" + columnAttribute.Name + "]" : "[" + propertyName + "]";
+                    if (columnAttribute != null)
+                    {
+                        columnName = "[" + columnAttribute.Name + "]";
+                    }
                 }
                 else
                 {
@@ -156,6 +182,64 @@ namespace S3K.RealTimeOnline.GenericDomain
                 if (useColumnAlias)
                 {
                     columnName += " AS '" + propertyName + "'";
+                }
+                columnList.Add(columnName);
+            }
+            return string.Join(", ", columnList);
+        }
+
+        public static string SimpleJoinProperties<T>() where T : class
+        {
+            var type = typeof(T);
+            var properties = type.GetProperties();
+            var columns = new List<string>();
+            foreach (var property in properties)
+            {
+                var attribute =
+                    property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+
+                if (attribute != null)
+                {
+                    columns.Add("[" + property.Name + "]");
+                }
+
+            }
+
+            return string.Join(",", columns);
+        }
+
+        public static string SimpleJoinProperties<T>(IEnumerable<string> columns)
+            where T : class
+        {
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            IList<string> columnAttributeList = properties
+                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
+            IList<string> columnList = new List<string>();
+            foreach (string item in columns)
+            {
+                string propertyName = item;
+                string columnName = null;
+                if (properties.FirstOrDefault(x => x.Name == propertyName) != null)
+                {
+                    ColumnAttribute columnAttribute = properties.First(x => x.Name == propertyName)
+                        .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    if (columnAttribute != null)
+                    {
+                        columnName = "[" + propertyName + "]";
+                    }
+                }
+                else
+                {
+                    if (columnAttributeList.Contains(propertyName))
+                    {
+                        columnName = "[" + UnderscoreCaseToTitleCase(propertyName) + "]";
+                    }
+                }
+
+                if (columnName == null)
+                {
+                    continue;
                 }
                 columnList.Add(columnName);
             }
@@ -209,11 +293,9 @@ namespace S3K.RealTimeOnline.GenericDomain
                 if (propertyInfo.Name != propertyName) continue;
                 ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes
                     (typeof(ColumnAttribute), false).Cast<ColumnAttribute>().FirstOrDefault();
-                if (columnAttribute != null)
-                {
-                    columnName = columnAttribute.Name;
-                    break;
-                }
+                if (columnAttribute == null) continue;
+                columnName = columnAttribute.Name;
+                break;
             }
 
             if (columnName == null) return null;

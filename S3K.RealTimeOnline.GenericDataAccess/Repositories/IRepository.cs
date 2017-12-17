@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Threading.Tasks;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
@@ -15,10 +16,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
     public interface IRepository<T> : IRepository, IDisposable where T : class
     {
-        IEnumerable<dynamic> Select(IList<string> columns, string orderBy = null, int? page = null,
+        IEnumerable<ExpandoObject> Select(IList<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null);
 
-        Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, string orderBy = null, int? page = null,
+        Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null);
 
         IEnumerable<T> Select(object conditions, string orderBy = null, int? page = null, int? pageSize = null);
@@ -39,24 +40,24 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         Task<IEnumerable<T>> SelectAsync(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
             int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, object conditions, string orderBy = null, int? page = null,
+        IEnumerable<ExpandoObject> Select(IList<string> columns, object conditions, string orderBy = null, int? page = null,
             int? pageSize = null);
 
-        Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, object conditions, string orderBy = null,
+        Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, object conditions, string orderBy = null,
             int? page = null,
             int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, IDictionary<string, object> conditions,
+        IEnumerable<ExpandoObject> Select(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null);
 
-        Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, IDictionary<string, object> conditions,
+        Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<dynamic> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null,
+        IEnumerable<ExpandoObject> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null,
             int? page = null,
             int? pageSize = null);
 
-        Task<IEnumerable<dynamic>> SelectAsync(IList<string> columns, IList<ParameterBuilder> conditions,
+        Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, IList<ParameterBuilder> conditions,
             string orderBy = null,
             int? page = null,
             int? pageSize = null);
