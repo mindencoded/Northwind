@@ -21,9 +21,22 @@ namespace S3K.RealTimeOnline.Contracts
             Method = "POST", 
             BodyStyle = WebMessageBodyStyle.Bare, 
             RequestFormat = WebMessageFormat.Json, 
-            ResponseFormat = WebMessageFormat.Json, 
             UriTemplate = "/InsertCustomer")]
         void InsertCustomer(CustomerDto customer);
+
+        [OperationContract]
+        [WebInvoke(
+            Method = "PUT",
+            BodyStyle = WebMessageBodyStyle.Bare,
+            RequestFormat = WebMessageFormat.Json,
+            UriTemplate = "/UpdateCustomer/{id}")]
+        void UpdateCustomer(string id, CustomerDto customer);
+
+        [OperationContract]
+        [WebInvoke(
+            Method = "DELETE",
+            UriTemplate = "/DeleteCustomerById/{id}")]
+        void DeleteCustomerById(string id);
 
         [OperationContract]
         [WebGet(

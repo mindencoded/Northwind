@@ -1,4 +1,6 @@
-﻿SET IDENTITY_INSERT CUSTOMER ON
+﻿DBCC CHECKIDENT ('[CUSTOMER]', RESEED, 0);
+GO
+SET IDENTITY_INSERT CUSTOMER ON
 INSERT INTO CUSTOMER ( [ID], [COMPANY], [LAST_NAME], [FIRST_NAME], [EMAIL_ADDRESS], [JOB_TITLE], [BUSINESS_PHONE], [HOME_PHONE], [MOBILE_PHONE], [FAX_NUMBER], [ADDRESS], [CITY], [STATE_PROVINCE], [ZIP_POSTAL_CODE], [COUNTRY_REGION], [WEB_PAGE], [NOTES], [ATTACHMENTS]) VALUES
      (1,  'Company A' , 'Bedecs'           , 'Anna'      , NULL, 'Owner'                    , '(123)555-0100', NULL, NULL, '(123)555-0101', '123 1st Street' , 'Seattle'       , 'WA', '99999', 'USA', NULL, NULL, NULL)
     ,(2,  'Company B' , 'Gratacos Solsona' , 'Antonio'   , NULL, 'Owner'                    , '(123)555-0100', NULL, NULL, '(123)555-0101', '123 2nd Street' , 'Boston'        , 'MA', '99999', 'USA', NULL, NULL, NULL)

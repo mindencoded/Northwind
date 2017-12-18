@@ -75,6 +75,8 @@
     <Compile Include="CommandHandlers\GenericDeleteByIdCommandHandler.cs" />
     <Compile Include="CommandHandlers\GenericDeleteCommandHandler.cs" />
     <Compile Include="CommandHandlers\GenericInsertCommandHandler.cs" />
+    <Compile Include="QueryHandlers\GenericSelectByIdQuery.cs" />
+    <Compile Include="QueryHandlers\GenericSelectByIdQueryHandler.cs" />
     <Compile Include="QueryHandlers\GenericSelectQueryHandler.cs" />
     <Compile Include="CommandHandlers\GenericUpdateCommandHandler.cs" />
     <Compile Include="Tools\ICommandHandler.cs" />
