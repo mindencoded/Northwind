@@ -5,9 +5,11 @@ using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.Contracts;
-using S3K.RealTimeOnline.GenericDataAccess.CommandHandlers;
+using S3K.RealTimeOnline.Core.Decorators;
+using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
+using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.GenericDomain;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using Unity;
@@ -20,6 +22,29 @@ namespace S3K.RealTimeOnline.Core
     {
         private static ConfigContainer _instance;
 
+        public static readonly IDictionary<GenericCommandType, Type> GenericCommandHandlerTypeDictionary =
+            new Dictionary<GenericCommandType, Type>
+            {
+                {GenericCommandType.Insert, typeof(GenericInsertCommandHandler<>)},
+                {GenericCommandType.Update, typeof(GenericUpdateCommandHandler<>)},
+                {GenericCommandType.Delete, typeof(GenericDeleteCommandHandler<>)},
+                {GenericCommandType.DeleteById, typeof(GenericDeleteByIdCommandHandler<>)}
+            };
+
+        public static readonly IDictionary<UnitOfWorkType, Type> UnitOfWorkDictionary =
+            new Dictionary<UnitOfWorkType, Type>
+            {
+                {UnitOfWorkType.Business, typeof(IBusinessUnitOfWork)},
+                {UnitOfWorkType.Security, typeof(ISecurityUnitOfWork)},
+            };
+
+        private static readonly IDictionary<UnitOfWorkType, string> DomainAssembliesDictionary =
+            new Dictionary<UnitOfWorkType, string>
+            {
+                {UnitOfWorkType.Business, "S3K.RealTimeOnline.BusinessDomain"},
+                {UnitOfWorkType.Security, "S3K.RealTimeOnline.SecurityDomain"},
+            };
+
         private ConfigContainer(IUnityContainer container)
         {
             Init(container);
@@ -31,6 +56,7 @@ namespace S3K.RealTimeOnline.Core
             {
                 _instance = new ConfigContainer(container);
             }
+
             return _instance;
         }
 
@@ -42,74 +68,120 @@ namespace S3K.RealTimeOnline.Core
                 new InjectionConstructor(DbManager.GetSqlConnection(securityDbConnectionName)));
             container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
                 new InjectionConstructor(DbManager.GetSqlConnection(businessDbConnectionName)));
-            IEnumerable<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().Where(x =>
-                x.GetName().Name == "S3K.RealTimeOnline.BusinessDataAccess" ||
-                x.GetName().Name == "S3K.RealTimeOnline.SecurityDataAccess" ||
-                x.GetName().Name == "S3K.RealTimeOnline.CommonDataAccess");
 
-            foreach (var assembly in assemblies)
+            IEnumerable<Assembly> currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+
+            IList<string> dataAccessAssemblyNames = new List<string>
             {
-                IEnumerable<Type> types = assembly.GetTypes().Where(t => t.GetInterfaces()
-                                                                             .Count(i => i.IsGenericType &&
-                                                                                         (i.GetGenericTypeDefinition() ==
-                                                                                          typeof(ICommandHandler<>) ||
-                                                                                          i.GetGenericTypeDefinition() ==
-                                                                                          typeof(IQueryHandler<,>))) >
-                                                                         0);
+                "S3K.RealTimeOnline.BusinessDataAccess",
+                "S3K.RealTimeOnline.SecurityDataAccess",
+                "S3K.RealTimeOnline.CommonDataAccess"
+            };
 
-                foreach (var type in types)
+            IEnumerable<Assembly> dataAccessAssemblies =
+                currentAssemblies.Where(x => dataAccessAssemblyNames.Contains(x.GetName().Name));
+
+            foreach (Assembly dataAccessAssembly in dataAccessAssemblies)
+            {
+                IEnumerable<Type> types = dataAccessAssembly.GetTypes().Where(t => t.GetInterfaces()
+                                                                                       .Count(i => i.IsGenericType &&
+                                                                                                   (i.GetGenericTypeDefinition() ==
+                                                                                                    typeof(
+                                                                                                        ICommandHandler<
+                                                                                                        >) ||
+                                                                                                    i.GetGenericTypeDefinition() ==
+                                                                                                    typeof(IQueryHandler
+                                                                                                        <,>))) >
+                                                                                   0);
+
+                foreach (Type type in types)
                 {
                     Type[] interfaces = type.GetInterfaces();
                     container.RegisterType(interfaces.First(), type);
                 }
             }
 
-            Type[] genericHandlerTypes =
-            {
-                typeof(GenericSelectQueryHandler<,>),
-                typeof(GenericDeleteByIdCommandHandler<,>),
-                typeof(GenericDeleteCommandHandler<,>),
-                typeof(GenericInsertCommandHandler<,>),
-                typeof(GenericUpdateCommandHandler<,>)
-            };
+            container
+                .RegisterType(
+                    typeof(ICommandHandler<>),
+                    typeof(TransactionCommandHandlerDecorator<>),
+                    HandlerDecoratorType.TransactionCommand.ToString(),
+                    new InjectionConstructor(new ResolvedParameter(typeof(ICommandHandler<>)))
+                );
 
-            IEnumerable<Type> businessDomainTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .First(x => x.GetName().Name == "S3K.RealTimeOnline.BusinessDomain").GetTypes()
-                .Where(t => typeof(Entity).IsAssignableFrom(t));
+            container
+                .RegisterType(
+                    typeof(ICommandHandler<>),
+                    typeof(ValidationCommandHandlerDecorator<>),
+                    HandlerDecoratorType.ValidationCommand.ToString(),
+                    new InjectionConstructor(new ResolvedParameter(typeof(ICommandHandler<>),
+                        HandlerDecoratorType.TransactionCommand.ToString()))
+                );
 
-            foreach (var type in businessDomainTypes)
+            foreach (KeyValuePair<UnitOfWorkType, string> domainAssembliesEntry in DomainAssembliesDictionary)
             {
-                foreach (var genericHandlerType in genericHandlerTypes)
+                IEnumerable<Type> domainTypes =
+                    GetTypesByAssemblyName(typeof(Entity), domainAssembliesEntry.Value);
+
+                foreach (Type domainType in domainTypes)
                 {
-                    Type genericType =
-                        genericHandlerType.MakeGenericType(
-                            typeof(IBusinessUnitOfWork), type);
-                    container.RegisterType(genericType);
+                    Type genericCommandHandlerType =
+                        typeof(GenericSelectByIdQueryHandler<,>).MakeGenericType(
+                            UnitOfWorkDictionary[domainAssembliesEntry.Key], domainType);
+                    container.RegisterType(genericCommandHandlerType);
                 }
             }
 
-            IEnumerable<Type> securityDomainTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .First(x => x.GetName().Name == "S3K.RealTimeOnline.SecurityDomain").GetTypes()
-                .Where(t => typeof(Entity).IsAssignableFrom(t));
 
-            foreach (var type in securityDomainTypes)
+            foreach (GenericCommandType genericCommandType in Enum.GetValues(typeof(GenericCommandType)))
             {
-                foreach (var genericHandlerType in genericHandlerTypes)
+                foreach (KeyValuePair<UnitOfWorkType, Type> unitOfWorkEntry in UnitOfWorkDictionary)
                 {
-                    Type genericType =
-                        genericHandlerType.MakeGenericType(
-                            typeof(ISecurityUnitOfWork), type);
-                    container.RegisterType(genericType);
+                    Type genericCommandHandlerType = GenericCommandHandlerTypeDictionary[genericCommandType]
+                        .MakeGenericType(unitOfWorkEntry.Value);
+                    container.RegisterType(typeof(IGenericCommandHandler), genericCommandHandlerType,
+                        unitOfWorkEntry.Key + "_" + genericCommandType);
+                    container
+                        .RegisterType(
+                            typeof(IGenericCommandHandler),
+                            typeof(TransactionGenericCommandHandlerDecorator),
+                            HandlerDecoratorType.TransactionCommand + "_" + unitOfWorkEntry.Key + "_" +
+                            genericCommandType,
+                            new InjectionConstructor(new ResolvedParameter(typeof(IGenericCommandHandler),
+                                unitOfWorkEntry.Key + "_" + genericCommandType))
+                        );
+
+                    if (genericCommandType == GenericCommandType.Insert ||
+                        genericCommandType == GenericCommandType.Update)
+                    {
+                        container
+                            .RegisterType(
+                                typeof(IGenericCommandHandler),
+                                typeof(ValidationGenericCommandHandlerDecorator),
+                                HandlerDecoratorType.ValidationCommand + "_" + unitOfWorkEntry.Key + "_" +
+                                genericCommandType,
+                                new InjectionConstructor(new ResolvedParameter(typeof(IGenericCommandHandler),
+                                    HandlerDecoratorType.TransactionCommand + "_" + unitOfWorkEntry.Key + "_" +
+                                    genericCommandType))
+                            );
+                    }
                 }
             }
 
-            IEnumerable<Type> serviceTypes = AppDomain.CurrentDomain.GetAssemblies()
+            IEnumerable<Type> serviceTypes = currentAssemblies
                 .First(x => x.GetName().Name == "S3K.RealTimeOnline.Contracts").GetTypes()
                 .Where(mytype => mytype.GetInterfaces().Contains(typeof(IMainService)) && mytype.IsInterface);
             foreach (Type type in serviceTypes)
             {
                 container.RegisterType(type, typeof(MainService));
             }
+        }
+
+        private IEnumerable<Type> GetTypesByAssemblyName(Type type, string assemblyName)
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .First(x => x.GetName().Name == assemblyName).GetTypes()
+                .Where(t => type.IsAssignableFrom(t));
         }
     }
 }

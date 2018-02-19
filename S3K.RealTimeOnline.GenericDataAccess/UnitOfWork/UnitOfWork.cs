@@ -22,6 +22,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
         protected bool IsDisposed;
         protected IDictionary<Type, object> Repositories = new Dictionary<Type, object>();
 
+
         protected UnitOfWork(SqlConnection connection)
         {
             Connection = connection;
@@ -35,6 +36,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             {
                 Transaction = Connection.BeginTransaction();
             }
+
             Initializer();
         }
 
@@ -86,6 +88,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             }
         }
 
+        public bool IsOpen()
+        {
+            return Connection.State == ConnectionState.Open;
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -99,6 +106,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
                 Repositories.Add(typeof(IRepository<T>),
                     Transaction != null ? new Repository<T>(Connection, Transaction) : new Repository<T>(Connection));
             }
+
             return Repositories[typeof(IRepository<T>)] as IRepository<T>;
         }
 
@@ -114,6 +122,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
                     : Activator.CreateInstance(type, Connection);
                 Repositories.Add(type, instance);
             }
+
             return Repositories[type];
         }
 
@@ -124,6 +133,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             {
                 repository.SetSqlTransaction(Transaction);
             }
+
             if (!Repositories.ContainsKey(repository.GetType()))
                 Repositories.Add(repository.GetType(), repository);
         }
@@ -140,6 +150,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 
                         Connection.Close();
                     }
+
                 IsDisposed = true;
             }
         }
@@ -313,6 +324,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             {
                 SetParameters(command, values);
             }
+
             return ExecuteCommand<T>(command);
         }
 
@@ -334,6 +346,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
             {
                 SetParameters(command, values);
             }
+
             return await ExecuteCommandAsync<T>(command);
         }
 
@@ -563,6 +576,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
                         object entity = convertToGenericMethod.Invoke(reader, new object[] {reader});
                         listInstance.Add(entity);
                     }
+
                     returnInstance = (T) listInstance;
                 }
             }
@@ -600,6 +614,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
                         object entity = convertToGenericMethod.Invoke(reader, new object[] {reader});
                         listInstance.Add(entity);
                     }
+
                     returnInstance = (T) listInstance;
                 }
             }

@@ -10,10 +10,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             PageSize = 200;
         }
 
-        [DataMember]
-        public int? Page { get; set; }
+        [DataMember] public int? Page { get; set; }
 
-        [DataMember]
-        public int? PageSize { get; set; }
+        [DataMember] public int? PageSize { get; set; }
     }
 }

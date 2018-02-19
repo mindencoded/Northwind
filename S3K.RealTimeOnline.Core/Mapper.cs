@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -17,11 +16,12 @@ namespace S3K.RealTimeOnline.Core
 
         protected virtual void CopyMatchingProperties(TSource source, TDest dest)
         {
-            foreach (PropertyInfo destProp in typeof(TDest).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanWrite))
+            foreach (PropertyInfo destProp in typeof(TDest).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                .Where(p => p.CanWrite))
             {
                 PropertyInfo sourceProp =
-                    typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance).
-                        FirstOrDefault(p => p.Name == destProp.Name && p.PropertyType == destProp.PropertyType);
+                    typeof(TSource).GetProperties(BindingFlags.Public | BindingFlags.Instance).FirstOrDefault(p =>
+                        p.Name == destProp.Name && p.PropertyType == destProp.PropertyType);
                 if (sourceProp != null)
                 {
                     destProp.SetValue(dest, sourceProp.GetValue(source, null), null);

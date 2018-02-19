@@ -7,9 +7,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("INVENTORY_TRANSACTION")]
     public class InventoryTransaction
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [ForeignKey("InventoryTransactionType")]
         [Column("TYPE_ID")]
@@ -19,8 +17,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Column("PRODUCT_ID")]
         public int? ProductId { get; set; }
 
-        [Column("QUANTITY")]
-        public int Quantity { get; set; }
+        [Column("QUANTITY")] public int Quantity { get; set; }
 
         [ForeignKey("PurchaseOrder")]
         [Column("PURCHASE_ORDER_ID")]

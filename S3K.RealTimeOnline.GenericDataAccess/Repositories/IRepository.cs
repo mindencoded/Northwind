@@ -40,7 +40,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         Task<IEnumerable<T>> SelectAsync(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
             int? pageSize = null);
 
-        IEnumerable<ExpandoObject> Select(IList<string> columns, object conditions, string orderBy = null, int? page = null,
+        IEnumerable<ExpandoObject> Select(IList<string> columns, object conditions, string orderBy = null,
+            int? page = null,
             int? pageSize = null);
 
         Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, object conditions, string orderBy = null,
@@ -53,7 +54,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, IDictionary<string, object> conditions,
             string orderBy = null, int? page = null, int? pageSize = null);
 
-        IEnumerable<ExpandoObject> Select(IList<string> columns, IList<ParameterBuilder> conditions, string orderBy = null,
+        IEnumerable<ExpandoObject> Select(IList<string> columns, IList<ParameterBuilder> conditions,
+            string orderBy = null,
             int? page = null,
             int? pageSize = null);
 

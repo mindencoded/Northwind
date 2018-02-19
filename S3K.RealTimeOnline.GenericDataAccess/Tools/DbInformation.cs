@@ -51,6 +51,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     results = reader.ConvertToList<ColumnInfo>();
                 }
             }
+
             return results;
         }
 
@@ -82,6 +83,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     columnInfo = reader.ConvertToList<ColumnInfo>().FirstOrDefault();
                 }
             }
+
             return columnInfo;
         }
 
@@ -106,6 +108,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                         return string.Format("SQL Server {0}", versionNumber);
                 }
             }
+
             throw new Exception("Invalid Server Version");
         }
     }

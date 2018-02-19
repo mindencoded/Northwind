@@ -9,9 +9,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("PURCHASE_ORDER")]
     public class PurchaseOrder : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [ForeignKey("Supplier")]
         [Column("SUPPLIER_ID")]
@@ -21,29 +19,25 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Column("CREATED_BY")]
         public int? CreatedBy { get; set; }
 
-        [Column("CREATION_DATE")]
-        public DateTime? CreationDate { get; set; }
+        [Column("CREATION_DATE")] public DateTime? CreationDate { get; set; }
 
         [ForeignKey("Submitter")]
         [Column("SUBMITTED_BY")]
         public int? SubmittedBy { get; set; }
 
-        [Column("SUBMITTED_DATE")]
-        public DateTime? SubmittedDate { get; set; }
+        [Column("SUBMITTED_DATE")] public DateTime? SubmittedDate { get; set; }
 
         [ForeignKey("Approvator")]
         [Column("APPROVED_BY")]
         public int? ApprovedBy { get; set; }
 
-        [Column("APPROVED_DATE")]
-        public DateTime? ApprovedDate { get; set; }
+        [Column("APPROVED_DATE")] public DateTime? ApprovedDate { get; set; }
 
         [ForeignKey("PurchaseOrderStatus")]
         [Column("STATUS_ID")]
         public byte? StatusId { get; set; }
 
-        [Column("EXPECTED_DATE")]
-        public DateTime? ExpectedDate { get; set; }
+        [Column("EXPECTED_DATE")] public DateTime? ExpectedDate { get; set; }
 
         [Column("SHIPPING_FEE")]
         [RegularExpression(@"^\d+\.\d{0,4}$")]
@@ -57,16 +51,13 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [RegularExpression(@"^\d+\.\d{0,4}$")]
         public decimal PaymentAmount { get; set; }
 
-        [Column("PAYMENT_DATE")]
-        public DateTime? PaymentDate { get; set; }
+        [Column("PAYMENT_DATE")] public DateTime? PaymentDate { get; set; }
 
         [Column("PAYMENT_METHOD")]
         [StringLength(50)]
         public string PaymentMethod { get; set; }
 
-        [Column("NOTES")]
-        [StringLength(250)]
-        public string Notes { get; set; }
+        [Column("NOTES")] [StringLength(250)] public string Notes { get; set; }
 
         public virtual Supplier Supplier { get; set; }
 

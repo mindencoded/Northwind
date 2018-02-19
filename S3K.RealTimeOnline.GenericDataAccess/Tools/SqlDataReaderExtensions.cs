@@ -40,6 +40,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     }
                 }
             }
+
             return instance;
         }
 
@@ -67,6 +68,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     }
                 }
             }
+
             return instance;
         }
 
@@ -94,8 +96,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                         // ignored
                     }
                 }
+
                 result.Add(instance);
             }
+
             return result;
         }
 
@@ -123,8 +127,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                         // ignored
                     }
                 }
+
                 result.Add(instance);
             }
+
             return result;
         }
 
@@ -169,6 +175,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             {
                 expandoList.Add(ConvertToExpando(reader));
             }
+
             return expandoList;
         }
 
@@ -179,6 +186,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             {
                 expandoList.Add(ConvertToExpando(reader));
             }
+
             return expandoList;
         }
 
@@ -189,7 +197,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             for (var i = 0; i < record.FieldCount; i++)
                 expandoObject.Add(record.GetName(i), record[i]);
 
-            return (ExpandoObject)expandoObject;
+            return (ExpandoObject) expandoObject;
         }
     }
 }

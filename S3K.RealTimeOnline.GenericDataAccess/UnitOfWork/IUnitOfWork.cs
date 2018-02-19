@@ -17,6 +17,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.UnitOfWork
 
         Task OpenAsync();
 
+        bool IsOpen();
+
         IRepository<T> Repository<T>() where T : class;
 
         object Repository(Type type);

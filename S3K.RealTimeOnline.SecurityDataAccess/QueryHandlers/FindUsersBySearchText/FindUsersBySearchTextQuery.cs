@@ -6,9 +6,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUsersBySearchT
 {
     public class FindUsersBySearchTextQuery : IQuery<User[]>
     {
-        [Required]
-        [StringLength(25)]
-        public string SearchText { get; set; }
+        [Required] [StringLength(25)] public string SearchText { get; set; }
 
         public bool IncludeInactiveUsers { get; set; }
     }

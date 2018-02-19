@@ -72,14 +72,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandHandlers\GenericDeleteByIdCommandHandler.cs" />
-    <Compile Include="CommandHandlers\GenericDeleteCommandHandler.cs" />
-    <Compile Include="CommandHandlers\GenericInsertCommandHandler.cs" />
+    <Compile Include="GenericCommandHandlers\GenericCommand.cs" />
+    <Compile Include="GenericCommandHandlers\GenericDeleteByIdCommandHandler.cs" />
+    <Compile Include="GenericCommandHandlers\GenericDeleteCommandHandler.cs" />
+    <Compile Include="GenericCommandHandlers\GenericInsertCommandHandler.cs" />
     <Compile Include="QueryHandlers\GenericSelectByIdQuery.cs" />
     <Compile Include="QueryHandlers\GenericSelectByIdQueryHandler.cs" />
     <Compile Include="QueryHandlers\GenericSelectQueryHandler.cs" />
-    <Compile Include="CommandHandlers\GenericUpdateCommandHandler.cs" />
+    <Compile Include="GenericCommandHandlers\GenericUpdateCommandHandler.cs" />
+    <Compile Include="Tools\GenericCommandType.cs" />
     <Compile Include="Tools\ICommandHandler.cs" />
+    <Compile Include="Tools\IGenericCommandHandler.cs" />
+    <Compile Include="Tools\IGenericQueryHandler.cs" />
     <Compile Include="Tools\IQuery.cs" />
     <Compile Include="Tools\IQueryHandler.cs" />
     <Compile Include="Tools\IQueryProcessor.cs" />
@@ -99,6 +103,7 @@
     <Compile Include="Tools\TypeConvertor.cs" />
     <Compile Include="UnitOfWork\IUnitOfWork.cs" />
     <Compile Include="UnitOfWork\UnitOfWork.cs" />
+    <Compile Include="UnitOfWork\UnitOfWorkType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Snippets.txt" />
@@ -111,6 +116,10 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\S3K.RealTimeOnline.BusinessDomain\S3K.RealTimeOnline.BusinessDomain.csproj">
+      <Project>{77A65568-2D24-4D32-BAD8-8A489AD1DD92}</Project>
+      <Name>S3K.RealTimeOnline.BusinessDomain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
       <Name>S3K.RealTimeOnline.CommonUtils</Name>

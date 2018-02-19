@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -19,9 +20,11 @@ namespace S3K.RealTimeOnline.CommonUtils
                 .ToUpper();
         }
 
-        public static string ToTitleCase(this string s)
+        public static string ToTitleCase(this string str)
         {
-            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(s.ToLower());
+            TextInfo txtInfo = CultureInfo.CurrentCulture.TextInfo;
+            return txtInfo.ToTitleCase(str).Replace('_', ' ').Replace(" ", String.Empty);
+            //return txtInfo.ToTitleCase(s.ToLower());
         }
     }
 }

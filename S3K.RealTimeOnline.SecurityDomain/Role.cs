@@ -7,9 +7,7 @@ namespace S3K.RealTimeOnline.SecurityDomain
 {
     public class Role : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [Column("ROLE_NAME")]
         [StringLength(50)]

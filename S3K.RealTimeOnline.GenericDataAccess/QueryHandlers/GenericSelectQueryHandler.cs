@@ -7,8 +7,7 @@ using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
 {
     public class
-        GenericSelectQueryHandler<TUnitOfWork, TEntity> : IQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>
-        where TEntity : class
+        GenericSelectQueryHandler<TUnitOfWork> : IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>
         where TUnitOfWork : IUnitOfWork
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -18,7 +17,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public IEnumerable<ExpandoObject> Handle(GenericSelectQuery query)
+        public IEnumerable<ExpandoObject> Handle<TEntity>(GenericSelectQuery query) where TEntity : class
         {
             using (_unitOfWork)
             {
@@ -33,7 +32,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             }
         }
 
-        public async Task<IEnumerable<ExpandoObject>> HandleAsync(GenericSelectQuery query)
+        public async Task<IEnumerable<ExpandoObject>> HandleAsync<TEntity>(GenericSelectQuery query)
+            where TEntity : class
         {
             using (_unitOfWork)
             {

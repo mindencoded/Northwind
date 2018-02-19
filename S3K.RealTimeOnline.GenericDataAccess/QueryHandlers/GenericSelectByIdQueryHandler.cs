@@ -5,7 +5,7 @@ using S3K.RealTimeOnline.GenericDomain;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
 {
-    public class GenericSelectByIdQueryHandler<TUnitOfWork, TEntity> : IQueryHandler<GenericSelectByIdQuery<TEntity>, TEntity>
+    public class GenericSelectByIdQueryHandler<TUnitOfWork, TEntity> : IQueryHandler<GenericSelectByIdQuery, Entity>
         where TEntity : Entity
         where TUnitOfWork : IUnitOfWork
     {
@@ -16,7 +16,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public TEntity Handle(GenericSelectByIdQuery<TEntity> query)
+        public Entity Handle(GenericSelectByIdQuery query)
         {
             using (_unitOfWork)
             {
@@ -26,7 +26,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             }
         }
 
-        public async Task<TEntity> HandleAsync(GenericSelectByIdQuery<TEntity> query)
+        public async Task<Entity> HandleAsync(GenericSelectByIdQuery query)
         {
             using (_unitOfWork)
             {

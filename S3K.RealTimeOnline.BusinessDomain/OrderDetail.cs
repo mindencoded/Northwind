@@ -8,9 +8,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("ORDER_DETAIL")]
     public class OrderDetail : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [ForeignKey("Order")]
         [Column("ORDER_ID")]
@@ -32,8 +30,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [RegularExpression(@"^\d+\.\d{0,4}$")]
         public decimal Discount { get; set; }
 
-        [Column("DATE_ALLOCATED")]
-        public DateTime? DateAllocated { get; set; }
+        [Column("DATE_ALLOCATED")] public DateTime? DateAllocated { get; set; }
 
         [ForeignKey("OrderDetailStatus")]
         [Column("STATUS_ID")]

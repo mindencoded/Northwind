@@ -15,8 +15,10 @@ namespace S3K.RealTimeOnline.CommonUtils
                     exception = exception.InnerException;
                     continue;
                 }
+
                 break;
             }
+
             return message;
         }
     }

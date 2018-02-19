@@ -29,6 +29,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                        " AND " +
                        parameterName + "2";
             }
+
             IList<string> parameters = new List<string>();
             Type valueType = Value != null ? Value.GetType() : typeof(string);
             if (Operator == Comparison.Contains)
@@ -42,6 +43,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                         {
                             parameters.Add(parameterName + i);
                         }
+
                         return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" +
                                string.Join(", ", parameters) + ")";
                     }
@@ -63,9 +65,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                                            parameterName + i +
                                            " + '%'");
                         }
+
                         return "(" + string.Join(" OR ", parameters) + ")";
                     }
                 }
+
                 return "[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " + parameterName + " + '%'";
             }
 

@@ -266,6 +266,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     }
                 }
             }
+
             return result;
         }
 
@@ -283,6 +284,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     }
                 }
             }
+
             return result;
         }
 
@@ -691,6 +693,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                                      " + '%'");
                                 parameters.Add("@" + propertyName + i, items[i]);
                             }
+
                             conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
                         }
                         else
@@ -700,6 +703,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                 subConditionList.Add("@" + propertyName + i);
                                 parameters.Add("@" + propertyName + i, items[i]);
                             }
+
                             conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
                                               "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
                                               ")");
@@ -822,6 +826,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     {
                         continue;
                     }
+
                     string columnName = null;
                     string propertyName = condition.Key.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
 
@@ -880,6 +885,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                                      " + '%'");
                                 parameters.Add("@" + propertyName + i, items[i]);
                             }
+
                             conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
                         }
                         else
@@ -889,6 +895,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                 subConditionList.Add("@" + propertyName + i);
                                 parameters.Add("@" + propertyName + i, items[i]);
                             }
+
                             conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
                                               "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
                                               ")");
@@ -1041,6 +1048,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                     parameters.Add(parameterName + "1", field.GetValue(value));
                                     parameters.Add(parameterName + "2", field.GetValue(value));
                                 }
+
                                 typeValid = true;
                             }
 
@@ -1052,6 +1060,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                     parameters.Add(parameterName + "1", items[0]);
                                     parameters.Add(parameterName + "2", items[1]);
                                 }
+
                                 typeValid = true;
                             }
 
@@ -1077,6 +1086,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                 {
                                     parameters.Add(parameterName + i, items[i]);
                                 }
+
                                 conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
                                                   EntityUtils.GetTableName<T>() +
                                                   "].[" + columnName + "] IN (" +
@@ -1110,6 +1120,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                                          " + '%'");
                                     parameters.Add(parameterName + i, items[i]);
                                 }
+
                                 conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
                             }
                             else
@@ -1498,6 +1509,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 {
                     continue;
                 }
+
                 PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
                 string parameterName = '@' + typeProperty.Name;
 
@@ -1563,6 +1575,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                         parameterName += "_" + parameterCounter;
                         parameterCounter++;
                     }
+
                     conditionList.Add("[" + columnName + "] = " + parameterName);
 
                     SqlParameter sqlParameter = new SqlParameter
@@ -1681,6 +1694,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 string parameterName = '@' + propertyName;
                 conditionList.Add("[" + columnName + "] = " + parameterName);
             }
+
             return @"UPDATE " + EntityUtils.GetSchema<T>() + ".[" +
                    EntityUtils.GetTableName<T>() + "] SET " +
                    string.Join(", ", parameterList) + " WHERE " + string.Join(" AND ", conditionList);
@@ -1846,6 +1860,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     break;
                 }
             }
+
             string query = @"DELETE FROM " +
                            EntityUtils.GetSchema<T>() + ".[" +
                            EntityUtils.GetTableName<T>() + "]";
@@ -2057,6 +2072,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             {
                 command.Parameters.AddWithValue(propertyName, id);
             }
+
             return command;
         }
     }

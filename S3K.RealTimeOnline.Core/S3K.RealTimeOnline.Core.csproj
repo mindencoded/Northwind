@@ -47,7 +47,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Activation" />
     <Reference Include="System.ServiceModel.Web" />
@@ -84,8 +83,11 @@
     <Compile Include="CrudCustomerService.cs" />
     <Compile Include="CrudEmployeeService.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
+    <Compile Include="Decorators\HandlerDecoratorType.cs" />
     <Compile Include="Decorators\TransactionCommandHandlerDecorator.cs" />
+    <Compile Include="Decorators\TransactionGenericCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationCommandHandlerDecorator.cs" />
+    <Compile Include="Decorators\ValidationGenericCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationQueryHandlerDecorator.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -110,6 +112,10 @@
     <ProjectReference Include="..\S3K.RealTimeOnline.BusinessDomain\S3K.RealTimeOnline.BusinessDomain.csproj">
       <Project>{77a65568-2d24-4d32-bad8-8a489ad1dd92}</Project>
       <Name>S3K.RealTimeOnline.BusinessDomain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonDataAccess\S3K.RealTimeOnline.CommonDataAccess.csproj">
+      <Project>{f96fac62-7a5d-4c01-ab00-c003f7ee4081}</Project>
+      <Name>S3K.RealTimeOnline.CommonDataAccess</Name>
     </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>

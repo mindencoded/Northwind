@@ -2,10 +2,10 @@
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 
-namespace S3K.RealTimeOnline.GenericDataAccess.CommandHandlers
+namespace S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers
 {
-    public class GenericDeleteByIdCommandHandler<TUnitOfWork, TEntity> : ICommandHandler<object>
-        where TEntity : class where TUnitOfWork : IUnitOfWork
+    public class GenericDeleteByIdCommandHandler<TUnitOfWork> : IGenericCommandHandler
+        where TUnitOfWork : IUnitOfWork
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -14,7 +14,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.CommandHandlers
             _unitOfWork = unitOfWork;
         }
 
-        public void Handle(object command)
+        public void Handle<TEntity>(object command) where TEntity : class
         {
             using (_unitOfWork)
             {
@@ -23,7 +23,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.CommandHandlers
             }
         }
 
-        public async Task HandleAsync(object command)
+        public async Task HandleAsync<TEntity>(object command) where TEntity : class
         {
             using (_unitOfWork)
             {

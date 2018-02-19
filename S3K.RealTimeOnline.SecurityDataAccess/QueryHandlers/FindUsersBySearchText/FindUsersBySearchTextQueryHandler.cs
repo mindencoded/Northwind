@@ -30,12 +30,12 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUsersBySearchT
                 {"Username", query.SearchText},
                 {"Active", !query.IncludeInactiveUsers}
             };
+
             IList<string> columns = new List<string>
             {
                 "Username",
                 "Active"
             };
-
 
             using (_unitOfWork)
             {

@@ -26,8 +26,9 @@ namespace S3K.RealTimeOnline.GenericDomain
                     {
                         column = column + " AS '" + property.Name + "'";
                     }
+
                     columns.Add(column);
-                }          
+                }
             }
 
             if (includeRowNumber)
@@ -40,15 +41,18 @@ namespace S3K.RealTimeOnline.GenericDomain
                     if (attribute != null)
                     {
                         ColumnAttribute columnAttribute = properties.First(x => x.Name == property.Name)
-                            .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();                
+                            .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                         if (columnAttribute != null)
                         {
-                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name + "]");
-                        }                       
+                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name +
+                                         "]");
+                        }
                     }
                 }
+
                 columns.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
             }
+
             return string.Join(", ", columns);
         }
 
@@ -92,6 +96,7 @@ namespace S3K.RealTimeOnline.GenericDomain
                 {
                     columnQuery += " AS '" + propertyName + "'";
                 }
+
                 columnList.Add(columnQuery);
             }
 
@@ -108,12 +113,15 @@ namespace S3K.RealTimeOnline.GenericDomain
                             .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                         if (columnAttribute != null)
                         {
-                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name + "]");
-                        } 
+                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name +
+                                         "]");
+                        }
                     }
                 }
+
                 columnList.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
             }
+
             return string.Join(", ", columnList);
         }
 
@@ -134,14 +142,13 @@ namespace S3K.RealTimeOnline.GenericDomain
                     {
                         column += " AS " + property.Name;
                     }
+
                     columns.Add(column);
                 }
-
             }
-            
+
             return string.Join(",", columns);
         }
-
 
 
         public static string SimpleJoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false)
@@ -183,8 +190,10 @@ namespace S3K.RealTimeOnline.GenericDomain
                 {
                     columnName += " AS '" + propertyName + "'";
                 }
+
                 columnList.Add(columnName);
             }
+
             return string.Join(", ", columnList);
         }
 
@@ -202,7 +211,6 @@ namespace S3K.RealTimeOnline.GenericDomain
                 {
                     columns.Add("[" + property.Name + "]");
                 }
-
             }
 
             return string.Join(",", columns);
@@ -241,8 +249,10 @@ namespace S3K.RealTimeOnline.GenericDomain
                 {
                     continue;
                 }
+
                 columnList.Add(columnName);
             }
+
             return string.Join(", ", columnList);
         }
 
@@ -304,6 +314,7 @@ namespace S3K.RealTimeOnline.GenericDomain
             {
                 return GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnName + "]";
             }
+
             return "[" + columnName + "]";
         }
     }

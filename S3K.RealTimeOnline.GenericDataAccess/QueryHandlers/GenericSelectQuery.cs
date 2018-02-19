@@ -10,14 +10,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
     [DataContract]
     public class GenericSelectQuery : Query<IEnumerable<ExpandoObject>>
     {
-        [DataMember]
-        public IList<string> Columns { get; set; }
+        [DataMember] public IList<string> Columns { get; set; }
 
-        [DataMember]
-        public IList<ParameterBuilder> Conditions { get; set; }
+        [DataMember] public IList<ParameterBuilder> Conditions { get; set; }
 
-        [DataMember]
-        public string OrderBy { get; set; }
+        [DataMember] public string OrderBy { get; set; }
 
         public void SetConditions(object conditions)
         {

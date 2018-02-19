@@ -48,6 +48,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.WebService", "S3K.RealTimeOnline.WebService\S3K.RealTimeOnline.WebService.csproj", "{436457BF-0B0E-48CF-A719-C6879D4DF3D9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.WebSite", "S3K.RealTimeOnline.WebSite\S3K.RealTimeOnline.WebSite.csproj", "{33409481-8939-42D1-BF98-E884B981100C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{436457BF-0B0E-48CF-A719-C6879D4DF3D9} = {436457BF-0B0E-48CF-A719-C6879D4DF3D9}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Contracts", "S3K.RealTimeOnline.Contracts\S3K.RealTimeOnline.Contracts.csproj", "{1DC05A9C-72FE-4FB3-A3C8-0D2BBBBED85C}"
 EndProject

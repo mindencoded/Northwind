@@ -306,6 +306,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     break;
                 }
             }
+
             if (retObj == null)
             {
                 throw
@@ -327,6 +328,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     break;
                 }
             }
+
             if (retObj == null)
             {
                 throw
@@ -348,6 +350,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     break;
                 }
             }
+
             if (retObj == null)
             {
                 throw

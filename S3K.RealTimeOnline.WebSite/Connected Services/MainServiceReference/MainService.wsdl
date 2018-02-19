@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy"
+                  xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/"
+                  xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract"
+                  xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+                  xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex"
+                  xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy"
+                  xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+                  xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing"
+                  xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+                  xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="MainService" targetNamespace="http://tempuri.org/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:52723/MainService.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:52723/MainService.svc?xsd=xsd1"
+                  namespace="http://schemas.microsoft.com/Message" />
+      <xsd:import schemaLocation="http://localhost:52723/MainService.svc?xsd=xsd2"
+                  namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:52723/MainService.svc?xsd=xsd3"
+                  namespace="http://schemas.datacontract.org/2004/07/S3K.RealTimeOnline.Dtos" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ICrudCustomerService_SelectCustomer_InputMessage">
+    <wsdl:part name="parameters" element="tns:SelectCustomer" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_SelectCustomer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SelectCustomerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_InsertCustomer_InputMessage">
+    <wsdl:part name="parameters" element="tns:InsertCustomer" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_InsertCustomer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:InsertCustomerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_UpdateCustomer_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateCustomer" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_UpdateCustomer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateCustomerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_DeleteCustomer_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteCustomer" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_DeleteCustomer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteCustomerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_MoveCustomer_InputMessage">
+    <wsdl:part name="parameters" element="tns:MoveCustomer" />
+  </wsdl:message>
+  <wsdl:message name="ICrudCustomerService_MoveCustomer_OutputMessage">
+    <wsdl:part name="parameters" element="tns:MoveCustomerResponse" />
+  </wsdl:message>
+  <wsdl:message name="ICrudEmployeeService_SelectEmployee_InputMessage">
+    <wsdl:part name="parameters" element="tns:SelectEmployee" />
+  </wsdl:message>
+  <wsdl:message name="ICrudEmployeeService_SelectEmployee_OutputMessage">
+    <wsdl:part name="parameters" element="tns:SelectEmployeeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ICrudCustomerService">
+    <wsdl:operation name="SelectCustomer">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICrudCustomerService/SelectCustomer"
+                  message="tns:ICrudCustomerService_SelectCustomer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICrudCustomerService/SelectCustomerResponse"
+                   message="tns:ICrudCustomerService_SelectCustomer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="InsertCustomer">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICrudCustomerService/InsertCustomer"
+                  message="tns:ICrudCustomerService_InsertCustomer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICrudCustomerService/InsertCustomerResponse"
+                   message="tns:ICrudCustomerService_InsertCustomer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateCustomer">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICrudCustomerService/UpdateCustomer"
+                  message="tns:ICrudCustomerService_UpdateCustomer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICrudCustomerService/UpdateCustomerResponse"
+                   message="tns:ICrudCustomerService_UpdateCustomer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteCustomer">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICrudCustomerService/DeleteCustomer"
+                  message="tns:ICrudCustomerService_DeleteCustomer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICrudCustomerService/DeleteCustomerResponse"
+                   message="tns:ICrudCustomerService_DeleteCustomer_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="MoveCustomer">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICrudCustomerService/MoveCustomer"
+                  message="tns:ICrudCustomerService_MoveCustomer_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICrudCustomerService/MoveCustomerResponse"
+                   message="tns:ICrudCustomerService_MoveCustomer_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="ICrudEmployeeService">
+    <wsdl:operation name="SelectEmployee">
+      <wsdl:input wsaw:Action="http://tempuri.org/ICrudEmployeeService/SelectEmployee"
+                  message="tns:ICrudEmployeeService_SelectEmployee_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ICrudEmployeeService/SelectEmployeeResponse"
+                   message="tns:ICrudEmployeeService_SelectEmployee_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:service name="MainService" />
+</wsdl:definitions>
