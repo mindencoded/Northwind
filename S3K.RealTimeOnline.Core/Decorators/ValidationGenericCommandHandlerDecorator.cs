@@ -33,11 +33,7 @@ namespace S3K.RealTimeOnline.Core.Decorators
 
             if (!isValid)
             {
-                throw new CustomValidationException(validationResults.Select(x => x.ErrorMessage)
-                    .Aggregate((i, j) => i + ", " + j))
-                {
-                    Errors = validationResults.Select(x => x.ErrorMessage).ToList(),
-                };
+                throw new ValidationException(validationResults.Select(x => x.ErrorMessage).Aggregate((i, j) => i + "," + j));
             }
 
             _decorated.Handle<TEntity>(command);

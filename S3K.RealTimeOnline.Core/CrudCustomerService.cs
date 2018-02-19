@@ -19,12 +19,22 @@ namespace S3K.RealTimeOnline.Core
 {
     public partial class MainService : ICrudCustomerService
     {
-        public Stream SelectCustomer()
+        public Stream SelectCustomer(string page, string pageSize)
         {
+            if (string.IsNullOrEmpty(page))
+            {
+                throw new ArgumentException("The 'page' parameter cannot be null or empty");
+            }
+
+            if (string.IsNullOrEmpty(pageSize))
+            {
+                throw new ArgumentException("The 'pageSize' parameter cannot be null or empty");
+            }
+
             var query = new GenericSelectQuery
             {
-                Page = 1,
-                PageSize = 10
+                Page = Convert.ToInt32(page) == 0 ? 1 : Convert.ToInt32(page),
+                PageSize = Convert.ToInt32(pageSize) == 0 ? 100 : Convert.ToInt32(pageSize)
             };
 
             var handler = Container.Resolve<GenericSelectQueryHandler<IBusinessUnitOfWork>>();
@@ -52,15 +62,14 @@ namespace S3K.RealTimeOnline.Core
             var commandHandler = ResolveGenericCommandHandler(HandlerDecoratorType.ValidationCommand,
                 UnitOfWorkType.Business, GenericCommandType.Insert);
             commandHandler.Handle<Customer>(customer);
-            var context = WebOperationContext.Current;
-            if (context != null) context.OutgoingResponse.StatusCode = HttpStatusCode.Created;
+            if (WebOperationContext.Current != null) WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.Created;
         }
 
         public void UpdateCustomer(string id, CustomerDto command)
         {
             if (string.IsNullOrEmpty(id) || Convert.ToInt32(id) == 0)
             {
-                throw new ArgumentException("the 'id' parameter cannot be null, zero or empty");
+                throw new ArgumentException("The 'id' parameter cannot be null, zero or empty");
             }
 
             var customer = new Mapper<CustomerDto, Customer>().CreateMappedObject(command);
@@ -76,8 +85,7 @@ namespace S3K.RealTimeOnline.Core
                 var commandHandler = ResolveGenericCommandHandler(HandlerDecoratorType.ValidationCommand,
                     UnitOfWorkType.Business, GenericCommandType.Update);
                 commandHandler.Handle<Customer>(customer);
-                var context = WebOperationContext.Current;
-                if (context != null) context.OutgoingResponse.StatusCode = HttpStatusCode.NoContent;
+                if (WebOperationContext.Current != null) WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.NoContent;
             }
             else
             {
@@ -89,7 +97,7 @@ namespace S3K.RealTimeOnline.Core
         {
             if (string.IsNullOrEmpty(id) || Convert.ToInt32(id) == 0)
             {
-                throw new ArgumentException("the 'id' parameter cannot be null, zero or empty");
+                throw new ArgumentException("The 'id' parameter cannot be null, zero or empty");
             }
 
             IDictionary<string, object> obj = DeserializeToDictionary<Customer>(json);
@@ -109,8 +117,7 @@ namespace S3K.RealTimeOnline.Core
                 var commandHandler = ResolveGenericCommandHandler(HandlerDecoratorType.ValidationCommand,
                     UnitOfWorkType.Business, GenericCommandType.Update);
                 commandHandler.Handle<Customer>(obj);
-                var context = WebOperationContext.Current;
-                if (context != null) context.OutgoingResponse.StatusCode = HttpStatusCode.NoContent;
+                if (WebOperationContext.Current != null) WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.NoContent;
             }
             else
             {
@@ -123,8 +130,7 @@ namespace S3K.RealTimeOnline.Core
             var commandHandler = ResolveGenericCommandHandler(HandlerDecoratorType.TransactionCommand,
                 UnitOfWorkType.Business, GenericCommandType.DeleteById);
             commandHandler.Handle<Customer>(id);
-            var context = WebOperationContext.Current;
-            if (context != null) context.OutgoingResponse.StatusCode = HttpStatusCode.NoContent;
+            if (WebOperationContext.Current != null) WebOperationContext.Current.OutgoingResponse.StatusCode = HttpStatusCode.NoContent;
         }
 
         public void MoveCustomer()

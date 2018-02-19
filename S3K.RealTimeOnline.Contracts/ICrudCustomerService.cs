@@ -10,11 +10,11 @@ namespace S3K.RealTimeOnline.Contracts
     {
         [OperationContract]
         [WebGet(
-            UriTemplate = "/SelectCustomer",
+            UriTemplate = "/SelectCustomer?page={page}&pagesize={pageSize}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectCustomer();
+        Stream SelectCustomer(string page, string pageSize);
 
         [OperationContract]
         [WebInvoke(
