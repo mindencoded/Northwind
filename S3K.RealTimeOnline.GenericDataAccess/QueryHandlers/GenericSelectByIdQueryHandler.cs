@@ -21,8 +21,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                object id = query.Id;
-                return _unitOfWork.Repository<TEntity>().SelectById(id);
+                return _unitOfWork.Repository<TEntity>().SelectById(query.Id);
             }
         }
 

@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Dynamic;
-using System.Linq;
 using System.Threading.Tasks;
 using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
@@ -19,29 +17,35 @@ namespace S3K.RealTimeOnline.Core.Decorators
 
         public void Handle<TEntity>(object command) where TEntity : class
         {
-            IList<ValidationResult> validationResults;
-            bool isValid = command is TEntity
-                ? ValidationHelper.ValidateObject(command, out validationResults)
-                : command is ExpandoObject
-                    ? ValidationHelper.ValidateProperties<TEntity>((ExpandoObject) command, out validationResults)
-                    : command.GetType().IsGenericType &&
-                      command.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>)
-                        ? ValidationHelper.ValidateProperties<TEntity>((IDictionary<string, object>) command,
-                            out validationResults)
-                        : ValidationHelper.ValidateProperties<TEntity>(command,
-                            out validationResults);
-
-            if (!isValid)
-            {
-                throw new ValidationException(validationResults.Select(x => x.ErrorMessage).Aggregate((i, j) => i + "," + j));
-            }
-
+            Validation<TEntity>(command);
             _decorated.Handle<TEntity>(command);
         }
 
-        public Task HandleAsync<TEntity>(object command) where TEntity : class
+        public async Task HandleAsync<TEntity>(object command) where TEntity : class
         {
-            throw new System.NotImplementedException();
+            Validation<TEntity>(command);
+            await _decorated.HandleAsync<TEntity>(command);
+        }
+
+        private void Validation<TEntity>(object command) where TEntity : class
+        {
+            if (command is TEntity)
+            {
+                ValidationHelper.ValidateObject(command);
+            }
+            else if (command is ExpandoObject)
+            {
+                ValidationHelper.ValidateProperties<TEntity>((ExpandoObject) command);
+            }
+            else if (command.GetType().IsGenericType &&
+                     command.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                ValidationHelper.ValidateProperties<TEntity>((IDictionary<string, object>) command);
+            }
+            else
+            {
+                ValidationHelper.ValidateProperties<TEntity>(command);
+            }
         }
     }
 }

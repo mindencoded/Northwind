@@ -81,6 +81,7 @@
     <Compile Include="QueryHandlers\GenericSelectQueryHandler.cs" />
     <Compile Include="GenericCommandHandlers\GenericUpdateCommandHandler.cs" />
     <Compile Include="Tools\GenericCommandType.cs" />
+    <Compile Include="Tools\GenericQueryType.cs" />
     <Compile Include="Tools\ICommandHandler.cs" />
     <Compile Include="Tools\IGenericCommandHandler.cs" />
     <Compile Include="Tools\IGenericQueryHandler.cs" />

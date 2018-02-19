@@ -118,6 +118,14 @@ namespace S3K.RealTimeOnline.Core
                         HandlerDecoratorType.TransactionCommand.ToString()))
                 );
 
+            foreach (KeyValuePair<UnitOfWorkType, Type> unitOfWorkEntry in UnitOfWorkDictionary)
+            {
+                Type genericSelectQueryHandlerType = typeof(GenericSelectQueryHandler<>)
+                    .MakeGenericType(unitOfWorkEntry.Value);
+                container.RegisterType(typeof(IGenericQueryHandler<,>), genericSelectQueryHandlerType,
+                    unitOfWorkEntry.Key + "_" + GenericQueryType.Select);
+            }
+
             foreach (KeyValuePair<UnitOfWorkType, string> domainAssembliesEntry in DomainAssembliesDictionary)
             {
                 IEnumerable<Type> domainTypes =
@@ -141,6 +149,7 @@ namespace S3K.RealTimeOnline.Core
                         .MakeGenericType(unitOfWorkEntry.Value);
                     container.RegisterType(typeof(IGenericCommandHandler), genericCommandHandlerType,
                         unitOfWorkEntry.Key + "_" + genericCommandType);
+
                     container
                         .RegisterType(
                             typeof(IGenericCommandHandler),

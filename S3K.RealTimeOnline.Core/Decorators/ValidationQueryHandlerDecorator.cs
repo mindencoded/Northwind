@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.Core.Decorators
@@ -17,15 +17,13 @@ namespace S3K.RealTimeOnline.Core.Decorators
 
         public TResult Handle(TQuery query)
         {
-            var validationContext = new ValidationContext(query, null, null);
-            Validator.ValidateObject(query, validationContext, true);
+            ValidationHelper.ValidateObject(query);
             return _decorated.Handle(query);
         }
 
         public async Task<TResult> HandleAsync(TQuery query)
         {
-            var validationContext = new ValidationContext(query, null, null);
-            Validator.ValidateObject(query, validationContext, true);
+            ValidationHelper.ValidateObject(query);
             return await _decorated.HandleAsync(query);
         }
     }

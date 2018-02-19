@@ -37,7 +37,15 @@ namespace S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers
             using (_unitOfWork)
             {
                 await _unitOfWork.OpenAsync();
-                await _unitOfWork.Repository<TEntity>().UpdateAsync(command);
+                if (command.GetType().IsGenericType &&
+                    command.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    await _unitOfWork.Repository<TEntity>().UpdateAsync((IDictionary<string, object>) command);
+                }
+                else
+                {
+                    await _unitOfWork.Repository<TEntity>().UpdateAsync(command);
+                }
             }
         }
     }

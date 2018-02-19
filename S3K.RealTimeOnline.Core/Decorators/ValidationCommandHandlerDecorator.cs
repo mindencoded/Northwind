@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.Core.Decorators
@@ -15,15 +15,13 @@ namespace S3K.RealTimeOnline.Core.Decorators
 
         public void Handle(TCommand command)
         {
-            var validationContext = new ValidationContext(command, null, null);
-            Validator.ValidateObject(command, validationContext, true);
+            ValidationHelper.ValidateObject(command);
             _decorated.Handle(command);
         }
 
         public async Task HandleAsync(TCommand command)
         {
-            var validationContext = new ValidationContext(command, null, null);
-            Validator.ValidateObject(command, validationContext, true);
+            ValidationHelper.ValidateObject(command);
             await _decorated.HandleAsync(command);
         }
     }

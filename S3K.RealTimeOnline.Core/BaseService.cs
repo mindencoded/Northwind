@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
+using System.Net;
 using System.Reflection;
+using System.Runtime.Serialization.Json;
+using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
 using Newtonsoft.Json;
@@ -37,11 +40,29 @@ namespace S3K.RealTimeOnline.Core
             return sb.ToString();
         }
 
-        protected Stream JsonStream(string response)
+        protected Stream CreateStreamResponse(string response)
         {
             if (WebOperationContext.Current != null)
                 WebOperationContext.Current.OutgoingResponse.ContentType =
                     "application/json; charset=utf-8";
+            return new MemoryStream(Encoding.UTF8.GetBytes(response));
+        }
+
+        protected Message CreateExceptionMessage<T>(T error, WebContentFormat format = WebContentFormat.Json)
+        {
+            Message message = Message.CreateMessage(MessageVersion.None, "", error,
+                new DataContractJsonSerializer(typeof(T)));
+            message.Properties.Add(WebBodyFormatMessageProperty.Name, new WebBodyFormatMessageProperty(format));
+            return message;
+        }
+
+        protected Stream CreateStreamResponse(string response, HttpStatusCode statusCode, string contentType = "application/json; charset=utf-8")
+        {
+            if (WebOperationContext.Current != null)
+            {
+                WebOperationContext.Current.OutgoingResponse.ContentType = contentType;
+                WebOperationContext.Current.OutgoingResponse.StatusCode = statusCode;
+            }
             return new MemoryStream(Encoding.UTF8.GetBytes(response));
         }
 
@@ -56,6 +77,13 @@ namespace S3K.RealTimeOnline.Core
         {
             return Container.Resolve<IGenericCommandHandler>(
                 handlerDecoratorType + "_" + unitOfWorkType + "_" + genericCommandType);
+        }
+
+        protected IGenericQueryHandler<TQuery, TResult> ResolveGenericQueryHandler<TQuery, TResult>(
+            UnitOfWorkType unitOfWorkType, GenericQueryType genericQueryType)
+            where TQuery : IQuery<TResult>
+        {
+            return Container.Resolve<IGenericQueryHandler<TQuery, TResult>>(unitOfWorkType + "_" + genericQueryType);
         }
 
         protected dynamic DeserializeToDynamic(string json)
