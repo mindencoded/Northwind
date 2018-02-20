@@ -179,10 +179,10 @@ namespace S3K.RealTimeOnline.Core
 
             IEnumerable<Type> serviceTypes = currentAssemblies
                 .First(x => x.GetName().Name == "S3K.RealTimeOnline.Contracts").GetTypes()
-                .Where(mytype => mytype.GetInterfaces().Contains(typeof(IMainService)) && mytype.IsInterface);
+                .Where(mytype => mytype.GetInterfaces().Contains(typeof(IMaintenanceService)) && mytype.IsInterface);
             foreach (Type type in serviceTypes)
             {
-                container.RegisterType(type, typeof(MainService));
+                container.RegisterType(type, typeof(BusinessService));
             }
         }
 

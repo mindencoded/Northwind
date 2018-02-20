@@ -6,11 +6,11 @@ using S3K.RealTimeOnline.Dtos;
 namespace S3K.RealTimeOnline.Contracts
 {
     [ServiceContract]
-    public interface ICrudCustomerService : IMainService
+    public interface ICustomerMaintenanceService : IMaintenanceService
     {
         [OperationContract]
         [WebGet(
-            UriTemplate = "/SelectCustomer?page={page}&pagesize={pageSize}",
+            UriTemplate = "/Select?page={page}&pagesize={pageSize}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
@@ -22,7 +22,7 @@ namespace S3K.RealTimeOnline.Contracts
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/InsertCustomer")]
+            UriTemplate = "/Insert")]
         void InsertCustomer(CustomerDto customer);
 
         [OperationContract]
@@ -31,7 +31,7 @@ namespace S3K.RealTimeOnline.Contracts
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/UpdateCustomer/{id}")]
+            UriTemplate = "/Update/{id}")]
         void UpdateCustomer(string id, CustomerDto customer);
 
         [OperationContract]
@@ -40,13 +40,13 @@ namespace S3K.RealTimeOnline.Contracts
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/PartialUpdateCustomer?id={id}")]
+            UriTemplate = "/PartialUpdate?id={id}")]
         void PartialUpdateCustomer(string id, string data);
 
         [OperationContract]
         [WebInvoke(
             Method = "DELETE",
-            UriTemplate = "/DeleteCustomerById/{id}")]
+            UriTemplate = "/DeleteById/{id}")]
         void DeleteCustomerById(string id);
 
         [OperationContract]
@@ -54,12 +54,12 @@ namespace S3K.RealTimeOnline.Contracts
             Method = "GET",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/SelectCustomerById/{id}")]
+            UriTemplate = "/SelectById/{id}")]
         Stream SelectCustomerById(string id);
 
         [OperationContract]
         [WebGet(
-            UriTemplate = "/MoveCustomer",
+            UriTemplate = "/Move",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]

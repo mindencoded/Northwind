@@ -172,11 +172,11 @@ namespace S3K.RealTimeOnline.CommonUtils
         }
 
         public static void ValidateProperties<T>(IDictionary<string, object> obj)
-          where T : class
+            where T : class
         {
-           if(!ValidateProperties<T>(obj, out IList<ValidationResult> validationResults))
-               throw new ValidationException(validationResults.Select(x => x.ErrorMessage)
-                   .Aggregate((i, j) => i + "," + j));
+            if (!ValidateProperties<T>(obj, out IList<ValidationResult> validationResults))
+                throw new ValidationException(validationResults.Select(x => x.ErrorMessage)
+                    .Aggregate((i, j) => i + "," + j));
         }
 
         public static bool ValidateObject(object obj, out IList<ValidationResult> validationResults)
@@ -198,7 +198,6 @@ namespace S3K.RealTimeOnline.CommonUtils
             if (!ValidateObject(obj, out IList<ValidationResult> validationResults))
                 throw new ValidationException(validationResults.Select(x => x.ErrorMessage)
                     .Aggregate((i, j) => i + "," + j));
-
         }
     }
 }

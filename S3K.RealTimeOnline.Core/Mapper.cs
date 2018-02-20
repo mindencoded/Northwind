@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace S3K.RealTimeOnline.Core
 {
-    public class Mapper<TSource, TDest> where TDest : new()
+    public class Mapper<TSource, TDest> where TDest : class
     {
         protected readonly IList<Action<TSource, TDest>> Mappings = new List<Action<TSource, TDest>>();
 
@@ -42,7 +42,7 @@ namespace S3K.RealTimeOnline.Core
 
         public virtual TDest CreateMappedObject(TSource source)
         {
-            TDest dest = new TDest();
+            TDest dest = Activator.CreateInstance<TDest>();
             return MapObject(source, dest);
         }
     }

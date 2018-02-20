@@ -38,9 +38,9 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICrudCustomerService.cs" />
-    <Compile Include="ICrudEmployeeService.cs" />
-    <Compile Include="IMainService.cs" />
+    <Compile Include="ICustomerMaintenanceService.cs" />
+    <Compile Include="IEmployeeMaintenanceService.cs" />
+    <Compile Include="IMaintenanceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
