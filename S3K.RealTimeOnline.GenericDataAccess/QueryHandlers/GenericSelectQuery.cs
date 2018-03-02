@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
-using System.Reflection;
 using System.Runtime.Serialization;
-using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
@@ -15,39 +13,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.QueryHandlers
         [DataMember] public IList<ParameterBuilder> Conditions { get; set; }
 
         [DataMember] public string OrderBy { get; set; }
-
-        public void SetConditions(object conditions)
-        {
-            Conditions = new List<ParameterBuilder>();
-            PropertyInfo[] propertyInfos = conditions.GetType().GetProperties();
-            foreach (var propertyInfo in propertyInfos)
-            {
-                ParameterBuilder parameterBuilder = new ParameterBuilder
-                {
-                    ParameterName = propertyInfo.Name,
-                    Value = propertyInfo.GetValue(conditions),
-                    Operator = Comparison.EqualTo,
-                    SourceColumn = propertyInfo.Name.ToUnderscoreCase()
-                };
-                Conditions.Add(parameterBuilder);
-            }
-        }
-
-        public void SetConditions(IDictionary<string, object> conditions)
-        {
-            Conditions = new List<ParameterBuilder>();
-            foreach (KeyValuePair<string, object> condition in conditions)
-            {
-                ParameterBuilder parameterBuilder = new ParameterBuilder
-                {
-                    ParameterName = condition.Key,
-                    Value = condition.Value,
-                    Operator = Comparison.EqualTo,
-                    SourceColumn = condition.Key.ToUnderscoreCase()
-                };
-                Conditions.Add(parameterBuilder);
-            }
-        }
     }
 }
 

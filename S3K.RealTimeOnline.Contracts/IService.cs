@@ -1,6 +1,6 @@
 ﻿namespace S3K.RealTimeOnline.Contracts
 {
-    public interface IMaintenanceService
+    public interface IService
     {
     }
 }

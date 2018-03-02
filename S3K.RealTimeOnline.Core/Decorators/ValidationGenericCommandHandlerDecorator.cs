@@ -35,16 +35,16 @@ namespace S3K.RealTimeOnline.Core.Decorators
             }
             else if (command is ExpandoObject)
             {
-                ValidationHelper.ValidateProperties<TEntity>((ExpandoObject) command);
+                ValidationHelper.ValidateValues<TEntity>((ExpandoObject) command);
             }
             else if (command.GetType().IsGenericType &&
                      command.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
-                ValidationHelper.ValidateProperties<TEntity>((IDictionary<string, object>) command);
+                ValidationHelper.ValidateValues<TEntity>((IDictionary<string, object>) command);
             }
             else
             {
-                ValidationHelper.ValidateProperties<TEntity>(command);
+                ValidationHelper.ValidateValues<TEntity>(command);
             }
         }
     }

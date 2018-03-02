@@ -96,7 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <Content Include="BusinessService.svc" />
+    <Content Include="MaintenanceService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

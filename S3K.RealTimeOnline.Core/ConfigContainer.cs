@@ -6,6 +6,7 @@ using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.Contracts;
 using S3K.RealTimeOnline.Core.Decorators;
+using S3K.RealTimeOnline.Core.Services;
 using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
@@ -45,6 +46,18 @@ namespace S3K.RealTimeOnline.Core
                 {UnitOfWorkType.Security, "S3K.RealTimeOnline.SecurityDomain"},
             };
 
+        private static readonly IList<string> DataAccessAssemblyNames = new List<string>
+        {
+            "S3K.RealTimeOnline.BusinessDataAccess",
+            "S3K.RealTimeOnline.SecurityDataAccess",
+            "S3K.RealTimeOnline.CommonDataAccess"
+        };
+
+        private static readonly IList<string> ContractsAssemblyNames = new List<string>
+        {
+            "S3K.RealTimeOnline.Contracts"
+        };
+
         private ConfigContainer(IUnityContainer container)
         {
             Init(container);
@@ -52,12 +65,7 @@ namespace S3K.RealTimeOnline.Core
 
         public static ConfigContainer Instance(IUnityContainer container)
         {
-            if (_instance == null)
-            {
-                _instance = new ConfigContainer(container);
-            }
-
-            return _instance;
+            return _instance ?? (_instance = new ConfigContainer(container));
         }
 
         private void Init(IUnityContainer container)
@@ -68,18 +76,9 @@ namespace S3K.RealTimeOnline.Core
                 new InjectionConstructor(DbManager.GetSqlConnection(securityDbConnectionName)));
             container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
                 new InjectionConstructor(DbManager.GetSqlConnection(businessDbConnectionName)));
-
             IEnumerable<Assembly> currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            IList<string> dataAccessAssemblyNames = new List<string>
-            {
-                "S3K.RealTimeOnline.BusinessDataAccess",
-                "S3K.RealTimeOnline.SecurityDataAccess",
-                "S3K.RealTimeOnline.CommonDataAccess"
-            };
-
             IEnumerable<Assembly> dataAccessAssemblies =
-                currentAssemblies.Where(x => dataAccessAssemblyNames.Contains(x.GetName().Name));
+                currentAssemblies.Where(x => DataAccessAssemblyNames.Contains(x.GetName().Name));
 
             foreach (Assembly dataAccessAssembly in dataAccessAssemblies)
             {
@@ -124,6 +123,14 @@ namespace S3K.RealTimeOnline.Core
                     .MakeGenericType(unitOfWorkEntry.Value);
                 container.RegisterType(typeof(IGenericQueryHandler<,>), genericSelectQueryHandlerType,
                     unitOfWorkEntry.Key + "_" + GenericQueryType.Select);
+            }
+
+            foreach (KeyValuePair<UnitOfWorkType, Type> unitOfWorkEntry in UnitOfWorkDictionary)
+            {
+                Type genericSelectQueryHandlerType = typeof(GenericCountQueryHandler<>)
+                    .MakeGenericType(unitOfWorkEntry.Value);
+                container.RegisterType(typeof(IGenericQueryHandler<,>), genericSelectQueryHandlerType,
+                    unitOfWorkEntry.Key + "_" + GenericQueryType.Count);
             }
 
             foreach (KeyValuePair<UnitOfWorkType, string> domainAssembliesEntry in DomainAssembliesDictionary)
@@ -177,12 +184,16 @@ namespace S3K.RealTimeOnline.Core
                 }
             }
 
-            IEnumerable<Type> serviceTypes = currentAssemblies
-                .First(x => x.GetName().Name == "S3K.RealTimeOnline.Contracts").GetTypes()
-                .Where(mytype => mytype.GetInterfaces().Contains(typeof(IMaintenanceService)) && mytype.IsInterface);
-            foreach (Type type in serviceTypes)
+            foreach (string contractsAssemblyName in ContractsAssemblyNames)
             {
-                container.RegisterType(type, typeof(BusinessService));
+                IEnumerable<Type> serviceTypes = currentAssemblies
+                    .First(x => x.GetName().Name == contractsAssemblyName).GetTypes()
+                    .Where(mytype =>
+                        mytype.GetInterfaces().Contains(typeof(IService)) && mytype.IsInterface);
+                foreach (Type type in serviceTypes)
+                {
+                    container.RegisterType(type, typeof(MaintenanceService));
+                }
             }
         }
 

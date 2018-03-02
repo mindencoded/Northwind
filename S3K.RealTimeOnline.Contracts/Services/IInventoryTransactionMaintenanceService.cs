@@ -3,10 +3,10 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using S3K.RealTimeOnline.Dtos;
 
-namespace S3K.RealTimeOnline.Contracts
+namespace S3K.RealTimeOnline.Contracts.Services
 {
     [ServiceContract]
-    public interface ICustomerMaintenanceService : IMaintenanceService
+    public interface IInventoryTransactionMaintenanceService : IService
     {
         [OperationContract]
         [WebGet(
@@ -14,7 +14,7 @@ namespace S3K.RealTimeOnline.Contracts
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectCustomer(string page, string pageSize);
+        Stream SelectInventoryTransaction(string page, string pageSize);
 
         [OperationContract]
         [WebInvoke(
@@ -23,7 +23,7 @@ namespace S3K.RealTimeOnline.Contracts
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/Insert")]
-        void InsertCustomer(CustomerDto customer);
+        void InsertInventoryTransaction(InventoryTransactionDto dto);
 
         [OperationContract]
         [WebInvoke(
@@ -31,8 +31,8 @@ namespace S3K.RealTimeOnline.Contracts
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/Update/{id}")]
-        void UpdateCustomer(string id, CustomerDto customer);
+            UriTemplate = "/Update?id={id}")]
+        void UpdateInventoryTransaction(string id, InventoryTransactionDto dto);
 
         [OperationContract]
         [WebInvoke(
@@ -41,28 +41,20 @@ namespace S3K.RealTimeOnline.Contracts
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/PartialUpdate?id={id}")]
-        void PartialUpdateCustomer(string id, string data);
+        void PartialUpdateInventoryTransaction(string id, string data);
 
         [OperationContract]
         [WebInvoke(
             Method = "DELETE",
-            UriTemplate = "/DeleteById/{id}")]
-        void DeleteCustomerById(string id);
+            UriTemplate = "/DeleteById?id={id}")]
+        void DeleteInventoryTransactionById(string id);
 
         [OperationContract]
         [WebInvoke(
             Method = "GET",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/SelectById/{id}")]
-        Stream SelectCustomerById(string id);
-
-        [OperationContract]
-        [WebGet(
-            UriTemplate = "/Move",
-            RequestFormat = WebMessageFormat.Json,
-            ResponseFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Bare)]
-        void MoveCustomer();
+            UriTemplate = "/SelectById?id={id}")]
+        Stream SelectInventoryTransactionById(string id);
     }
 }

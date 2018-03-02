@@ -1,31 +1,26 @@
 ﻿using System.IO;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.BusinessDomain;
-using S3K.RealTimeOnline.Contracts;
+using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Dtos;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Services
 {
-    public partial class BusinessService : IEmployeeMaintenanceService
+    public partial class MaintenanceService : IEmployeeMaintenanceService
     {
         public Stream SelectEmployee(string page, string pageSize)
         {
             return Select<IBusinessUnitOfWork, Employee>(page, pageSize);
         }
 
-        public Stream SelectEmployeeById(string id)
+        public void InsertEmployee(EmployeeDto dto)
         {
-            return SelectById<IBusinessUnitOfWork, Employee>(id);
+            Insert<IBusinessUnitOfWork, Employee, EmployeeDto>(dto);
         }
 
-        public void InsertEmployee(EmployeeDto command)
+        public void UpdateEmployee(string id, EmployeeDto dto)
         {
-            Insert<IBusinessUnitOfWork, Employee, EmployeeDto>(command);
-        }
-
-        public void UpdateEmployee(string id, EmployeeDto command)
-        {
-            Update<IBusinessUnitOfWork, Employee, EmployeeDto>(id, command);
+            Update<IBusinessUnitOfWork, Employee, EmployeeDto>(id, dto);
         }
 
         public void PartialUpdateEmployee(string id, string json)
@@ -36,6 +31,11 @@ namespace S3K.RealTimeOnline.Core
         public void DeleteEmployeeById(string id)
         {
             DeleteById<IBusinessUnitOfWork, Employee>(id);
+        }
+
+        public Stream SelectEmployeeById(string id)
+        {
+            return SelectById<IBusinessUnitOfWork, Employee>(id);
         }
     }
 }

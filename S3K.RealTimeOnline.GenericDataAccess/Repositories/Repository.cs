@@ -288,6 +288,60 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             return result;
         }
 
+        public virtual int Count(object conditions)
+        {
+            using (SqlCommand command =
+                CreateCommandCount(conditions))
+            {
+                return (int)command.ExecuteScalar();
+            }
+        }
+
+        public virtual int Count(IDictionary<string, object> conditions)
+        {
+            using (SqlCommand command =
+                CreateCommandCount(conditions))
+            {
+                return (int)command.ExecuteScalar();
+            }
+        }
+
+        public virtual int Count(IList<ParameterBuilder> conditions)
+        {
+            using (SqlCommand command =
+                CreateCommandCount(conditions))
+            {
+                return (int)command.ExecuteScalar();
+            }
+        }
+
+        public virtual async Task<int> CountAsync(object conditions)
+        {
+            using (SqlCommand command =
+                CreateCommandCount(conditions))
+            {
+                return (int)await command.ExecuteScalarAsync();
+            }
+        }
+
+        public virtual async Task<int> CountAsync(IDictionary<string, object> conditions)
+        {
+            using (SqlCommand command =
+                CreateCommandCount(conditions))
+            {
+                return (int)await command.ExecuteScalarAsync();
+            }
+        }
+
+        public virtual async Task<int> CountAsync(IList<ParameterBuilder> conditions)
+        {
+            using (SqlCommand command =
+                CreateCommandCount(conditions))
+            {
+                return (int)await command.ExecuteScalarAsync();
+            }
+        }
+
         public virtual int Insert(object parameters)
         {
             using (SqlCommand command = CreateCommandInsert(parameters))
@@ -1210,6 +1264,443 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             return query;
         }
 
+        private string CreateCountStatement(
+            object conditions,
+            out IList<SqlParameter> sqlParameterList)
+        {
+            sqlParameterList = new List<SqlParameter>();
+
+            IList<string> conditionList = new List<string>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+                PropertyInfo[] properties = conditions.GetType().GetProperties();
+                foreach (PropertyInfo property in properties)
+                {
+                    if (!typeProperties.Select(x => x.Name).Contains(property.Name))
+                    {
+                        continue;
+                    }
+
+                    object value = property.GetValue(conditions, null);
+
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    PropertyInfo propertyInfo = typeProperties.First(x => x.Name == property.Name);
+                    Type propertyType = propertyInfo.PropertyType;
+                    ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false).OfType<ColumnAttribute>()
+                        .FirstOrDefault();
+                    string propertyName = propertyInfo.Name;
+                    string columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    IDictionary<string, object> parameters = new Dictionary<string, object>();
+                    if (value != null && value is string)
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                          EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] LIKE '%' + @" + propertyName +
+                                          " + '%'");
+
+                        parameters.Add("@" + propertyName, value);
+                    }
+                    else if (value != null && value.GetType().IsGenericType &&
+                             value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                    {
+                        conditionList.Add("(" + EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] BETWEEN @" + propertyName + "1 AND @" + propertyName +
+                                          "2)");
+                        foreach (FieldInfo field in value.GetType().GetFields())
+                        {
+                            parameters.Add("@" + propertyName + "1", field.GetValue(value));
+                            parameters.Add("@" + propertyName + "2", field.GetValue(value));
+                        }
+                    }
+                    else if (value != null && value.GetType().IsArray)
+                    {
+                        object[] items = (object[]) value;
+                        IList<string> subConditionList = new List<string>();
+                        if (typeof(string).IsAssignableFrom(value.GetType().GetElementType()))
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                                     "].[" + columnName + "] LIKE '%' + @" + propertyName + i +
+                                                     " + '%'");
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+
+                            conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add("@" + propertyName + i);
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+
+                            conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                              "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
+                                              ")");
+                        }
+                    }
+                    else
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
+                                          columnName + "] = @" + propertyName);
+                        parameters.Add("@" + propertyName, value);
+                    }
+
+                    foreach (KeyValuePair<string, object> parameter in parameters)
+                    {
+                        SqlParameter sqlParameter = new SqlParameter
+                        {
+                            ParameterName = parameter.Key,
+                            SourceColumn = columnName,
+                            SqlDbType = TypeConvertor.ToSqlDbType(propertyType),
+                            Value = parameter.Value ?? DBNull.Value
+                        };
+                        sqlParameterList.Add(sqlParameter);
+                    }
+                }
+            }
+
+
+            string query = @"SELECT COUNT(*) FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+            {
+                query += " WHERE " + string.Join(" AND ", conditionList);
+            }
+
+            return query;
+        }
+
+        private string CreateCountStatement(
+            IDictionary<string, object> conditions,
+            out IList<SqlParameter> sqlParameterList)
+        {
+
+
+            sqlParameterList = new List<SqlParameter>();
+            IList<string> conditionList = new List<string>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+
+                foreach (KeyValuePair<string, object> condition in conditions)
+                {
+                    object value = condition.Value;
+                    if (value == null && IgnoreNulls)
+                    {
+                        continue;
+                    }
+
+                    string columnName = null;
+                    string propertyName = condition.Key.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
+
+                    if (typeProperties.Select(x => x.Name).Contains(propertyName))
+                    {
+                        PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
+                        ColumnAttribute columnAttribute =
+                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    }
+                    else
+                    {
+                        if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
+                        {
+                            columnName = propertyName;
+                        }
+                    }
+
+                    if (columnName == null)
+                    {
+                        continue;
+                    }
+
+                    IDictionary<string, object> parameters = new Dictionary<string, object>();
+                    if (value != null && value is string)
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                          EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] LIKE '%' + @" + propertyName +
+                                          " + '%'");
+
+                        parameters.Add("@" + propertyName, value);
+                    }
+                    else if (value != null && value.GetType().IsGenericType &&
+                             value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                    {
+                        conditionList.Add("(" + EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] BETWEEN @" + propertyName + "1 AND @" + propertyName +
+                                          "2)");
+                        foreach (FieldInfo field in value.GetType().GetFields())
+                        {
+                            parameters.Add("@" + propertyName + "1", field.GetValue(value));
+                            parameters.Add("@" + propertyName + "2", field.GetValue(value));
+                        }
+                    }
+                    else if (value != null && value.GetType().IsArray)
+                    {
+                        object[] items = (object[]) value;
+                        IList<string> subConditionList = new List<string>();
+                        if (typeof(string).IsAssignableFrom(value.GetType().GetElementType()))
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                                     "].[" + columnName + "] LIKE '%' + @" + propertyName + i +
+                                                     " + '%'");
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+
+                            conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
+                        }
+                        else
+                        {
+                            for (int i = 0; i < items.Length; i++)
+                            {
+                                subConditionList.Add("@" + propertyName + i);
+                                parameters.Add("@" + propertyName + i, items[i]);
+                            }
+
+                            conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
+                                              "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
+                                              ")");
+                        }
+                    }
+                    else
+                    {
+                        conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
+                                          columnName + "] = @" + propertyName);
+                        parameters.Add("@" + propertyName, value);
+                    }
+
+                    foreach (KeyValuePair<string, object> parameter in parameters)
+                    {
+                        if (value != null)
+                        {
+                            SqlParameter sqlParameter = new SqlParameter
+                            {
+                                ParameterName = parameter.Key,
+                                SourceColumn = columnName,
+                                SqlDbType = TypeConvertor.ToSqlDbType(value.GetType()),
+                                Value = parameter.Value ?? DBNull.Value
+                            };
+                            sqlParameterList.Add(sqlParameter);
+                        }
+                    }
+                }
+            }
+
+
+            string query = @"SELECT COUNT(*) FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+            {
+                query += " WHERE " + string.Join(" AND ", conditionList);
+            }
+
+            return query;
+        }
+
+        private string CreateCountStatement(
+            IList<ParameterBuilder> conditions,
+            out IList<SqlParameter> sqlParameterList)
+        {
+            sqlParameterList = new List<SqlParameter>();
+            IList<string> conditionList = new List<string>();
+            if (conditions != null)
+            {
+                Type type = typeof(T);
+                PropertyInfo[] typeProperties = type.GetProperties();
+
+                foreach (ParameterBuilder condition in conditions)
+                {
+                    if (condition.ParameterName == null) continue;
+                    object value = condition.Value;
+                    if (value == null && IgnoreNulls) continue;
+                    string columnName = null;
+                    string propertyName = condition.ParameterName.TrimStart('@'); //entry.Key.Replace("@", "").Trim();
+                    string parameterName = '@' + propertyName;
+                    if (typeProperties.Select(x => x.Name).Contains(propertyName))
+                    {
+                        PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
+                        ColumnAttribute columnAttribute =
+                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
+                    }
+                    else
+                    {
+                        if (_columnAttributes.Select(x => x.Name).Contains(propertyName))
+                        {
+                            columnName = propertyName;
+                        }
+                    }
+
+                    if (columnName == null)
+                    {
+                        continue;
+                    }
+
+                    IDictionary<string, object> parameters = new Dictionary<string, object>();
+
+                    if (condition.Operator == Comparison.Between)
+                    {
+                        if (value != null)
+                        {
+                            bool typeValid = false;
+                            if (value.GetType().IsGenericType &&
+                                value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
+                            {
+                                foreach (FieldInfo field in value.GetType().GetFields())
+                                {
+                                    parameters.Add(parameterName + "1", field.GetValue(value));
+                                    parameters.Add(parameterName + "2", field.GetValue(value));
+                                }
+
+                                typeValid = true;
+                            }
+
+                            if (value.GetType().IsArray)
+                            {
+                                object[] items = value as object[];
+                                if (items != null && items.Length >= 2)
+                                {
+                                    parameters.Add(parameterName + "1", items[0]);
+                                    parameters.Add(parameterName + "2", items[1]);
+                                }
+
+                                typeValid = true;
+                            }
+
+                            if (typeValid)
+                            {
+                                conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                  EntityUtils.GetTableName<T>() +
+                                                  "].[" + columnName + "] BETWEEN  " + parameterName + "1" +
+                                                  " AND " +
+                                                  parameterName + "2");
+                            }
+                        }
+                    }
+                    else if (condition.Operator == Comparison.Contains)
+                    {
+                        if (value != null)
+                        {
+                            if (value.GetType().IsArray)
+                            {
+                                object[] items = value as object[];
+
+                                if (items != null)
+                                    for (int i = 0; i < items.Length; i++)
+                                    {
+                                        parameters.Add(parameterName + i, items[i]);
+                                    }
+
+                                conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                  EntityUtils.GetTableName<T>() +
+                                                  "].[" + columnName + "] IN (" +
+                                                  string.Join(", ", parameters.Keys) + ")");
+                            }
+                            else
+                            {
+                                parameters.Add(parameterName, value);
+                                conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                  EntityUtils.GetTableName<T>() +
+                                                  "].[" + columnName + "] IN (" +
+                                                  string.Join(", ", parameterName) + ")");
+                            }
+                        }
+                    }
+                    else if (condition.Operator == Comparison.Like)
+                    {
+                        if (value != null)
+                        {
+                            if (value.GetType().IsArray &&
+                                typeof(string).IsAssignableFrom(value.GetType().GetElementType()))
+                            {
+                                object[] items = value as object[];
+                                IList<string> subConditionList = new List<string>();
+                                if (items != null)
+                                    for (int i = 0; i < items.Length; i++)
+                                    {
+                                        subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                             EntityUtils.GetTableName<T>() +
+                                                             "].[" + columnName + "] LIKE '%' + " +
+                                                             parameterName + i +
+                                                             " + '%'");
+                                        parameters.Add(parameterName + i, items[i]);
+                                    }
+
+                                conditionList.Add("(" + string.Join(" OR ", subConditionList) + ")");
+                            }
+                            else
+                            {
+                                if (value is string)
+                                {
+                                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                                      EntityUtils.GetTableName<T>() +
+                                                      "].[" + columnName + "] LIKE '%' + " + parameterName +
+                                                      " + '%'");
+                                    parameters.Add(parameterName, value);
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (value != null || (condition.Operator == Comparison.EqualTo ||
+                                              condition.Operator == Comparison.NotEqualTo))
+                        {
+                            conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
+                                              EntityUtils.GetTableName<T>() +
+                                              "].[" + columnName + "] " + condition.Operator.Value() + " " +
+                                              parameterName);
+                            parameters.Add(parameterName, value);
+                        }
+                    }
+
+                    foreach (KeyValuePair<string, object> parameter in parameters)
+                    {
+                        SqlParameter sqlParameter = new SqlParameter
+                        {
+                            ParameterName = parameter.Key,
+                            SourceColumn = columnName,
+                            Value = parameter.Value ?? DBNull.Value
+                        };
+
+                        if (value != null)
+                        {
+                            sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        }
+
+                        sqlParameterList.Add(sqlParameter);
+                    }
+                }
+            }
+
+            string query = @"SELECT COUNT(*) FROM " +
+                           EntityUtils.GetSchema<T>() + ".[" +
+                           EntityUtils.GetTableName<T>() + "]";
+
+            if (conditionList.Count > 0)
+            {
+                query += " WHERE " + string.Join(" AND ", conditionList);
+            }
+
+            return query;
+        }
+
         private string CreateInsertStatement(object parameters, out IList<SqlParameter> sqlParameterList)
         {
             Type type = typeof(T);
@@ -1966,6 +2457,39 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 Value = id
             };
             command.Parameters.Add(sqlParameter);
+            return command;
+        }
+
+        private SqlCommand CreateCommandCount(object conditions)
+        {
+            string query = CreateCountStatement(conditions, out IList<SqlParameter> sqlParameterList);
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
+            return command;
+        }
+
+        private SqlCommand CreateCommandCount(IDictionary<string, object> conditions)
+        {
+            string query = CreateCountStatement(conditions, out IList<SqlParameter> sqlParameterList);
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
+            return command;
+        }
+
+        private SqlCommand CreateCommandCount(IList<ParameterBuilder> conditions)
+        {
+            string query = CreateCountStatement(conditions, out IList<SqlParameter> sqlParameterList);
+            SqlCommand command = Transaction != null
+                ? new SqlCommand(query, Connection, Transaction)
+                : new SqlCommand(query, Connection);
+            if (sqlParameterList.Count > 0)
+                command.Parameters.AddRange(sqlParameterList.ToArray());
             return command;
         }
 

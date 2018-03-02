@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using S3K.RealTimeOnline.GenericDomain;
 
 namespace S3K.RealTimeOnline.BusinessDomain
 {
     [Table("INVENTORY_TRANSACTION")]
-    public class InventoryTransaction
+    public class InventoryTransaction : Entity
     {
         [Key] [Column("ID")] public int Id { get; set; }
 

@@ -79,10 +79,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseService.cs" />
+    <Compile Include="Services\BaseService.cs" />
     <Compile Include="ConfigContainer.cs" />
-    <Compile Include="CustomerMaintenanceService.cs" />
-    <Compile Include="EmployeeMaintenanceService.cs" />
+    <Compile Include="Services\CustomerMaintenanceService.cs" />
+    <Compile Include="Services\EmployeeMaintenanceService.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\HandlerDecoratorType.cs" />
     <Compile Include="Decorators\TransactionCommandHandlerDecorator.cs" />
@@ -91,9 +91,11 @@
     <Compile Include="Decorators\ValidationGenericCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\ValidationQueryHandlerDecorator.cs" />
     <Compile Include="ErrorMessage.cs" />
+    <Compile Include="Services\InventoryTransactionMaintenanceService.cs" />
+    <Compile Include="Services\InventoryTransactionTypeMaintenanceService.cs" />
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BusinessService.svc.cs" />
+    <Compile Include="Services\MaintenanceService.svc.cs" />
     <Compile Include="WcfServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -78,6 +78,8 @@
     <Compile Include="GenericCommandHandlers\GenericInsertCommandHandler.cs" />
     <Compile Include="QueryHandlers\GenericSelectByIdQuery.cs" />
     <Compile Include="QueryHandlers\GenericSelectByIdQueryHandler.cs" />
+    <Compile Include="QueryHandlers\GenericCountQueryHandler.cs" />
+    <Compile Include="QueryHandlers\GenericCountQuery.cs" />
     <Compile Include="QueryHandlers\GenericSelectQueryHandler.cs" />
     <Compile Include="GenericCommandHandlers\GenericUpdateCommandHandler.cs" />
     <Compile Include="Tools\GenericCommandType.cs" />
@@ -91,9 +93,11 @@
     <Compile Include="Tools\ParameterBuilder.cs" />
     <Compile Include="Tools\Query.cs" />
     <Compile Include="QueryHandlers\GenericSelectQuery.cs" />
+    <Compile Include="Tools\QueryHelper.cs" />
     <Compile Include="Tools\QueryProcessor.cs" />
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Tools\DbInformation.cs" />
+    <Compile Include="Tools\QueryResponse.cs" />
     <Compile Include="Tools\SortDirection.cs" />
     <Compile Include="Tools\SqlNotificationRequestRegister.cs" />
     <Compile Include="Repositories\IRepository.cs" />

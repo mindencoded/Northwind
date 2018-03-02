@@ -3,6 +3,7 @@
     public enum GenericQueryType
     {
         Select,
-        SelectById
+        SelectById,
+        Count
     }
 }

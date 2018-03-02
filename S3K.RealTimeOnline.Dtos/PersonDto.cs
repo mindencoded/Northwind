@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace S3K.RealTimeOnline.Dtos
 {
     [DataContract]
-    public class PersonDto
+    public class PersonDto : SerializableDynamicObject
     {
         [DataMember] public int Id { get; set; }
 

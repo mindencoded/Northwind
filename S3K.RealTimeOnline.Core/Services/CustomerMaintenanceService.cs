@@ -5,16 +5,16 @@ using System.ServiceModel.Web;
 using S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.BusinessDomain;
-using S3K.RealTimeOnline.Contracts;
+using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.Dtos;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDomain;
 using Unity;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Services
 {
-    public partial class BusinessService : ICustomerMaintenanceService
+    public partial class MaintenanceService : ICustomerMaintenanceService
     {
         public Stream SelectCustomer(string page, string pageSize)
         {
@@ -26,14 +26,14 @@ namespace S3K.RealTimeOnline.Core
             return SelectById<IBusinessUnitOfWork, Customer>(id);
         }
 
-        public void InsertCustomer(CustomerDto command)
+        public void InsertCustomer(CustomerDto dto)
         {
-            Insert<IBusinessUnitOfWork, Customer, CustomerDto>(command);
+            Insert<IBusinessUnitOfWork, Customer, CustomerDto>(dto);
         }
 
-        public void UpdateCustomer(string id, CustomerDto command)
+        public void UpdateCustomer(string id, CustomerDto dto)
         {
-            Update<IBusinessUnitOfWork, Customer, CustomerDto>(id, command);
+            Update<IBusinessUnitOfWork, Customer, CustomerDto>(id, dto);
         }
 
         public void PartialUpdateCustomer(string id, string json)

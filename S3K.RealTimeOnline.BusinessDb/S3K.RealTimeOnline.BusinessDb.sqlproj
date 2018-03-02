@@ -105,5 +105,6 @@
   <ItemGroup>
     <None Include="S3K.RealTimeOnline.BusinessDb.publish.xml" />
     <None Include="dbo\Data\CUSTOMER.sql" />
+    <None Include="dbo\Data\EMPLOYEE.sql" />
   </ItemGroup>
 </Project>

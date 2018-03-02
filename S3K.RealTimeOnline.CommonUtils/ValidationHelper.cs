@@ -10,7 +10,70 @@ namespace S3K.RealTimeOnline.CommonUtils
 {
     public class ValidationHelper
     {
-        public static bool ValidateProperties<T>(object obj, out IList<ValidationResult> validationResults)
+
+        public static bool ValidateProperties<T>(object obj)
+            where T : class
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("obj");
+            }
+
+            foreach (PropertyInfo propertyInfo in obj.GetType()
+                .GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                string propertyName = propertyInfo.Name;
+                if (!typeof(T).HasProperty(propertyName))
+                {
+                    throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                }            
+            }
+
+            return true;
+        }
+
+        public static bool ValidateProperties<T>(IDictionary<string, object> obj)
+            where T : class
+        {
+            if (obj == null || !obj.Any())
+            {
+                throw new ArgumentNullException("obj");
+            }
+
+
+            foreach (KeyValuePair<string, object> property in obj)
+            {
+                string propertyName = property.Key;
+                if (!typeof(T).HasProperty(propertyName))
+                {
+                    throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                }
+            }
+
+            return true;
+        }
+
+        public static bool ValidateProperties<T>(ExpandoObject obj)
+            where T : class
+        {
+            if (obj == null)
+            {
+                throw new ArgumentNullException("obj");
+            }
+
+            foreach (KeyValuePair<string, object> property in obj)
+            {
+                string propertyName = property.Key;
+                if (!typeof(T).HasProperty(propertyName))
+                {
+                    throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                }
+            }
+
+            return true;
+        }
+
+        public static bool ValidateValues<T>(object obj, out IList<ValidationResult> validationResults)
             where T : class
         {
             if (obj == null)
@@ -53,15 +116,15 @@ namespace S3K.RealTimeOnline.CommonUtils
             return !validationResults.Any();
         }
 
-        public static void ValidateProperties<T>(object obj)
+        public static void ValidateValues<T>(object obj)
             where T : class
         {
-            if (!ValidateProperties<T>(obj, out IList<ValidationResult> validationResults))
+            if (!ValidateValues<T>(obj, out IList<ValidationResult> validationResults))
                 throw new ValidationException(validationResults.Select(x => x.ErrorMessage)
                     .Aggregate((i, j) => i + "," + j));
         }
 
-        public static bool ValidateProperties<T>(ExpandoObject obj, out IList<ValidationResult> validationResults)
+        public static bool ValidateValues<T>(ExpandoObject obj, out IList<ValidationResult> validationResults)
             where T : class
         {
             if (obj == null)
@@ -100,15 +163,15 @@ namespace S3K.RealTimeOnline.CommonUtils
             return !validationResults.Any();
         }
 
-        public static void ValidateProperties<T>(ExpandoObject obj)
+        public static void ValidateValues<T>(ExpandoObject obj)
             where T : class
         {
-            if (!ValidateProperties<T>(obj, out IList<ValidationResult> validationResults))
+            if (!ValidateValues<T>(obj, out IList<ValidationResult> validationResults))
                 throw new ValidationException(validationResults.Select(x => x.ErrorMessage)
                     .Aggregate((i, j) => i + "," + j));
         }
 
-        public static bool ValidateProperties<T>(IDictionary<string, object> obj,
+        public static bool ValidateValues<T>(IDictionary<string, object> obj,
             out IList<ValidationResult> validationResults)
             where T : class
         {
@@ -171,10 +234,10 @@ namespace S3K.RealTimeOnline.CommonUtils
             return !validationResults.Any();
         }
 
-        public static void ValidateProperties<T>(IDictionary<string, object> obj)
+        public static void ValidateValues<T>(IDictionary<string, object> obj)
             where T : class
         {
-            if (!ValidateProperties<T>(obj, out IList<ValidationResult> validationResults))
+            if (!ValidateValues<T>(obj, out IList<ValidationResult> validationResults))
                 throw new ValidationException(validationResults.Select(x => x.ErrorMessage)
                     .Aggregate((i, j) => i + "," + j));
         }

@@ -38,9 +38,11 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ICustomerMaintenanceService.cs" />
-    <Compile Include="IEmployeeMaintenanceService.cs" />
-    <Compile Include="IMaintenanceService.cs" />
+    <Compile Include="IService.cs" />
+    <Compile Include="Services\ICustomerMaintenanceService.cs" />
+    <Compile Include="Services\IEmployeeMaintenanceService.cs" />
+    <Compile Include="Services\IInventoryTransactionTypeMaintenanceService.cs" />
+    <Compile Include="Services\IInventoryTransactionMaintenanceService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

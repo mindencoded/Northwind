@@ -68,6 +68,18 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
         Task<T> SelectByIdAsync(object id);
 
+        int Count(object conditions);
+
+        int Count(IDictionary<string, object> conditions);
+
+        int Count(IList<ParameterBuilder> conditions);
+
+        Task<int> CountAsync(object conditions);
+
+        Task<int> CountAsync(IDictionary<string, object> conditions);
+
+        Task<int> CountAsync(IList<ParameterBuilder> conditions);
+
         int Insert(object parameters);
 
         Task<int> InsertAsync(object parameters);

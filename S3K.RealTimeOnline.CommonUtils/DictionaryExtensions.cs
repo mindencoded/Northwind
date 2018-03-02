@@ -48,5 +48,20 @@ namespace S3K.RealTimeOnline.CommonUtils
 
             return expando;
         }
+
+        public static string GetKey(this IDictionary<string, object> dictionary, object value)
+        {
+            string key = null;
+            foreach (KeyValuePair<string, object> pair in dictionary)
+            {
+                if (pair.Value.Equals(value))
+                {
+                    key = pair.Key;
+                    break;
+                }
+            }
+            return key;
+            //return dictionary.FirstOrDefault(x => x.Value.Equals(value)).Key;
+        }
     }
 }

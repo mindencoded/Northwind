@@ -22,7 +22,7 @@ using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.GenericDomain;
 using Unity;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Services
 {
     public abstract class BaseService
     {
@@ -33,7 +33,7 @@ namespace S3K.RealTimeOnline.Core
             Container = container;
         }
 
-        protected Stream Select<TUnitOfWork, TEntity>(string page, string pageSize)
+        protected virtual Stream Select<TUnitOfWork, TEntity>(string page, string pageSize)
             where TUnitOfWork : IUnitOfWork
             where TEntity : Entity
         {
@@ -50,19 +50,36 @@ namespace S3K.RealTimeOnline.Core
                         "The 'pageSize' parameter must be a valid number and greater than 0.");
                 }
 
-                GenericSelectQuery query = new GenericSelectQuery
+                GenericSelectQuery selectQuery = new GenericSelectQuery
                 {
                     Page = Convert.ToInt32(page),
                     PageSize = Convert.ToInt32(pageSize)
                 };
 
-                IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>> handler =
+                GenericCountQuery countQuery = new GenericCountQuery
+                {
+                    Conditions = null
+                };
+
+                IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>> selectQueryHandler =
                     ResolveGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>(
                         ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
                         GenericQueryType.Select);
-                IEnumerable<ExpandoObject> data = handler.Handle<TEntity>(query);
-                string response = ResponseDataToString(data);
-                return CreateStreamResponse(response);
+
+                IGenericQueryHandler<GenericCountQuery, int> countQueryHandler =
+                    ResolveGenericQueryHandler<GenericCountQuery, int>(
+                        ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
+                        GenericQueryType.Count);
+
+                IList<ExpandoObject> selectResult = selectQueryHandler.Handle<TEntity>(selectQuery).ToList();
+                int countResult = countQueryHandler.Handle<TEntity>(countQuery);
+                QueryResponse response = new QueryResponse
+                {
+                    Value = selectResult,
+                    Total = countResult
+                };
+                string data = DataToString(response);
+                return CreateStreamResponse(data);
             }
             catch (Exception ex)
             {
@@ -91,7 +108,7 @@ namespace S3K.RealTimeOnline.Core
                 GenericSelectByIdQueryHandler<TUnitOfWork, TEntity> handler =
                     Container.Resolve<GenericSelectByIdQueryHandler<TUnitOfWork, TEntity>>();
                 Entity entity = handler.Handle(query);
-                string response = ResponseDataToString(entity);
+                string response = DataToString(entity);
                 return CreateStreamResponse(response);
             }
             catch (Exception ex)
@@ -102,14 +119,15 @@ namespace S3K.RealTimeOnline.Core
             }
         }
 
-        protected void Insert<TUnitOfWork, TEntity, TDto>(TDto command)
+        protected void Insert<TUnitOfWork, TEntity, TDto>(TDto dto)
             where TUnitOfWork : IUnitOfWork
             where TEntity : Entity
             where TDto : class
         {
             try
             {
-                TEntity entity = new Mapper<TDto, TEntity>().CreateMappedObject(command);
+                ValidationHelper.ValidateObject(dto);
+                TEntity entity = new Mapper<TDto, TEntity>().CreateMappedObject(dto);
                 IGenericCommandHandler commandHandler = ResolveGenericCommandHandler(
                     HandlerDecoratorType.ValidationCommand,
                     ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
@@ -126,7 +144,7 @@ namespace S3K.RealTimeOnline.Core
             }
         }
 
-        protected void Update<TUnitOfWork, TEntity, TDto>(string id, TDto command)
+        protected void Update<TUnitOfWork, TEntity, TDto>(string id, TDto dto)
             where TUnitOfWork : IUnitOfWork
             where TEntity : Entity
             where TDto : class
@@ -142,8 +160,8 @@ namespace S3K.RealTimeOnline.Core
                 {
                     Id = id
                 };
-
-                TEntity entity = new Mapper<TDto, TEntity>().CreateMappedObject(command);
+                ValidationHelper.ValidateObject(dto);
+                TEntity entity = new Mapper<TDto, TEntity>().CreateMappedObject(dto);
                 GenericSelectByIdQueryHandler<TUnitOfWork, TEntity> queryHandler =
                     Container.Resolve<GenericSelectByIdQueryHandler<TUnitOfWork, TEntity>>();
                 Entity result = queryHandler.Handle(query);
@@ -187,6 +205,7 @@ namespace S3K.RealTimeOnline.Core
                 };
 
                 IDictionary<string, object> obj = DeserializeToDictionary<TEntity>(json);
+                ValidationHelper.ValidateProperties<TEntity>(obj);
                 GenericSelectByIdQueryHandler<TUnitOfWork, TEntity> queryHandler =
                     Container.Resolve<GenericSelectByIdQueryHandler<TUnitOfWork, TEntity>>();
                 Entity result = queryHandler.Handle(query);
@@ -241,7 +260,7 @@ namespace S3K.RealTimeOnline.Core
             }
         }
 
-        protected string ResponseDataToString(dynamic data)
+        protected string DataToString(dynamic data)
         {
             JsonSerializer s = JsonSerializer.Create();
             StringBuilder sb = new StringBuilder();
@@ -311,7 +330,7 @@ namespace S3K.RealTimeOnline.Core
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        protected ExpandoObject DeserializeToExpandoObject<T>(string json) where T : class
+        protected ExpandoObject DeserializeToExpando<T>(string json) where T : class
         {
             JObject jObj = JObject.Parse(json);
             ExpandoObject expandoObject = new ExpandoObject();
