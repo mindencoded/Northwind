@@ -1,6 +1,4 @@
-﻿
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using S3K.RealTimeOnline.CommonUtils;
 
@@ -23,6 +21,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                 };
                 list.Add(parameterBuilder);
             }
+
             return list;
         }
 

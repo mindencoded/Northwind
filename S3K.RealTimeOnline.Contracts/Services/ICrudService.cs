@@ -1,12 +1,11 @@
 ﻿using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using S3K.RealTimeOnline.Dtos;
 
 namespace S3K.RealTimeOnline.Contracts.Services
 {
     [ServiceContract]
-    public interface IInventoryTransactionMaintenanceService : IService
+    public interface ICrudService<TDto> where TDto : class
     {
         [OperationContract]
         [WebGet(
@@ -14,7 +13,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectInventoryTransaction(string page, string pageSize);
+        Stream Select(string page, string pageSize);
 
         [OperationContract]
         [WebInvoke(
@@ -23,7 +22,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/Insert")]
-        void InsertInventoryTransaction(InventoryTransactionDto dto);
+        void Insert(TDto dto);
 
         [OperationContract]
         [WebInvoke(
@@ -32,7 +31,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/Update?id={id}")]
-        void UpdateInventoryTransaction(string id, InventoryTransactionDto dto);
+        void Update(string id, TDto dto);
 
         [OperationContract]
         [WebInvoke(
@@ -41,13 +40,13 @@ namespace S3K.RealTimeOnline.Contracts.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/PartialUpdate?id={id}")]
-        void PartialUpdateInventoryTransaction(string id, string data);
+        void PartialUpdate(string id, string data);
 
         [OperationContract]
         [WebInvoke(
             Method = "DELETE",
             UriTemplate = "/DeleteById?id={id}")]
-        void DeleteInventoryTransactionById(string id);
+        void DeleteById(string id);
 
         [OperationContract]
         [WebInvoke(
@@ -55,6 +54,6 @@ namespace S3K.RealTimeOnline.Contracts.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             UriTemplate = "/SelectById?id={id}")]
-        Stream SelectInventoryTransactionById(string id);
+        Stream SelectById(string id);
     }
 }

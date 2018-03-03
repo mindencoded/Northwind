@@ -293,7 +293,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (SqlCommand command =
                 CreateCommandCount(conditions))
             {
-                return (int)command.ExecuteScalar();
+                return (int) command.ExecuteScalar();
             }
         }
 
@@ -302,7 +302,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (SqlCommand command =
                 CreateCommandCount(conditions))
             {
-                return (int)command.ExecuteScalar();
+                return (int) command.ExecuteScalar();
             }
         }
 
@@ -311,7 +311,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (SqlCommand command =
                 CreateCommandCount(conditions))
             {
-                return (int)command.ExecuteScalar();
+                return (int) command.ExecuteScalar();
             }
         }
 
@@ -320,7 +320,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (SqlCommand command =
                 CreateCommandCount(conditions))
             {
-                return (int)await command.ExecuteScalarAsync();
+                return (int) await command.ExecuteScalarAsync();
             }
         }
 
@@ -329,7 +329,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (SqlCommand command =
                 CreateCommandCount(conditions))
             {
-                return (int)await command.ExecuteScalarAsync();
+                return (int) await command.ExecuteScalarAsync();
             }
         }
 
@@ -338,7 +338,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             using (SqlCommand command =
                 CreateCommandCount(conditions))
             {
-                return (int)await command.ExecuteScalarAsync();
+                return (int) await command.ExecuteScalarAsync();
             }
         }
 
@@ -1385,8 +1385,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             IDictionary<string, object> conditions,
             out IList<SqlParameter> sqlParameterList)
         {
-
-
             sqlParameterList = new List<SqlParameter>();
             IList<string> conditionList = new List<string>();
             if (conditions != null)

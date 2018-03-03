@@ -19,7 +19,7 @@ namespace S3K.RealTimeOnline.Dtos
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
             var self = Expression;
-           var dynObj = (SerializableDynamicObject) Value;
+            var dynObj = (SerializableDynamicObject) Value;
             var keyExpr = Expression.Constant(binder.Name);
             var getMethod = _type.GetMethod("getValue", BindingFlags.NonPublic | BindingFlags.Instance);
             if (getMethod == null) return null;
@@ -43,7 +43,7 @@ namespace S3K.RealTimeOnline.Dtos
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            var serializableDynamicObject = (SerializableDynamicObject)Value;
+            var serializableDynamicObject = (SerializableDynamicObject) Value;
             return serializableDynamicObject.GetDynamicMemberNames();
         }
     }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.ServiceModel.Web;
 using S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer;
@@ -14,39 +13,13 @@ using Unity;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
-    public partial class MaintenanceService : ICustomerMaintenanceService
+    public class CustomerCrudService : CrudService<IBusinessUnitOfWork, Customer, CustomerDto>, ICustomerCrudService
     {
-        public Stream SelectCustomer(string page, string pageSize)
+        public CustomerCrudService(IUnityContainer container) : base(container)
         {
-            return Select<IBusinessUnitOfWork, Customer>(page, pageSize);
         }
 
-        public Stream SelectCustomerById(string id)
-        {
-            return SelectById<IBusinessUnitOfWork, Customer>(id);
-        }
-
-        public void InsertCustomer(CustomerDto dto)
-        {
-            Insert<IBusinessUnitOfWork, Customer, CustomerDto>(dto);
-        }
-
-        public void UpdateCustomer(string id, CustomerDto dto)
-        {
-            Update<IBusinessUnitOfWork, Customer, CustomerDto>(id, dto);
-        }
-
-        public void PartialUpdateCustomer(string id, string json)
-        {
-            PartialUpdate<IBusinessUnitOfWork, Customer>(id, json);
-        }
-
-        public void DeleteCustomerById(string id)
-        {
-            DeleteById<IBusinessUnitOfWork, Customer>(id);
-        }
-
-        public void MoveCustomer()
+        public void Move()
         {
             try
             {

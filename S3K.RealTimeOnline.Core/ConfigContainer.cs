@@ -4,7 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
-using S3K.RealTimeOnline.Contracts;
+using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.Core.Services;
 using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
@@ -53,9 +53,12 @@ namespace S3K.RealTimeOnline.Core
             "S3K.RealTimeOnline.CommonDataAccess"
         };
 
-        private static readonly IList<string> ContractsAssemblyNames = new List<string>
+        private static readonly IDictionary<Type, Type> ServiceContractTypesDictionary = new Dictionary<Type, Type>()
         {
-            "S3K.RealTimeOnline.Contracts"
+            {typeof(ICustomerCrudService), typeof(CustomerCrudService)},
+            {typeof(IEmployeeCrudService), typeof(EmployeeCrudService)},
+            {typeof(IInventoryTransactionCrudService), typeof(InventoryTransactionCrudService)},
+            {typeof(IInventoryTransactionTypeCrudService), typeof(InventoryTransactionTypeCrudService)},
         };
 
         private ConfigContainer(IUnityContainer container)
@@ -184,16 +187,9 @@ namespace S3K.RealTimeOnline.Core
                 }
             }
 
-            foreach (string contractsAssemblyName in ContractsAssemblyNames)
+            foreach (KeyValuePair<Type, Type> serviceContractTypeKeyValuePair in ServiceContractTypesDictionary)
             {
-                IEnumerable<Type> serviceTypes = currentAssemblies
-                    .First(x => x.GetName().Name == contractsAssemblyName).GetTypes()
-                    .Where(mytype =>
-                        mytype.GetInterfaces().Contains(typeof(IService)) && mytype.IsInterface);
-                foreach (Type type in serviceTypes)
-                {
-                    container.RegisterType(type, typeof(MaintenanceService));
-                }
+                container.RegisterType(serviceContractTypeKeyValuePair.Key, serviceContractTypeKeyValuePair.Value);
             }
         }
 

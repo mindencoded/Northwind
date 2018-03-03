@@ -5,9 +5,7 @@ namespace S3K.RealTimeOnline.GenericDomain
 {
     public class Person : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [Column("COMPANY")] [StringLength(50)] public string Company { get; set; }
 

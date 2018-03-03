@@ -38,17 +38,21 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IService.cs" />
-    <Compile Include="Services\ICustomerMaintenanceService.cs" />
-    <Compile Include="Services\IEmployeeMaintenanceService.cs" />
-    <Compile Include="Services\IInventoryTransactionTypeMaintenanceService.cs" />
-    <Compile Include="Services\IInventoryTransactionMaintenanceService.cs" />
+    <Compile Include="Services\ICustomerCrudService.cs" />
+    <Compile Include="Services\IEmployeeCrudService.cs" />
+    <Compile Include="Services\IInventoryTransactionTypeCrudService.cs" />
+    <Compile Include="Services\IInventoryTransactionCrudService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ICrudService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\S3K.RealTimeOnline.Dtos\S3K.RealTimeOnline.Dtos.csproj">
       <Project>{28c422d0-f60c-4d3c-8381-0869d8193754}</Project>
       <Name>S3K.RealTimeOnline.Dtos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\S3K.RealTimeOnline.GenericDataAccess\S3K.RealTimeOnline.GenericDataAccess.csproj">
+      <Project>{6515754E-5242-49EB-B81E-6D29B24E60A6}</Project>
+      <Name>S3K.RealTimeOnline.GenericDataAccess</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

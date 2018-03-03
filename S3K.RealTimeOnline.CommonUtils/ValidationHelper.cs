@@ -10,7 +10,6 @@ namespace S3K.RealTimeOnline.CommonUtils
 {
     public class ValidationHelper
     {
-
         public static bool ValidateProperties<T>(object obj)
             where T : class
         {
@@ -26,7 +25,7 @@ namespace S3K.RealTimeOnline.CommonUtils
                 if (!typeof(T).HasProperty(propertyName))
                 {
                     throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
-                }            
+                }
             }
 
             return true;

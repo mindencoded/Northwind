@@ -9,14 +9,14 @@ namespace S3K.RealTimeOnline.Dtos
     [DataContract]
     public class SerializableDynamicObject : IDynamicMetaObjectProvider
     {
-        [DataMember]
-        private IDictionary<string, object> _dynamicProperties = new Dictionary<string, object>();
+        [DataMember] private IDictionary<string, object> _dynamicProperties = new Dictionary<string, object>();
 
         #region IDynamicMetaObjectProvider implementation
 
         public DynamicMetaObject GetMetaObject(Expression expression)
         {
-            return new SerializableDynamicMetaObject(expression, BindingRestrictions.GetInstanceRestriction(expression, this), this);
+            return new SerializableDynamicMetaObject(expression,
+                BindingRestrictions.GetInstanceRestriction(expression, this), this);
         }
 
         #endregion
