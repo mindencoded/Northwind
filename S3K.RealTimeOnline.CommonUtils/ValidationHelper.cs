@@ -18,13 +18,77 @@ namespace S3K.RealTimeOnline.CommonUtils
                 throw new ArgumentNullException("obj");
             }
 
+            IList<ColumnAttribute> columnAttributes = new List<ColumnAttribute>();
+            string propertyName;
+            if (obj is string)
+            {
+                propertyName = obj.ToString();
+                if (!typeof(T).HasProperty(propertyName))
+                {
+                    if (!columnAttributes.Any())
+                    {
+                        columnAttributes = typeof(T).GetProperties()
+                            .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault())
+                            .ToList();
+                    }
+
+                    if (!columnAttributes.Select(x => x.Name).Contains(propertyName))
+                    {
+                        throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    }
+                }
+
+                return true;
+            }
+
+
             foreach (PropertyInfo propertyInfo in obj.GetType()
                 .GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                string propertyName = propertyInfo.Name;
+                propertyName = propertyInfo.Name;
                 if (!typeof(T).HasProperty(propertyName))
                 {
-                    throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    if (!columnAttributes.Any())
+                    {
+                        columnAttributes = typeof(T).GetProperties()
+                            .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault())
+                            .ToList();
+                    }
+
+                    if (!columnAttributes.Select(x => x.Name).Contains(propertyName))
+                    {
+                        throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        public static bool ValidateProperties<T>(string[] values)
+            where T : class
+        {
+            if (values == null || !values.Any())
+            {
+                throw new ArgumentNullException("values");
+            }
+
+            IList<ColumnAttribute> columnAttributes = new List<ColumnAttribute>();
+            foreach (string propertyName in values)
+            {
+                if (!typeof(T).HasProperty(propertyName))
+                {
+                    if (!columnAttributes.Any())
+                    {
+                        columnAttributes = typeof(T).GetProperties()
+                            .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault())
+                            .ToList();
+                    }
+
+                    if (!columnAttributes.Select(x => x.Name).Contains(propertyName))
+                    {
+                        throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    }
                 }
             }
 
@@ -39,13 +103,24 @@ namespace S3K.RealTimeOnline.CommonUtils
                 throw new ArgumentNullException("obj");
             }
 
+            IList<ColumnAttribute> columnAttributes = new List<ColumnAttribute>();
 
             foreach (KeyValuePair<string, object> property in obj)
             {
                 string propertyName = property.Key;
                 if (!typeof(T).HasProperty(propertyName))
                 {
-                    throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    if (!columnAttributes.Any())
+                    {
+                        columnAttributes = typeof(T).GetProperties()
+                            .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault())
+                            .ToList();
+                    }
+
+                    if (!columnAttributes.Select(x => x.Name).Contains(propertyName))
+                    {
+                        throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    }
                 }
             }
 
@@ -60,12 +135,23 @@ namespace S3K.RealTimeOnline.CommonUtils
                 throw new ArgumentNullException("obj");
             }
 
+            IList<ColumnAttribute> columnAttributes = new List<ColumnAttribute>();
             foreach (KeyValuePair<string, object> property in obj)
             {
                 string propertyName = property.Key;
                 if (!typeof(T).HasProperty(propertyName))
                 {
-                    throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    if (!columnAttributes.Any())
+                    {
+                        columnAttributes = typeof(T).GetProperties()
+                            .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault())
+                            .ToList();
+                    }
+
+                    if (!columnAttributes.Select(x => x.Name).Contains(propertyName))
+                    {
+                        throw new ValidationException(string.Format("The '{0}' property is not valid.", propertyName));
+                    }
                 }
             }
 

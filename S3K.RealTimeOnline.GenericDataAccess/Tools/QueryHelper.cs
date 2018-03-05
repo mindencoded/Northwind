@@ -16,7 +16,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                 {
                     ParameterName = propertyInfo.Name,
                     Value = propertyInfo.GetValue(conditions),
-                    Operator = Comparison.EqualTo,
+                    Comparison = Comparison.EqualTo,
                     SourceColumn = propertyInfo.Name.ToUnderscoreCase()
                 };
                 list.Add(parameterBuilder);
@@ -34,7 +34,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                 {
                     ParameterName = condition.Key,
                     Value = condition.Value,
-                    Operator = Comparison.EqualTo,
+                    Comparison = Comparison.EqualTo,
                     SourceColumn = condition.Key.ToUnderscoreCase()
                 };
                 parameterBuilderList.Add(parameterBuilder);

@@ -28,7 +28,7 @@ namespace S3K.RealTimeOnline.Core.Services
             Container = container;
         }
 
-        protected string DataToString(dynamic data)
+        protected virtual string DataToString(dynamic data)
         {
             JsonSerializer s = JsonSerializer.Create();
             StringBuilder sb = new StringBuilder();
@@ -40,7 +40,7 @@ namespace S3K.RealTimeOnline.Core.Services
             return sb.ToString();
         }
 
-        protected Stream CreateStreamResponse(string response)
+        protected virtual Stream CreateStreamResponse(string response)
         {
             if (WebOperationContext.Current != null)
                 WebOperationContext.Current.OutgoingResponse.ContentType =
@@ -48,7 +48,7 @@ namespace S3K.RealTimeOnline.Core.Services
             return new MemoryStream(Encoding.UTF8.GetBytes(response));
         }
 
-        protected Message CreateExceptionMessage<T>(T error, WebContentFormat format = WebContentFormat.Json)
+        protected virtual Message CreateExceptionMessage<T>(T error, WebContentFormat format = WebContentFormat.Json)
         {
             Message message = Message.CreateMessage(MessageVersion.None, "", error,
                 new DataContractJsonSerializer(typeof(T)));
@@ -56,7 +56,7 @@ namespace S3K.RealTimeOnline.Core.Services
             return message;
         }
 
-        protected Stream CreateStreamResponse(string response, HttpStatusCode statusCode,
+        protected virtual Stream CreateStreamResponse(string response, HttpStatusCode statusCode,
             string contentType = "application/json; charset=utf-8")
         {
             if (WebOperationContext.Current != null)
@@ -68,37 +68,37 @@ namespace S3K.RealTimeOnline.Core.Services
             return new MemoryStream(Encoding.UTF8.GetBytes(response));
         }
 
-        protected IGenericCommandHandler ResolveGenericCommandHandler(UnitOfWorkType unitOfWorkType,
+        protected virtual IGenericCommandHandler ResolveGenericCommandHandler(UnitOfWorkType unitOfWorkType,
             GenericCommandType genericCommandType)
         {
             return Container.Resolve<IGenericCommandHandler>(unitOfWorkType + "_" + genericCommandType);
         }
 
-        protected IGenericCommandHandler ResolveGenericCommandHandler(HandlerDecoratorType handlerDecoratorType,
+        protected virtual IGenericCommandHandler ResolveGenericCommandHandler(HandlerDecoratorType handlerDecoratorType,
             UnitOfWorkType unitOfWorkType, GenericCommandType genericCommandType)
         {
             return Container.Resolve<IGenericCommandHandler>(
                 handlerDecoratorType + "_" + unitOfWorkType + "_" + genericCommandType);
         }
 
-        protected IGenericQueryHandler<TQuery, TResult> ResolveGenericQueryHandler<TQuery, TResult>(
+        protected virtual IGenericQueryHandler<TQuery, TResult> ResolveGenericQueryHandler<TQuery, TResult>(
             UnitOfWorkType unitOfWorkType, GenericQueryType genericQueryType)
             where TQuery : IQuery<TResult>
         {
             return Container.Resolve<IGenericQueryHandler<TQuery, TResult>>(unitOfWorkType + "_" + genericQueryType);
         }
 
-        protected dynamic DeserializeToDynamic(string json)
+        protected virtual dynamic DeserializeToDynamic(string json)
         {
             return JsonConvert.DeserializeObject<ExpandoObject>(json, new ExpandoObjectConverter());
         }
 
-        protected T DeserializeToObject<T>(string json) where T : class
+        protected virtual T DeserializeToObject<T>(string json) where T : class
         {
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        protected ExpandoObject DeserializeToExpando<T>(string json) where T : class
+        protected virtual ExpandoObject DeserializeToExpando<T>(string json) where T : class
         {
             JObject jObj = JObject.Parse(json);
             ExpandoObject expandoObject = new ExpandoObject();
@@ -118,7 +118,7 @@ namespace S3K.RealTimeOnline.Core.Services
             return expandoObject;
         }
 
-        protected IDictionary<string, object> DeserializeToDictionary<T>(string json) where T : class
+        protected virtual IDictionary<string, object> DeserializeToDictionary<T>(string json) where T : class
         {
             JObject jObj = JObject.Parse(json);
             IDictionary<string, object> dictionary = new Dictionary<string, object>();
@@ -134,6 +134,27 @@ namespace S3K.RealTimeOnline.Core.Services
             }
 
             return dictionary;
+        }
+
+        protected virtual ParameterBuilder CreateParameterBuilder(string filter, Condition condition)
+        {
+            foreach (KeyValuePair<string, Comparison> symbol in ComparisonHelper.Symbols)
+            {
+                string[] values =
+                    filter.Split(new[] {symbol.Key}, StringSplitOptions.RemoveEmptyEntries);
+                if (values.Length > 0)
+                {
+                    return new ParameterBuilder
+                    {
+                        Comparison = symbol.Value,
+                        Condition = condition,
+                        ParameterName = values[0],
+                        Value = values[1]
+                    };
+                }
+            }
+
+            return null;
         }
     }
 }

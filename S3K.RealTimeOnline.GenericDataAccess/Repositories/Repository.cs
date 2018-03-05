@@ -27,7 +27,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             Connection = connection;
             IgnoreNulls = true;
             _columnAttributes = typeof(T).GetProperties()
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(SqlConnection connection, bool ignoreNulls)
@@ -35,7 +35,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             Connection = connection;
             IgnoreNulls = ignoreNulls;
             _columnAttributes = typeof(T).GetProperties()
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(SqlConnection connection, SqlTransaction transaction)
@@ -44,7 +44,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             Transaction = transaction;
             IgnoreNulls = true;
             _columnAttributes = typeof(T).GetProperties()
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(SqlConnection connection, SqlTransaction transaction, bool ignoreNulls)
@@ -53,14 +53,14 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             Transaction = transaction;
             IgnoreNulls = ignoreNulls;
             _columnAttributes = typeof(T).GetProperties()
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(IUnitOfWork unitOfWork)
         {
             unitOfWork.Register(this);
             _columnAttributes = typeof(T).GetProperties()
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public Repository(IUnitOfWork unitOfWork, bool ignoreNulls)
@@ -68,7 +68,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             unitOfWork.Register(this);
             IgnoreNulls = ignoreNulls;
             _columnAttributes = typeof(T).GetProperties()
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault());
+                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault());
         }
 
         public virtual IEnumerable<ExpandoObject> Select(IList<string> columns, string orderBy = null, int? page = null,
@@ -708,7 +708,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     PropertyInfo propertyInfo = typeProperties.First(x => x.Name == property.Name);
                     Type propertyType = propertyInfo.PropertyType;
-                    ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false).OfType<ColumnAttribute>()
+                    ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(true).OfType<ColumnAttribute>()
                         .FirstOrDefault();
                     string propertyName = propertyInfo.Name;
                     string columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
@@ -888,7 +888,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     {
                         PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                         ColumnAttribute columnAttribute =
-                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                            typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                         columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                     }
                     else
@@ -1071,7 +1071,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     {
                         PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                         ColumnAttribute columnAttribute =
-                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                            typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                         columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                     }
                     else
@@ -1089,7 +1089,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     IDictionary<string, object> parameters = new Dictionary<string, object>();
 
-                    if (condition.Operator == Comparison.Between)
+                    if (condition.Comparison == Comparison.Between)
                     {
                         if (value != null)
                         {
@@ -1097,10 +1097,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             if (value.GetType().IsGenericType &&
                                 value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
                             {
-                                foreach (FieldInfo field in value.GetType().GetFields())
+                                FieldInfo[] fields = value.GetType().GetFields();
+                                for (int i = 1; i <= fields.Length; i++)
                                 {
-                                    parameters.Add(parameterName + "1", field.GetValue(value));
-                                    parameters.Add(parameterName + "2", field.GetValue(value));
+                                    parameters.Add(parameterName + i, fields[i].GetValue(value));
                                 }
 
                                 typeValid = true;
@@ -1128,7 +1128,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             }
                         }
                     }
-                    else if (condition.Operator == Comparison.Contains)
+                    else if (condition.Comparison == Comparison.Contains)
                     {
                         if (value != null)
                         {
@@ -1156,7 +1156,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             }
                         }
                     }
-                    else if (condition.Operator == Comparison.Like)
+                    else if (condition.Comparison == Comparison.Like)
                     {
                         if (value != null)
                         {
@@ -1193,11 +1193,12 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     else
                     {
                         if (value != null || value == null &&
-                            (condition.Operator == Comparison.EqualTo || condition.Operator == Comparison.NotEqualTo))
+                            (condition.Comparison == Comparison.EqualTo ||
+                             condition.Comparison == Comparison.NotEqualTo))
                         {
                             conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
                                               EntityUtils.GetTableName<T>() +
-                                              "].[" + columnName + "] " + condition.Operator.Value() + " " +
+                                              "].[" + columnName + "] " + condition.Comparison + " " +
                                               parameterName);
                             parameters.Add(parameterName, value);
                         }
@@ -1292,7 +1293,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     PropertyInfo propertyInfo = typeProperties.First(x => x.Name == property.Name);
                     Type propertyType = propertyInfo.PropertyType;
-                    ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(false).OfType<ColumnAttribute>()
+                    ColumnAttribute columnAttribute = propertyInfo.GetCustomAttributes(true).OfType<ColumnAttribute>()
                         .FirstOrDefault();
                     string propertyName = propertyInfo.Name;
                     string columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
@@ -1407,7 +1408,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     {
                         PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                         ColumnAttribute columnAttribute =
-                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                            typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                         columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                     }
                     else
@@ -1534,7 +1535,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     {
                         PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                         ColumnAttribute columnAttribute =
-                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                            typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                         columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                     }
                     else
@@ -1552,7 +1553,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     IDictionary<string, object> parameters = new Dictionary<string, object>();
 
-                    if (condition.Operator == Comparison.Between)
+                    if (condition.Comparison == Comparison.Between)
                     {
                         if (value != null)
                         {
@@ -1560,10 +1561,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             if (value.GetType().IsGenericType &&
                                 value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>))
                             {
-                                foreach (FieldInfo field in value.GetType().GetFields())
+                                FieldInfo[] fields = value.GetType().GetFields();
+                                for (int i = 1; i <= fields.Length; i++)
                                 {
-                                    parameters.Add(parameterName + "1", field.GetValue(value));
-                                    parameters.Add(parameterName + "2", field.GetValue(value));
+                                    parameters.Add(parameterName + i, fields[i].GetValue(value));
                                 }
 
                                 typeValid = true;
@@ -1591,7 +1592,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             }
                         }
                     }
-                    else if (condition.Operator == Comparison.Contains)
+                    else if (condition.Comparison == Comparison.Contains)
                     {
                         if (value != null)
                         {
@@ -1620,7 +1621,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             }
                         }
                     }
-                    else if (condition.Operator == Comparison.Like)
+                    else if (condition.Comparison == Comparison.Like)
                     {
                         if (value != null)
                         {
@@ -1657,12 +1658,12 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     }
                     else
                     {
-                        if (value != null || (condition.Operator == Comparison.EqualTo ||
-                                              condition.Operator == Comparison.NotEqualTo))
+                        if (value != null || (condition.Comparison == Comparison.EqualTo ||
+                                              condition.Comparison == Comparison.NotEqualTo))
                         {
                             conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
                                               EntityUtils.GetTableName<T>() +
-                                              "].[" + columnName + "] " + condition.Operator.Value() + " " +
+                                              "].[" + columnName + "] " + condition.Comparison + " " +
                                               parameterName);
                             parameters.Add(parameterName, value);
                         }
@@ -1730,7 +1731,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                 string parameterName = '@' + typeProperty.Name;
                 ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
 
                 columnNameList.Add("[" + columnName + "]");
@@ -1782,7 +1783,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 {
                     PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                     columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                 }
                 else
@@ -1853,7 +1854,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 PropertyInfo typeProperty = typeProperties.First(x => x.Name == property.Name);
                 string parameterName = '@' + typeProperty.Name;
                 ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
 
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
 
@@ -1917,7 +1918,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 {
                     PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                     columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                     keyAttribute = typeProperty.GetCustomAttribute(typeof(KeyAttribute));
                 }
@@ -2003,7 +2004,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 string parameterName = '@' + typeProperty.Name;
 
                 ColumnAttribute columnAttribute =
-                    typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
 
                 string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
 
@@ -2054,7 +2055,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     }
 
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
 
                     string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
 
@@ -2124,7 +2125,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 {
                     PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                     columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                 }
                 else
@@ -2164,7 +2165,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 {
                     PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                     columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                 }
                 else
@@ -2216,7 +2217,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     string parameterName = '@' + typeProperty.Name;
 
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
 
                     string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
 
@@ -2277,7 +2278,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     {
                         PropertyInfo typeProperty = typeProperties.First(x => x.Name == propertyName);
                         ColumnAttribute columnAttribute =
-                            typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                            typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                         columnName = columnAttribute != null ? columnAttribute.Name : propertyName;
                     }
                     else
@@ -2342,7 +2343,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                     if (keyAttribute == null) continue;
                     propertyName = '@' + typeProperty.Name;
                     ColumnAttribute columnAttribute =
-                        typeProperty.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        typeProperty.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                     string columnName = columnAttribute != null ? columnAttribute.Name : typeProperty.Name;
                     condition = EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
                                 "].[" + columnName + "] = " + propertyName;
@@ -2427,7 +2428,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                 if (keyAttribute != null)
                 {
                     ColumnAttribute columnAttribute =
-                        property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                        property.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault();
                     columnName = columnAttribute != null ? columnAttribute.Name : property.Name;
                     break;
                 }

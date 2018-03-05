@@ -26,16 +26,27 @@ namespace S3K.RealTimeOnline.Core.Services
         {
         }
 
-        public virtual Stream Select(string page, string pageSize)
+        public virtual Stream SelectA(string page, string pageSize, string orderby)
+        {
+            return Select(page, pageSize, orderby, null, null);
+        }
+
+        public virtual Stream SelectB(string page, string pageSize, string orderby, string filter)
+        {
+            return Select(page, pageSize, orderby, filter, null);
+        }
+
+        public Stream Select(string page, string pageSize, string orderby, string filter, string select)
         {
             try
             {
-                if (string.IsNullOrEmpty(page) || !Regex.IsMatch(page, @"\d") || Convert.ToInt32(page) == 0)
+                if (string.IsNullOrWhiteSpace(page) || !Regex.IsMatch(page, @"\d") || Convert.ToInt32(page) == 0)
                 {
                     throw new ValidationException("The 'page' parameter must be a valid number and greater than 0.");
                 }
 
-                if (string.IsNullOrEmpty(pageSize) || !Regex.IsMatch(pageSize, @"\d") || Convert.ToInt32(pageSize) == 0)
+                if (string.IsNullOrWhiteSpace(pageSize) || !Regex.IsMatch(pageSize, @"\d") ||
+                    Convert.ToInt32(pageSize) == 0)
                 {
                     throw new ValidationException(
                         "The 'pageSize' parameter must be a valid number and greater than 0.");
@@ -47,10 +58,64 @@ namespace S3K.RealTimeOnline.Core.Services
                     PageSize = Convert.ToInt32(pageSize)
                 };
 
-                GenericCountQuery countQuery = new GenericCountQuery
+                GenericCountQuery countQuery = new GenericCountQuery();
+
+                if (!string.IsNullOrWhiteSpace(orderby) && orderby != "null")
                 {
-                    Conditions = null
-                };
+                    foreach (var item in orderby.Split(','))
+                    {
+                        string orderProperty = item.Split(' ')[0];
+                        ValidationHelper.ValidateProperties<TEntity>(orderProperty);
+                    }
+
+                    selectQuery.OrderBy = orderby;
+                }
+
+                if (!string.IsNullOrWhiteSpace(filter) && filter != "null")
+                {
+                    IList<ParameterBuilder> conditions = new List<ParameterBuilder>();
+                    string[] andConditions = filter.Split(new[] {"and", "AND"}, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string andCondition in andConditions)
+                    {
+                        string[] orConditions =
+                            andCondition.Split(new[] {"or", "OR"}, StringSplitOptions.RemoveEmptyEntries);
+                        if (orConditions.Length > 0)
+                        {
+                            foreach (var orCondition in orConditions)
+                            {
+                                ParameterBuilder parameterBuilder = CreateParameterBuilder(orCondition, Condition.Or);
+                                if (parameterBuilder != null)
+                                {
+                                    conditions.Add(parameterBuilder);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            ParameterBuilder parameterBuilder = CreateParameterBuilder(andCondition, Condition.And);
+                            if (parameterBuilder != null)
+                            {
+                                conditions.Add(parameterBuilder);
+                            }
+                        }
+                    }
+
+                    if (conditions.Any())
+                    {
+                        selectQuery.Conditions = conditions;
+                        countQuery.Conditions = conditions;
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(select) && select != "null")
+                {
+                    string[] columns = select.Split(',');
+                    if (columns.Any())
+                    {
+                        ValidationHelper.ValidateProperties<TEntity>(columns);
+                        selectQuery.Columns = columns;
+                    }
+                }
 
                 IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>> selectQueryHandler =
                     ResolveGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>(

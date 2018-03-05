@@ -8,14 +8,17 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
     {
         public ParameterBuilder()
         {
-            Operator = Comparison.EqualTo;
+            Comparison = Comparison.EqualTo;
+            Condition = Condition.And;
         }
 
         public string ParameterName { get; set; }
 
         public string SourceColumn { get; set; }
 
-        public Comparison Operator { get; set; }
+        public Comparison Comparison { get; set; }
+
+        public Condition Condition { get; set; }
 
         public object Value { get; set; }
 
@@ -23,16 +26,16 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         {
             string parameterName = !ParameterName.StartsWith("@") ? '@' + ParameterName : ParameterName;
 
-            if (Operator == Comparison.Between)
+            if (Comparison == Comparison.Between)
             {
-                return "[" + SourceColumn + "]" + " " + Comparison.Between.Value() + " " + parameterName + "1" +
+                return "[" + SourceColumn + "]" + " " + Comparison.Between + " " + parameterName + "1" +
                        " AND " +
                        parameterName + "2";
             }
 
             IList<string> parameters = new List<string>();
             Type valueType = Value != null ? Value.GetType() : typeof(string);
-            if (Operator == Comparison.Contains)
+            if (Comparison == Comparison.Contains)
             {
                 if (valueType.IsArray)
                 {
@@ -44,15 +47,15 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                             parameters.Add(parameterName + i);
                         }
 
-                        return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" +
+                        return "[" + SourceColumn + "]" + " " + Comparison + " (" +
                                string.Join(", ", parameters) + ")";
                     }
                 }
 
-                return "[" + SourceColumn + "]" + " " + Operator.Value() + " (" + parameterName + ")";
+                return "[" + SourceColumn + "]" + " " + Comparison + " (" + parameterName + ")";
             }
 
-            if (Operator == Comparison.Like)
+            if (Comparison == Comparison.Like)
             {
                 if (valueType.IsArray)
                 {
@@ -61,7 +64,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     {
                         for (int i = 0; i < values.Length; i++)
                         {
-                            parameters.Add("[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " +
+                            parameters.Add("[" + SourceColumn + "]" + " " + Comparison + " '%' + " +
                                            parameterName + i +
                                            " + '%'");
                         }
@@ -70,10 +73,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     }
                 }
 
-                return "[" + SourceColumn + "]" + " " + Operator.Value() + " '%' + " + parameterName + " + '%'";
+                return Condition + " [" + SourceColumn + "]" + " " + Comparison + " '%' + " + parameterName + " + '%'";
             }
 
-            return "[" + SourceColumn + "]" + " " + Operator.Value() + " " + parameterName;
+            return Condition + " [" + SourceColumn + "]" + " " + Comparison + " " + parameterName;
         }
     }
 }

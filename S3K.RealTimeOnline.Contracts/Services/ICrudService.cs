@@ -8,12 +8,31 @@ namespace S3K.RealTimeOnline.Contracts.Services
     public interface ICrudService<TDto> where TDto : class
     {
         [OperationContract]
-        [WebGet(
-            UriTemplate = "/Select?page={page}&pagesize={pageSize}",
+        [WebInvoke(
+            Method = "GET",
+            UriTemplate = "/{page}/{pageSize}/{*orderby}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream Select(string page, string pageSize);
+        Stream SelectA(string page, string pageSize, string orderby);
+
+        [OperationContract]
+        [WebInvoke(
+            Method = "GET",
+            UriTemplate = "/{page}/{pageSize}/{orderby}/{*filter}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        Stream SelectB(string page, string pageSize, string orderby, string filter);
+
+        [OperationContract]
+        [WebInvoke(
+            Method = "GET",
+            UriTemplate = "/{page}/{pageSize}/{orderby}/{filter}/{*select}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        Stream Select(string page, string pageSize, string orderby, string filter, string select);
 
         [OperationContract]
         [WebInvoke(
@@ -21,7 +40,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/Insert")]
+            UriTemplate = "/")]
         void Insert(TDto dto);
 
         [OperationContract]
@@ -30,7 +49,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/Update?id={id}")]
+            UriTemplate = "/{id}")]
         void Update(string id, TDto dto);
 
         [OperationContract]
@@ -39,13 +58,13 @@ namespace S3K.RealTimeOnline.Contracts.Services
             BodyStyle = WebMessageBodyStyle.Bare,
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/PartialUpdate?id={id}")]
+            UriTemplate = "/{id}")]
         void PartialUpdate(string id, string data);
 
         [OperationContract]
         [WebInvoke(
             Method = "DELETE",
-            UriTemplate = "/DeleteById?id={id}")]
+            UriTemplate = "/{id}")]
         void DeleteById(string id);
 
         [OperationContract]
@@ -53,7 +72,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             Method = "GET",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
-            UriTemplate = "/SelectById?id={id}")]
+            UriTemplate = "/{id}")]
         Stream SelectById(string id);
     }
 }

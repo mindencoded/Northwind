@@ -10,12 +10,14 @@
         GreaterThanOrEqualTo,
         Like,
         Contains,
-        Between
+        Between,
+        StartsWith,
+        EndsWith
     }
 
     public static class ComparisonExtension
     {
-        public static string Value(this Comparison comparison)
+        public static string ToString(this Comparison comparison)
         {
             switch (comparison)
             {
@@ -38,7 +40,7 @@
                 case Comparison.Between:
                     return "BETWEEN";
                 default:
-                    return "=";
+                    return null;
             }
         }
     }
