@@ -98,7 +98,6 @@
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Tools\DbInformation.cs" />
     <Compile Include="Tools\QueryResponse.cs" />
-    <Compile Include="Tools\SortDirection.cs" />
     <Compile Include="Tools\SqlNotificationRequestRegister.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Tools\SqlDataReaderExtensions.cs" />

@@ -52,34 +52,28 @@ namespace S3K.RealTimeOnline.Core.Services
                         "The 'pageSize' parameter must be a valid number and greater than 0.");
                 }
 
+
                 GenericSelectQuery selectQuery = new GenericSelectQuery
                 {
                     Page = Convert.ToInt32(page),
                     PageSize = Convert.ToInt32(pageSize)
                 };
-
                 GenericCountQuery countQuery = new GenericCountQuery();
 
                 if (!string.IsNullOrWhiteSpace(orderby) && orderby != "null")
                 {
-                    foreach (var item in orderby.Split(','))
-                    {
-                        string orderProperty = item.Split(' ')[0];
-                        ValidationHelper.ValidateProperties<TEntity>(orderProperty);
-                    }
-
-                    selectQuery.OrderBy = orderby;
+                    selectQuery.OrderBy = QueryHelper.CreateOrderByString<TEntity>(orderby.Split(','));
                 }
 
                 if (!string.IsNullOrWhiteSpace(filter) && filter != "null")
                 {
                     IList<ParameterBuilder> conditions = new List<ParameterBuilder>();
-                    string[] andConditions = filter.Split(new[] {"and", "AND"}, StringSplitOptions.RemoveEmptyEntries);
+                    string[] andConditions = filter.Split(new[] {" and ", " AND ", "And"}, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string andCondition in andConditions)
                     {
                         string[] orConditions =
-                            andCondition.Split(new[] {"or", "OR"}, StringSplitOptions.RemoveEmptyEntries);
-                        if (orConditions.Length > 0)
+                            andCondition.Split(new[] {" or ", " OR ", "Or"}, StringSplitOptions.RemoveEmptyEntries);
+                        if (orConditions.Length > 1)
                         {
                             foreach (var orCondition in orConditions)
                             {

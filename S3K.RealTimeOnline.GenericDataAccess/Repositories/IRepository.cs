@@ -22,11 +22,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
         Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, string orderBy = null, int? page = null,
             int? pageSize = null);
 
-        IEnumerable<T> Select(object conditions, string orderBy = null, int? page = null, int? pageSize = null);
-
-        Task<IEnumerable<T>> SelectAsync(object conditions, string orderBy = null, int? page = null,
-            int? pageSize = null);
-
         IEnumerable<T> Select(IDictionary<string, object> conditions, string orderBy = null, int? page = null,
             int? pageSize = null);
 
@@ -38,14 +33,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
             int? pageSize = null);
 
         Task<IEnumerable<T>> SelectAsync(IList<ParameterBuilder> conditions, string orderBy = null, int? page = null,
-            int? pageSize = null);
-
-        IEnumerable<ExpandoObject> Select(IList<string> columns, object conditions, string orderBy = null,
-            int? page = null,
-            int? pageSize = null);
-
-        Task<IEnumerable<ExpandoObject>> SelectAsync(IList<string> columns, object conditions, string orderBy = null,
-            int? page = null,
             int? pageSize = null);
 
         IEnumerable<ExpandoObject> Select(IList<string> columns, IDictionary<string, object> conditions,
@@ -68,13 +55,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
         Task<T> SelectByIdAsync(object id);
 
-        int Count(object conditions);
-
         int Count(IDictionary<string, object> conditions);
 
         int Count(IList<ParameterBuilder> conditions);
-
-        Task<int> CountAsync(object conditions);
 
         Task<int> CountAsync(IDictionary<string, object> conditions);
 

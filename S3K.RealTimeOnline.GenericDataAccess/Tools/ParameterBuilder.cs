@@ -8,11 +8,13 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
     {
         public ParameterBuilder()
         {
+            StartGroup = "";
+            EndGroup = "";
             Comparison = Comparison.EqualTo;
             Condition = Condition.And;
         }
 
-        public string ParameterName { get; set; }
+        public string PropertyName { get; set; }
 
         public string SourceColumn { get; set; }
 
@@ -20,11 +22,15 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         public Condition Condition { get; set; }
 
+        public string StartGroup { get; set; }
+
+        public string EndGroup { get; set; }
+
         public object Value { get; set; }
 
         public override string ToString()
         {
-            string parameterName = !ParameterName.StartsWith("@") ? '@' + ParameterName : ParameterName;
+            string parameterName = !PropertyName.StartsWith("@") ? '@' + PropertyName : PropertyName;
 
             if (Comparison == Comparison.Between)
             {

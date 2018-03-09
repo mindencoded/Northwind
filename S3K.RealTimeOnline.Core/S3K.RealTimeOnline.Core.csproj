@@ -117,10 +117,6 @@
       <Project>{77a65568-2d24-4d32-bad8-8a489ad1dd92}</Project>
       <Name>S3K.RealTimeOnline.BusinessDomain</Name>
     </ProjectReference>
-    <ProjectReference Include="..\S3K.RealTimeOnline.CommonDataAccess\S3K.RealTimeOnline.CommonDataAccess.csproj">
-      <Project>{f96fac62-7a5d-4c01-ab00-c003f7ee4081}</Project>
-      <Name>S3K.RealTimeOnline.CommonDataAccess</Name>
-    </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
       <Name>S3K.RealTimeOnline.CommonUtils</Name>

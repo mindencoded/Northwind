@@ -17,7 +17,7 @@
 
     public static class ComparisonExtension
     {
-        public static string ToString(this Comparison comparison)
+        public static string ToSqlComparison(this Comparison comparison)
         {
             switch (comparison)
             {
@@ -34,6 +34,8 @@
                 case Comparison.GreaterThanOrEqualTo:
                     return ">=";
                 case Comparison.Like:
+                case Comparison.StartsWith:
+                case Comparison.EndsWith:
                     return "LIKE";
                 case Comparison.Contains:
                     return "IN";

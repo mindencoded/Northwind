@@ -6,8 +6,7 @@ namespace S3K.RealTimeOnline.CommonUtils
     public class ComparisonHelper
     {
         public static IDictionary<string, Comparison> Symbols = new Dictionary<string, Comparison>
-        {
-            {"=", Comparison.EqualTo},
+        { 
             {"==", Comparison.EqualTo},
             {"<>", Comparison.NotEqualTo},
             {"!=", Comparison.NotEqualTo},
@@ -16,9 +15,11 @@ namespace S3K.RealTimeOnline.CommonUtils
             {">", Comparison.GreaterThan},
             {">=", Comparison.GreaterThanOrEqualTo},
             {"*=", Comparison.Like},
-            {"~", Comparison.Between},
             {"^=", Comparison.StartsWith},
-            {"$=", Comparison.EndsWith}
+            {"$=", Comparison.EndsWith},
+            {"CONTAINS", Comparison.Contains},
+            {"IN", Comparison.Contains},
+            {"BETWEEN", Comparison.Between}
         };
 
 

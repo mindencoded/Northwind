@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -16,6 +18,7 @@ using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using Unity;
+using Unity.Interception.Utilities;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
@@ -138,19 +141,48 @@ namespace S3K.RealTimeOnline.Core.Services
 
         protected virtual ParameterBuilder CreateParameterBuilder(string filter, Condition condition)
         {
+            ParameterBuilder parameter = new ParameterBuilder();
             foreach (KeyValuePair<string, Comparison> symbol in ComparisonHelper.Symbols)
             {
                 string[] values =
                     filter.Split(new[] {symbol.Key}, StringSplitOptions.RemoveEmptyEntries);
-                if (values.Length > 0)
+
+                if (values.Length > 1)
                 {
-                    return new ParameterBuilder
+                    parameter.Comparison = symbol.Value;
+                    parameter.Condition = condition;
+                    string propertyName = values[0].Trim();
+                    if (propertyName.StartsWith("("))
                     {
-                        Comparison = symbol.Value,
-                        Condition = condition,
-                        ParameterName = values[0],
-                        Value = values[1]
-                    };
+                        propertyName = propertyName.TrimStart("(");
+                        parameter.StartGroup = "(";
+                    }
+
+                    parameter.PropertyName = propertyName;
+
+                    values[1] = values[1].Trim();
+                    object value;
+                    if (symbol.Value == Comparison.Contains || symbol.Value == Comparison.Between)
+                    {
+                        value = Regex.Match(values[1], @"\(([^)]*)\)").Groups[1].Value.Split(',', '~')
+                            .Select(x => x.Trim('\'')).ToArray();
+                        if (values[1].EndsWith("))"))
+                        {
+                            parameter.EndGroup = ")";
+                        }
+                    }
+                    else
+                    {
+                        value = values[1].TrimEnd(")").Trim('\'');
+                        if (values[1].EndsWith(")"))
+                        {
+                            parameter.EndGroup = ")";
+                        }
+                    }
+
+                    parameter.Value = value;
+
+                    return parameter;
                 }
             }
 
