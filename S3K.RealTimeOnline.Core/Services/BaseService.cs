@@ -18,7 +18,6 @@ using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using Unity;
-using Unity.Interception.Utilities;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
@@ -155,7 +154,7 @@ namespace S3K.RealTimeOnline.Core.Services
                     if (propertyName.StartsWith("("))
                     {
                         propertyName = propertyName.TrimStart("(");
-                        parameter.StartGroup = "(";
+                        parameter.IsStartGroup = true;
                     }
 
                     parameter.PropertyName = propertyName;
@@ -168,7 +167,7 @@ namespace S3K.RealTimeOnline.Core.Services
                             .Select(x => x.Trim('\'')).ToArray();
                         if (values[1].EndsWith("))"))
                         {
-                            parameter.EndGroup = ")";
+                            parameter.IsEndGroup = true;
                         }
                     }
                     else
@@ -176,7 +175,7 @@ namespace S3K.RealTimeOnline.Core.Services
                         value = values[1].TrimEnd(")").Trim('\'');
                         if (values[1].EndsWith(")"))
                         {
-                            parameter.EndGroup = ")";
+                            parameter.IsEndGroup = true;
                         }
                     }
 

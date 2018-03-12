@@ -8,8 +8,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
     {
         public ParameterBuilder()
         {
-            StartGroup = "";
-            EndGroup = "";
             Comparison = Comparison.EqualTo;
             Condition = Condition.And;
         }
@@ -22,9 +20,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         public Condition Condition { get; set; }
 
-        public string StartGroup { get; set; }
+        public bool IsStartGroup { get; set; }
 
-        public string EndGroup { get; set; }
+        public bool IsEndGroup { get; set; }
 
         public object Value { get; set; }
 
@@ -83,6 +81,16 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             }
 
             return Condition + " [" + SourceColumn + "]" + " " + Comparison + " " + parameterName;
+        }
+
+        public string StartGroup()
+        {
+            return IsStartGroup ? "(" : "";
+        }
+
+        public string EndGroup()
+        {
+            return IsEndGroup ? ")" : "";
         }
     }
 }

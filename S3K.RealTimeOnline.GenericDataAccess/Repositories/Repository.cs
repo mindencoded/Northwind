@@ -1845,10 +1845,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             object[] items = (object[]) value;
                             if (items.Length >= 2)
                             {
-
                                 parameters.Add(parameterName + "_1", items[0]);
                                 parameters.Add(parameterName + "_2", items[1]);
-
                             }
 
                             typeValid = true;
@@ -1856,12 +1854,12 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                         if (typeValid)
                         {
-                            conditionList.Add(condition.Condition + " " + condition.StartGroup +
+                            conditionList.Add(condition.Condition + " " + condition.StartGroup() +
                                               EntityUtils.GetSchema<T>() + ".[" +
                                               EntityUtils.GetTableName<T>() +
                                               "].[" + columnName + "] BETWEEN  " + parameterName + "_1" +
                                               " AND " +
-                                              parameterName + "_2" + condition.EndGroup);
+                                              parameterName + "_2" + condition.EndGroup());
                         }
                     }
                 }
@@ -1878,20 +1876,20 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                 parameters.Add(parameterName + "_" + i, items[i]);
                             }
 
-                            conditionList.Add(condition.Condition + " " + condition.StartGroup +
+                            conditionList.Add(condition.Condition + " " + condition.StartGroup() +
                                               EntityUtils.GetSchema<T>() + ".[" +
                                               EntityUtils.GetTableName<T>() +
                                               "].[" + columnName + "] IN (" +
-                                              string.Join(", ", parameters.Keys) + ")" + condition.EndGroup);
+                                              string.Join(", ", parameters.Keys) + ")" + condition.EndGroup());
                         }
                         else
                         {
                             parameters.Add(parameterName, value);
-                            conditionList.Add(condition.Condition + " " + condition.StartGroup +
+                            conditionList.Add(condition.Condition + " " + condition.StartGroup() +
                                               EntityUtils.GetSchema<T>() + ".[" +
                                               EntityUtils.GetTableName<T>() +
                                               "].[" + columnName + "] IN (" +
-                                              string.Join(", ", parameterName) + ")" + condition.EndGroup);
+                                              string.Join(", ", parameterName) + ")" + condition.EndGroup());
                         }
                     }
                 }
@@ -1908,7 +1906,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                             IList<string> subConditionList = new List<string>();
                             for (int i = 0; i < items.Length; i++)
                             {
-
                                 if (condition.Comparison == Comparison.StartsWith)
                                 {
                                     comparison = parameterName + "_" + i +
@@ -1932,9 +1929,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                 parameters.Add(parameterName + "_" + i, items[i]);
                             }
 
-                            conditionList.Add(condition.Condition + " " + condition.StartGroup + "(" +
+                            conditionList.Add(condition.Condition + " " + condition.StartGroup() + "(" +
                                               string.Join(" OR ", subConditionList) +
-                                              ")" + condition.EndGroup);
+                                              ")" + condition.EndGroup());
                         }
                         else
                         {
@@ -1955,23 +1952,21 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                                              " + '%'";
                             }
 
-                            conditionList.Add(condition.Condition + " " + condition.StartGroup +
+                            conditionList.Add(condition.Condition + " " + condition.StartGroup() +
                                               EntityUtils.GetSchema<T>() + ".[" +
                                               EntityUtils.GetTableName<T>() +
-                                              "].[" + columnName + "] LIKE " + comparison + condition.EndGroup);
+                                              "].[" + columnName + "] LIKE " + comparison + condition.EndGroup());
                             parameters.Add(parameterName, value);
                         }
                     }
-
                 }
                 else
                 {
-
-                    conditionList.Add(condition.Condition + " " + condition.StartGroup +
+                    conditionList.Add(condition.Condition + " " + condition.StartGroup() +
                                       EntityUtils.GetSchema<T>() + ".[" +
                                       EntityUtils.GetTableName<T>() +
                                       "].[" + columnName + "] " + condition.Comparison.ToSqlComparison() + " " +
-                                      parameterName + condition.EndGroup);
+                                      parameterName + condition.EndGroup());
 
 
                     parameters.Add(parameterName, value);

@@ -46,7 +46,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         }
 
 
-
         public static string BuildOrderBy(Dictionary<string, OrderBy> entries)
         {
             IList<string> orderBy = new List<string>();

@@ -68,7 +68,8 @@ namespace S3K.RealTimeOnline.Core.Services
                 if (!string.IsNullOrWhiteSpace(filter) && filter != "null")
                 {
                     IList<ParameterBuilder> conditions = new List<ParameterBuilder>();
-                    string[] andConditions = filter.Split(new[] {" and ", " AND ", "And"}, StringSplitOptions.RemoveEmptyEntries);
+                    string[] andConditions = filter.Split(new[] {" and ", " AND ", "And"},
+                        StringSplitOptions.RemoveEmptyEntries);
                     foreach (string andCondition in andConditions)
                     {
                         string[] orConditions =

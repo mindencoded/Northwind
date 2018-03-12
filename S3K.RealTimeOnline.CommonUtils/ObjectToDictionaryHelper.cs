@@ -14,7 +14,8 @@ namespace S3K.RealTimeOnline.CommonUtils
         public static IDictionary<string, T> ToDictionary<T>(this object source)
         {
             if (source == null)
-                throw new ArgumentNullException("source", "Unable to convert object to a dictionary. The source object is null.");
+                throw new ArgumentNullException("source",
+                    "Unable to convert object to a dictionary. The source object is null.");
 
             var dictionary = new Dictionary<string, T>();
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source))
@@ -22,11 +23,12 @@ namespace S3K.RealTimeOnline.CommonUtils
             return dictionary;
         }
 
-        private static void AddPropertyToDictionary<T>(PropertyDescriptor property, object source, Dictionary<string, T> dictionary)
+        private static void AddPropertyToDictionary<T>(PropertyDescriptor property, object source,
+            Dictionary<string, T> dictionary)
         {
             object value = property.GetValue(source);
             if (IsOfType<T>(value))
-                dictionary.Add(property.Name, (T)value);
+                dictionary.Add(property.Name, (T) value);
         }
 
         private static bool IsOfType<T>(object value)
