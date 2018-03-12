@@ -16,10 +16,17 @@ namespace S3K.RealTimeOnline.CommonUtils
             {">=", Comparison.GreaterThanOrEqualTo},
             {"*=", Comparison.Like},
             {"^=", Comparison.StartsWith},
-            {"$=", Comparison.EndsWith},
+            {"$=", Comparison.EndsWith}
+        };
+
+        public static IDictionary<string, Comparison> Sentences = new Dictionary<string, Comparison>
+        {
+            {"STARTSWITH", Comparison.StartsWith},
+            {"ENDSWHIT", Comparison.EndsWith},
             {"CONTAINS", Comparison.Contains},
             {"IN", Comparison.Contains},
-            {"BETWEEN", Comparison.Between}
+            {"BETWEEN", Comparison.Between},
+            {"LIKE", Comparison.Like}
         };
 
 

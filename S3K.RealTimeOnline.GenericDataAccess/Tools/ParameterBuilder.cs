@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using S3K.RealTimeOnline.CommonUtils;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Tools
@@ -91,6 +92,62 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         public string EndGroup()
         {
             return IsEndGroup ? ")" : "";
+        }
+
+        public static ParameterBuilder Create(string filter, Condition condition)
+        {
+            ParameterBuilder parameter = new ParameterBuilder
+            {
+                Condition = condition
+            };
+
+            if (filter.StartsWith("("))
+            {
+                filter = filter.TrimStart("(");
+                parameter.IsStartGroup = true;
+            }
+
+            foreach (KeyValuePair<string, Comparison> sentence in ComparisonHelper.Sentences)
+            {
+                if (filter.ToUpper().StartsWith(sentence.Key))
+                {
+                    if (filter.Trim().EndsWith("))"))
+                    {
+                        filter = filter.TrimEnd(")");
+                        parameter.IsEndGroup = true;
+                    }
+
+                    parameter.Comparison = sentence.Value;
+
+                    string[] values = Regex.Match(filter, @"\(([^)]*)\)").Groups[1].Value.Split(';');
+
+                    parameter.PropertyName = values[0].Trim();
+                    parameter.Value = values[1].TrimEnd(")").Trim('\'').Split(',','~');
+                    return parameter;
+                }
+            }
+
+            foreach (KeyValuePair<string, Comparison> symbol in ComparisonHelper.Symbols)
+            {
+                string[] values =
+                    filter.Split(new[] {symbol.Key}, StringSplitOptions.RemoveEmptyEntries);
+
+                if (values.Length > 1)
+                {
+                    parameter.Comparison = symbol.Value;
+                    parameter.PropertyName = values[0].Trim();
+                    values[1] = values[1].Trim();
+                    if (values[1].EndsWith(")"))
+                    {
+                        values[1] = values[1].TrimEnd(")");
+                        parameter.IsEndGroup = true;
+                    }
+                    parameter.Value = values[1].Trim('\'');
+                    return parameter;
+                }
+            }
+
+            return null;
         }
     }
 }

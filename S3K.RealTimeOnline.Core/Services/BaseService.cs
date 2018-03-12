@@ -138,54 +138,6 @@ namespace S3K.RealTimeOnline.Core.Services
             return dictionary;
         }
 
-        protected virtual ParameterBuilder CreateParameterBuilder(string filter, Condition condition)
-        {
-            ParameterBuilder parameter = new ParameterBuilder();
-            foreach (KeyValuePair<string, Comparison> symbol in ComparisonHelper.Symbols)
-            {
-                string[] values =
-                    filter.Split(new[] {symbol.Key}, StringSplitOptions.RemoveEmptyEntries);
-
-                if (values.Length > 1)
-                {
-                    parameter.Comparison = symbol.Value;
-                    parameter.Condition = condition;
-                    string propertyName = values[0].Trim();
-                    if (propertyName.StartsWith("("))
-                    {
-                        propertyName = propertyName.TrimStart("(");
-                        parameter.IsStartGroup = true;
-                    }
-
-                    parameter.PropertyName = propertyName;
-
-                    values[1] = values[1].Trim();
-                    object value;
-                    if (symbol.Value == Comparison.Contains || symbol.Value == Comparison.Between)
-                    {
-                        value = Regex.Match(values[1], @"\(([^)]*)\)").Groups[1].Value.Split(',', '~')
-                            .Select(x => x.Trim('\'')).ToArray();
-                        if (values[1].EndsWith("))"))
-                        {
-                            parameter.IsEndGroup = true;
-                        }
-                    }
-                    else
-                    {
-                        value = values[1].TrimEnd(")").Trim('\'');
-                        if (values[1].EndsWith(")"))
-                        {
-                            parameter.IsEndGroup = true;
-                        }
-                    }
-
-                    parameter.Value = value;
-
-                    return parameter;
-                }
-            }
-
-            return null;
-        }
+       
     }
 }

@@ -62,7 +62,7 @@ namespace S3K.RealTimeOnline.Core.Services
 
                 if (!string.IsNullOrWhiteSpace(orderby) && orderby != "null")
                 {
-                    selectQuery.OrderBy = QueryHelper.CreateOrderByString<TEntity>(orderby.Split(','));
+                    selectQuery.OrderBy = orderby; //QueryHelper.CreateOrderByString<TEntity>(orderby.Split(','));
                 }
 
                 if (!string.IsNullOrWhiteSpace(filter) && filter != "null")
@@ -78,7 +78,7 @@ namespace S3K.RealTimeOnline.Core.Services
                         {
                             foreach (var orCondition in orConditions)
                             {
-                                ParameterBuilder parameterBuilder = CreateParameterBuilder(orCondition, Condition.Or);
+                                ParameterBuilder parameterBuilder = ParameterBuilder.Create(orCondition, Condition.Or);
                                 if (parameterBuilder != null)
                                 {
                                     conditions.Add(parameterBuilder);
@@ -87,7 +87,7 @@ namespace S3K.RealTimeOnline.Core.Services
                         }
                         else
                         {
-                            ParameterBuilder parameterBuilder = CreateParameterBuilder(andCondition, Condition.And);
+                            ParameterBuilder parameterBuilder = ParameterBuilder.Create(andCondition, Condition.And);
                             if (parameterBuilder != null)
                             {
                                 conditions.Add(parameterBuilder);
