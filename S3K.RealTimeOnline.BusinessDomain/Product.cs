@@ -41,13 +41,14 @@ namespace S3K.RealTimeOnline.BusinessDomain
 
         [Column("TARGET_LEVEL")] public int? TargetLevel { get; set; }
 
-        [Column("QUANTITY_PER_UNIT")] public int? QuantityPerUnit { get; set; }
+        [MaxLength(50)]
+        [Column("QUANTITY_PER_UNIT")] public string QuantityPerUnit { get; set; }
 
         [Column("MINIMUM_REORDER_QUANTITY")] public int? MinimumReorderQuantity { get; set; }
 
         [Column("DISCONTINUED")] public bool Discontinued { get; set; }
 
-        [Column("SUB_CATEGORY_ID")] public int? SubCategoryId { get; set; }
+        [Column("CATEGORY_ID")] public int? CategoryId { get; set; }
 
         [Column("ATTACHMENTS")] public byte[] Attachments { get; set; }
 

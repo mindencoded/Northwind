@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using S3K.RealTimeOnline.GenericDomain;
@@ -13,6 +14,12 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [ForeignKey("InventoryTransactionType")]
         [Column("TYPE_ID")]
         public byte? TypeId { get; set; }
+
+        [Column("TRANSACTION_CREATED_DATE")]
+        public DateTime? TransactionCreatedDate { get; set; }
+
+        [Column("TRANSACTION_MODIFIED_DATE")]
+        public DateTime? TransactionModifiedDate { get; set; }
 
         [ForeignKey("Product")]
         [Column("PRODUCT_ID")]

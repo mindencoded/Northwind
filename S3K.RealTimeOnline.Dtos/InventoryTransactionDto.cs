@@ -1,4 +1,5 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace S3K.RealTimeOnline.Dtos
 {
@@ -8,6 +9,12 @@ namespace S3K.RealTimeOnline.Dtos
         [DataMember] public int Id { get; set; }
 
         [DataMember] public byte? TypeId { get; set; }
+
+        [DataMember]
+        public DateTime? TransactionCreatedDate { get; set; }
+
+        [DataMember]
+        public DateTime? TransactionModifiedDate { get; set; }
 
         [DataMember] public int? ProductId { get; set; }
 

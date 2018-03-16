@@ -36,7 +36,8 @@ namespace S3K.RealTimeOnline.Dtos
         public int? TargetLevel { get; set; }
 
         [DataMember]
-        public int? QuantityPerUnit { get; set; }
+        [MaxLength(50)]
+        public string QuantityPerUnit { get; set; }
 
         [DataMember]
         public int? MinimumReorderQuantity { get; set; }
@@ -45,7 +46,7 @@ namespace S3K.RealTimeOnline.Dtos
         public bool Discontinued { get; set; }
 
         [DataMember]
-        public int? SubCategoryId { get; set; }
+        public int? CategoryId { get; set; }
 
         [DataMember]
         public byte[] Attachments { get; set; }

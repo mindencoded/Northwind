@@ -106,5 +106,22 @@
     <None Include="S3K.RealTimeOnline.BusinessDb.publish.xml" />
     <None Include="dbo\Data\CUSTOMER.sql" />
     <None Include="dbo\Data\EMPLOYEE.sql" />
+    <None Include="dbo\Data\SUPPLIER.sql" />
+    <None Include="dbo\Data\SHIPPER.sql" />
+    <None Include="dbo\Data\PRODUCT.sql" />
+    <None Include="dbo\Data\INVENTORY_TRANSACTION_TYPE.sql" />
+    <None Include="dbo\Data\PURCHASE_ORDER_STATUS.sql" />
+    <None Include="dbo\Data\ORDER_STATUS.sql" />
+    <None Include="dbo\Data\ORDER_TAX_STATUS.sql" />
+    <None Include="dbo\Data\ORDER_DETAIL_STATUS.sql" />
+    <None Include="dbo\Data\ORDER.sql" />
+    <None Include="dbo\Data\ORDER_DETAIL.sql" />
+    <None Include="dbo\Data\INVENTORY_TRANSACTION.sql" />
+    <None Include="dbo\Data\PURCHASE_ORDER.sql" />
+    <None Include="dbo\Data\PURCHASE_ORDER_DETAIL.sql" />
+    <None Include="dbo\Data\INVOICE.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="S3K.RealTimeOnline.BusinessDb.refactorlog" />
   </ItemGroup>
 </Project>
