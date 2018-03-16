@@ -122,7 +122,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     string[] values = Regex.Match(filter, @"\(([^)]*)\)").Groups[1].Value.Split(';');
 
                     parameter.PropertyName = values[0].Trim();
-                    parameter.Value = values[1].TrimEnd(")").Trim('\'').Split(',','~');
+                    parameter.Value = values[1].TrimEnd(")").Trim('\'').Split(',', '~');
                     return parameter;
                 }
             }
@@ -142,6 +142,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                         values[1] = values[1].TrimEnd(")");
                         parameter.IsEndGroup = true;
                     }
+
                     parameter.Value = values[1].Trim('\'');
                     return parameter;
                 }

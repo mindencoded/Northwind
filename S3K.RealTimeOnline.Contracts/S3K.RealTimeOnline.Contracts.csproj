@@ -38,12 +38,24 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\ISupplierCrudService.cs" />
+    <Compile Include="Services\IShipperCrudService.cs" />
+    <Compile Include="Services\IPurchaseOrderStatusCrudService.cs" />
+    <Compile Include="Services\IPurchaseOrderDetailCrudService.cs" />
+    <Compile Include="Services\IPurchaseOrderCrudService.cs" />
+    <Compile Include="Services\IProductCrudService.cs" />
     <Compile Include="Services\ICustomerCrudService.cs" />
     <Compile Include="Services\IEmployeeCrudService.cs" />
     <Compile Include="Services\IInventoryTransactionTypeCrudService.cs" />
     <Compile Include="Services\IInventoryTransactionCrudService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ICrudService.cs" />
+    <Compile Include="Services\IInvoiceCrudService.cs" />
+    <Compile Include="Services\IOrderCrudService.cs" />
+    <Compile Include="Services\IOrderDetailCrudService.cs" />
+    <Compile Include="Services\IOrderDetailStatusCrudService.cs" />
+    <Compile Include="Services\IOrderTaxStatusCrudService.cs" />
+    <Compile Include="Services\IOrderStatusCrudService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\S3K.RealTimeOnline.Dtos\S3K.RealTimeOnline.Dtos.csproj">

@@ -37,12 +37,24 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SupplierDto.cs" />
+    <Compile Include="ShipperDto.cs" />
     <Compile Include="EmployeeDto.cs" />
     <Compile Include="CustomerDto.cs" />
     <Compile Include="InventoryTransactionDto.cs" />
     <Compile Include="InventoryTransactionTypeDto.cs" />
+    <Compile Include="InvoiceDto.cs" />
+    <Compile Include="OrderDetailDto.cs" />
+    <Compile Include="OrderDetailStatusDto.cs" />
+    <Compile Include="OrderDto.cs" />
+    <Compile Include="OrderStatusDto.cs" />
+    <Compile Include="OrderTaxStatusDto.cs" />
     <Compile Include="PersonDto.cs" />
+    <Compile Include="ProductDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PurchaseOrderDetailDto.cs" />
+    <Compile Include="PurchaseOrderDto.cs" />
+    <Compile Include="PurchaseOrderStatusDto.cs" />
     <Compile Include="SerializableDynamicMetaObject.cs" />
     <Compile Include="SerializableDynamicObject.cs" />
   </ItemGroup>

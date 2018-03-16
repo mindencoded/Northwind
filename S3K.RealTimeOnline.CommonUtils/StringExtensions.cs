@@ -34,17 +34,19 @@ namespace S3K.RealTimeOnline.CommonUtils
             {
                 result = result.Substring(trimString.Length);
             }
+
             return result;
         }
 
-        public static string TrimEnd(this string input, string suffixToRemove, StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
+        public static string TrimEnd(this string input, string suffixToRemove,
+            StringComparison comparisonType = StringComparison.OrdinalIgnoreCase)
         {
-
             if (input != null && suffixToRemove != null
                               && input.EndsWith(suffixToRemove, comparisonType))
             {
                 return input.Substring(0, input.Length - suffixToRemove.Length);
             }
+
             return input;
         }
 
@@ -59,15 +61,18 @@ namespace S3K.RealTimeOnline.CommonUtils
             {
                 return "";
             }
+
             if (posB == -1)
             {
                 return "";
             }
+
             int adjustedPosA = posA + a.Length;
             if (adjustedPosA >= posB)
             {
                 return "";
             }
+
             return value.Substring(adjustedPosA, posB - adjustedPosA);
         }
 
@@ -81,6 +86,7 @@ namespace S3K.RealTimeOnline.CommonUtils
             {
                 return "";
             }
+
             return value.Substring(0, posA);
         }
 
@@ -94,13 +100,14 @@ namespace S3K.RealTimeOnline.CommonUtils
             {
                 return "";
             }
+
             int adjustedPosA = posA + a.Length;
             if (adjustedPosA >= value.Length)
             {
                 return "";
             }
+
             return value.Substring(adjustedPosA);
         }
-
     }
 }

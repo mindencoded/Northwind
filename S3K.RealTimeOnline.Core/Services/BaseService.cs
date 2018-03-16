@@ -137,7 +137,5 @@ namespace S3K.RealTimeOnline.Core.Services
 
             return dictionary;
         }
-
-       
     }
 }

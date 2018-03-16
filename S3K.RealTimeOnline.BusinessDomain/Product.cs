@@ -16,12 +16,12 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Key] [Column("ID")] public int Id { get; set; }
 
         [MaxLength(25)]
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [Column("CODE")]
         public string Code { get; set; }
 
         [MaxLength(50)]
-        [Required]
+        [Required(AllowEmptyStrings = false)]
         [Column("NAME")]
         public string Name { get; set; }
 

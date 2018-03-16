@@ -81,6 +81,8 @@
   <ItemGroup>
     <Compile Include="Services\BaseService.cs" />
     <Compile Include="ConfigContainer.cs" />
+    <Compile Include="Services\SupplierCrudService.svc.cs" />
+    <Compile Include="Services\ShipperCrudService.svc.cs" />
     <Compile Include="Services\CustomerCrudService.svc.cs" />
     <Compile Include="Services\EmployeeCrudService.svc.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
@@ -96,6 +98,16 @@
     <Compile Include="Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CrudService.cs" />
+    <Compile Include="Services\InvoiceCrudService.svc.cs" />
+    <Compile Include="Services\OrderCrudService.svc.cs" />
+    <Compile Include="Services\OrderDetailCrudService.svc.cs" />
+    <Compile Include="Services\OrderDetailStatusCrudService.svc.cs" />
+    <Compile Include="Services\OrderStatusCrudService.svc.cs" />
+    <Compile Include="Services\OrderTaxStatusCrudService.svc.cs" />
+    <Compile Include="Services\PurchaseOrderCrudService.svc.cs" />
+    <Compile Include="Services\ProductCrudService.svc.cs" />
+    <Compile Include="Services\PurchaseOrderDetailCrudService.svc.cs" />
+    <Compile Include="Services\PurchaseOrderStatusCrudService.svc.cs" />
     <Compile Include="WcfServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -96,10 +96,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="SupplierCrudService.svc" />
+    <Content Include="ShipperCrudService.svc" />
+    <Content Include="ProductCrudService.svc" />
+    <Content Include="OrderCrudService.svc" />
     <Content Include="InventoryTransactionTypeCrudService.svc" />
     <Content Include="InventoryTransactionCrudService.svc" />
     <Content Include="EmployeeCrudService.svc" />
     <Content Include="CustomerCrudService.svc" />
+    <Content Include="InvoiceCrudService.svc" />
+    <Content Include="OrderDetailCrudService.svc" />
+    <Content Include="OrderDetailStatusCrudService.svc" />
+    <Content Include="OrderTaxStatusCrudService.svc" />
+    <Content Include="OrderStatusCrudService.svc" />
+    <Content Include="PurchaseOrderDetailCrudService.svc" />
+    <Content Include="PurchaseOrderCrudService.svc" />
+    <Content Include="PurchaseOrderStatusCrudService.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

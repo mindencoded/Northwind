@@ -4,9 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
-using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Core.Decorators;
-using S3K.RealTimeOnline.Core.Services;
 using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
@@ -51,14 +49,6 @@ namespace S3K.RealTimeOnline.Core
             "S3K.RealTimeOnline.BusinessDataAccess",
             "S3K.RealTimeOnline.SecurityDataAccess",
             "S3K.RealTimeOnline.CommonDataAccess"
-        };
-
-        private static readonly IDictionary<Type, Type> ServiceContractTypesDictionary = new Dictionary<Type, Type>()
-        {
-            {typeof(ICustomerCrudService), typeof(CustomerCrudService)},
-            {typeof(IEmployeeCrudService), typeof(EmployeeCrudService)},
-            {typeof(IInventoryTransactionCrudService), typeof(InventoryTransactionCrudService)},
-            {typeof(IInventoryTransactionTypeCrudService), typeof(InventoryTransactionTypeCrudService)},
         };
 
         private ConfigContainer(IUnityContainer container)
@@ -185,11 +175,6 @@ namespace S3K.RealTimeOnline.Core
                             );
                     }
                 }
-            }
-
-            foreach (KeyValuePair<Type, Type> serviceContractTypeKeyValuePair in ServiceContractTypesDictionary)
-            {
-                container.RegisterType(serviceContractTypeKeyValuePair.Key, serviceContractTypeKeyValuePair.Value);
             }
         }
 

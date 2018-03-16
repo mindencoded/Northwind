@@ -91,7 +91,6 @@
     <Compile Include="Tools\IQueryHandler.cs" />
     <Compile Include="Tools\IQueryProcessor.cs" />
     <Compile Include="Tools\ParameterBuilder.cs" />
-    <Compile Include="Tools\Query.cs" />
     <Compile Include="QueryHandlers\GenericSelectQuery.cs" />
     <Compile Include="Tools\QueryHelper.cs" />
     <Compile Include="Tools\QueryProcessor.cs" />
