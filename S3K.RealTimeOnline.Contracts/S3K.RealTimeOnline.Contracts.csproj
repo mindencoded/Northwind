@@ -38,6 +38,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\IRoleCrudService.cs" />
+    <Compile Include="Services\IRoleDetailCrudService.cs" />
     <Compile Include="Services\ISupplierCrudService.cs" />
     <Compile Include="Services\IShipperCrudService.cs" />
     <Compile Include="Services\IPurchaseOrderStatusCrudService.cs" />
@@ -56,6 +58,8 @@
     <Compile Include="Services\IOrderDetailStatusCrudService.cs" />
     <Compile Include="Services\IOrderTaxStatusCrudService.cs" />
     <Compile Include="Services\IOrderStatusCrudService.cs" />
+    <Compile Include="Services\IUserCrudService.cs" />
+    <Compile Include="Services\IUserTypeCrudService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\S3K.RealTimeOnline.Dtos\S3K.RealTimeOnline.Dtos.csproj">

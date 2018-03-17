@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="S3K.RealTimeOnline.Core.Services.RoleCrudService"  Factory="S3K.RealTimeOnline.Core.WcfServiceFactory" %>

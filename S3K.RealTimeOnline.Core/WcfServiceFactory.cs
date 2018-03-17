@@ -26,6 +26,10 @@ namespace S3K.RealTimeOnline.Core
             container.RegisterType(typeof(IPurchaseOrderStatusCrudService), typeof(PurchaseOrderStatusCrudService));
             container.RegisterType(typeof(IShipperCrudService), typeof(ShipperCrudService));
             container.RegisterType(typeof(ISupplierCrudService), typeof(SupplierCrudService));
+            container.RegisterType(typeof(IRoleCrudService), typeof(RoleCrudService));
+            container.RegisterType(typeof(IRoleDetailCrudService), typeof(RoleDetailCrudService));
+            container.RegisterType(typeof(IUserCrudService), typeof(UserCrudService));
+            container.RegisterType(typeof(IUserTypeCrudService), typeof(UserTypeCrudService));
             ConfigContainer.Instance(container);
         }
     }

@@ -96,6 +96,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="UserTypeCrudService.svc" />
+    <Content Include="UserCrudService.svc" />
+    <Content Include="RoleDetailCrudService.svc" />
+    <Content Include="RoleCrudService.svc" />
     <Content Include="SupplierCrudService.svc" />
     <Content Include="ShipperCrudService.svc" />
     <Content Include="ProductCrudService.svc" />

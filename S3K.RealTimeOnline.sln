@@ -54,7 +54,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Contract
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "S3K.RealTimeOnline.Dtos", "S3K.RealTimeOnline.Dtos\S3K.RealTimeOnline.Dtos.csproj", "{28C422D0-F60C-4D3C-8381-0869D8193754}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. CoreBusiness", "3. CoreBusiness", "{CAFE75BC-1F9C-4383-BAEF-802213AC4C0F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3. BusinessLogic", "3. BusinessLogic", "{CAFE75BC-1F9C-4383-BAEF-802213AC4C0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

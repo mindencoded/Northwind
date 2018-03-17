@@ -11,7 +11,7 @@ namespace S3K.RealTimeOnline.SecurityDomain
 
         [Column("TYPE_NAME")]
         [StringLength(25)]
-        public PersonType TypeName { get; set; }
+        public string TypeName { get; set; }
 
         public virtual ICollection<User> Users { get; set; }
     }
