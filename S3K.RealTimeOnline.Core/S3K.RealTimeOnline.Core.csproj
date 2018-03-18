@@ -79,8 +79,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Services\BaseService.cs" />
     <Compile Include="ConfigContainer.cs" />
+    <Compile Include="ConfigContracts.cs" />
+    <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\RoleCrudService.svc.cs" />
     <Compile Include="Services\RoleDetailCrudService.svc.cs" />
     <Compile Include="Services\SupplierCrudService.svc.cs" />

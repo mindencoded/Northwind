@@ -5,7 +5,7 @@ using System.ServiceModel.Web;
 namespace S3K.RealTimeOnline.Contracts.Services
 {
     [ServiceContract]
-    public interface ICrudService<TDto> where TDto : class
+    public interface ICrudService<TDto> : IService where TDto : class
     {
         [OperationContract]
         [WebInvoke(

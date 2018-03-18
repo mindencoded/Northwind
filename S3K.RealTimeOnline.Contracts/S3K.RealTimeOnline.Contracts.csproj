@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="Services\IRoleCrudService.cs" />
     <Compile Include="Services\IRoleDetailCrudService.cs" />
+    <Compile Include="Services\IService.cs" />
     <Compile Include="Services\ISupplierCrudService.cs" />
     <Compile Include="Services\IShipperCrudService.cs" />
     <Compile Include="Services\IPurchaseOrderStatusCrudService.cs" />

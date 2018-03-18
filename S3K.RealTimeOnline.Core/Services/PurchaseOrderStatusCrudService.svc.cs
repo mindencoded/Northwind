@@ -6,7 +6,8 @@ using Unity;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
-    public class PurchaseOrderStatusCrudService : CrudService<IBusinessUnitOfWork, PurchaseOrderStatus, PurchaseOrderStatusDto>, IPurchaseOrderStatusCrudService
+    public class PurchaseOrderStatusCrudService :
+        CrudService<IBusinessUnitOfWork, PurchaseOrderStatus, PurchaseOrderStatusDto>, IPurchaseOrderStatusCrudService
     {
         public PurchaseOrderStatusCrudService(IUnityContainer container) : base(container)
         {

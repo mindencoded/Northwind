@@ -6,7 +6,8 @@ using Unity;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
-    public class RoleDetailCrudService : CrudService<ISecurityUnitOfWork, RoleDetail, RoleDetailDto>, IRoleDetailCrudService
+    public class RoleDetailCrudService : CrudService<ISecurityUnitOfWork, RoleDetail, RoleDetailDto>,
+        IRoleDetailCrudService
     {
         public RoleDetailCrudService(IUnityContainer container) : base(container)
         {

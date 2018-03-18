@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace S3K.RealTimeOnline.Dtos
@@ -7,8 +6,7 @@ namespace S3K.RealTimeOnline.Dtos
     [DataContract]
     public class OrderDetailStatusDto : SerializableDynamicObject
     {
-        [DataMember]
-        public byte Id { get; set; }
+        [DataMember] public byte Id { get; set; }
 
         [DataMember]
         [StringLength(50)]

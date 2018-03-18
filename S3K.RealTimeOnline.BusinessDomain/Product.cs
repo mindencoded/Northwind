@@ -42,7 +42,8 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Column("TARGET_LEVEL")] public int? TargetLevel { get; set; }
 
         [MaxLength(50)]
-        [Column("QUANTITY_PER_UNIT")] public string QuantityPerUnit { get; set; }
+        [Column("QUANTITY_PER_UNIT")]
+        public string QuantityPerUnit { get; set; }
 
         [Column("MINIMUM_REORDER_QUANTITY")] public int? MinimumReorderQuantity { get; set; }
 

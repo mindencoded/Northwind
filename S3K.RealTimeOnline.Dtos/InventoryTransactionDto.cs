@@ -10,11 +10,9 @@ namespace S3K.RealTimeOnline.Dtos
 
         [DataMember] public byte? TypeId { get; set; }
 
-        [DataMember]
-        public DateTime? TransactionCreatedDate { get; set; }
+        [DataMember] public DateTime? TransactionCreatedDate { get; set; }
 
-        [DataMember]
-        public DateTime? TransactionModifiedDate { get; set; }
+        [DataMember] public DateTime? TransactionModifiedDate { get; set; }
 
         [DataMember] public int? ProductId { get; set; }
 
