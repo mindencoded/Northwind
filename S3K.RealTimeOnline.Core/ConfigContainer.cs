@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
+using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
@@ -174,6 +175,19 @@ namespace S3K.RealTimeOnline.Core
                                     genericCommandType))
                             );
                     }
+                }
+            }
+
+            Type[] serviceTypes = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(s => s.GetTypes())
+                .Where(p => typeof(IService).IsAssignableFrom(p) && !p.IsAbstract).ToArray();
+            foreach (var serviceType in serviceTypes)
+            {
+                Type contractType = serviceType.GetInterfaces()
+                    .FirstOrDefault(t => typeof(IService).IsAssignableFrom(t));
+                if (contractType != null)
+                {
+                    container.RegisterType(contractType, serviceType);
                 }
             }
         }

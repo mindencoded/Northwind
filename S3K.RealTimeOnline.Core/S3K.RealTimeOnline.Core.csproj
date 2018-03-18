@@ -113,7 +113,6 @@
     <Compile Include="Services\PurchaseOrderStatusCrudService.svc.cs" />
     <Compile Include="Services\UserCrudService.svc.cs" />
     <Compile Include="Services\UserTypeCrudService.svc.cs" />
-    <Compile Include="WcfServiceFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
