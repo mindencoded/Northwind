@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
@@ -139,7 +140,7 @@ namespace S3K.RealTimeOnline.Core.Services
             {
                 throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), ex is ValidationException
                     ? HttpStatusCode.BadRequest
-                    : HttpStatusCode.InternalServerError);
+                    : HttpStatusCode.InternalServerError);           
             }
         }
 
