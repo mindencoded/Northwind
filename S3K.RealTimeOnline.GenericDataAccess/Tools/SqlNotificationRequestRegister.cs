@@ -57,7 +57,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         /// </summary>
         private void Listen()
         {
-            using (var conn = new SqlConnection(_connectionString))
+            using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 using (_cmd = new SqlCommand(_listenSql, conn))
                 {
@@ -66,10 +66,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
                     _cmd.CommandTimeout = _notificationTimeout + 120;
 
-                    using (var reader = _cmd.ExecuteReader())
+                    using (SqlDataReader reader = _cmd.ExecuteReader())
                     {
                         while (reader.Read())
-                            for (var i = 0; i <= reader.FieldCount - 1; i++)
+                            for (int i = 0; i <= reader.FieldCount - 1; i++)
                                 Debug.WriteLine(reader[i].ToString());
                     }
                 }

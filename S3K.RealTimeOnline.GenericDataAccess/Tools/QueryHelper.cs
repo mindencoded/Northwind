@@ -12,7 +12,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         {
             IList<ParameterBuilder> list = new List<ParameterBuilder>();
             PropertyInfo[] propertyInfos = conditions.GetType().GetProperties();
-            foreach (var propertyInfo in propertyInfos)
+            foreach (PropertyInfo propertyInfo in propertyInfos)
             {
                 ParameterBuilder parameterBuilder = new ParameterBuilder
                 {

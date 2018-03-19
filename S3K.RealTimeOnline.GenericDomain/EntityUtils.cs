@@ -127,12 +127,12 @@ namespace S3K.RealTimeOnline.GenericDomain
 
         public static string SimpleJoinColumns<T>(bool useColumnAlias = false) where T : class
         {
-            var type = typeof(T);
-            var properties = type.GetProperties();
-            var columns = new List<string>();
-            foreach (var property in properties)
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            IList<string> columns = new List<string>();
+            foreach (PropertyInfo property in properties)
             {
-                var attribute =
+                ColumnAttribute attribute =
                     property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                 if (attribute != null)
@@ -199,12 +199,12 @@ namespace S3K.RealTimeOnline.GenericDomain
 
         public static string SimpleJoinProperties<T>() where T : class
         {
-            var type = typeof(T);
-            var properties = type.GetProperties();
-            var columns = new List<string>();
-            foreach (var property in properties)
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            IList<string> columns = new List<string>();
+            foreach (PropertyInfo property in properties)
             {
-                var attribute =
+                ColumnAttribute attribute =
                     property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
 
                 if (attribute != null)
@@ -258,9 +258,9 @@ namespace S3K.RealTimeOnline.GenericDomain
 
         public static string GetSchema<T>() where T : class
         {
-            var schema = "";
-            var type = typeof(T);
-            var attribute = type.GetCustomAttributes(true).OfType<SchemaAttribute>().FirstOrDefault();
+            string schema = "";
+            Type type = typeof(T);
+            SchemaAttribute attribute = type.GetCustomAttributes(true).OfType<SchemaAttribute>().FirstOrDefault();
             if (attribute != null)
                 schema = attribute.Name;
             return schema;
@@ -268,9 +268,8 @@ namespace S3K.RealTimeOnline.GenericDomain
 
         public static string GetTableName<T>() where T : class
         {
-            var type = typeof(T);
-
-            var temp = type.GetCustomAttributes(
+            Type type = typeof(T);
+            object[] temp = type.GetCustomAttributes(
                 typeof(TableAttribute),
                 true);
 

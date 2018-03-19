@@ -23,17 +23,17 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         public static string GetConnectionString(string connectionName)
         {
-            var connectionStringSettings = ConfigurationManager.ConnectionStrings[connectionName];
+            ConnectionStringSettings connectionStringSettings = ConfigurationManager.ConnectionStrings[connectionName];
             ProviderName = connectionStringSettings.ProviderName;
             Name = connectionStringSettings.Name;
             ConnectionString = connectionStringSettings.ConnectionString;
-            var builder = CreateSqlConnectionStringBuilder(ConnectionString);
+            SqlConnectionStringBuilder builder = CreateSqlConnectionStringBuilder(ConnectionString);
             return builder.ToString();
         }
 
         public static SqlConnectionStringBuilder CreateSqlConnectionStringBuilder(string connectionString)
         {
-            var builder = new SqlConnectionStringBuilder(connectionString);
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder(connectionString);
             builder.ApplicationName = ApplicationName ?? builder.ApplicationName;
             Server = builder.DataSource;
             DatabaseName = builder.InitialCatalog;
@@ -43,7 +43,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         public static SqlConnection GetSqlConnection(string connectionName)
         {
-            var connectionString = GetConnectionString(connectionName);
+            string connectionString = GetConnectionString(connectionName);
             return new SqlConnection(connectionString);
         }
     }

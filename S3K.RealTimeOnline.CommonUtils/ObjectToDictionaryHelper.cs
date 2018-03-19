@@ -17,7 +17,7 @@ namespace S3K.RealTimeOnline.CommonUtils
                 throw new ArgumentNullException("source",
                     "Unable to convert object to a dictionary. The source object is null.");
 
-            var dictionary = new Dictionary<string, T>();
+            Dictionary<string, T> dictionary = new Dictionary<string, T>();
             foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(source))
                 AddPropertyToDictionary(property, source, dictionary);
             return dictionary;

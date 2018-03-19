@@ -23,8 +23,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                 object value = reader[i];
 
                 /*
-                var dotNetType = reader.GetFieldType(i);
-                var sqlType = reader.GetDataTypeName(i);
+                Type dotNetType = reader.GetFieldType(i);
+                string sqlType = reader.GetDataTypeName(i);
                 */
 
                 if (value is DBNull) continue;
@@ -134,40 +134,6 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             return result;
         }
 
-        /*public static IList<dynamic> ConvertToDynamicList(this SqlDataReader reader)
-        {
-            IList<dynamic> result = new List<dynamic>();
-            IList<string> names = Enumerable.Range(0, reader.FieldCount).Select(reader.GetName).ToList();
-            foreach (IDataRecord record in reader as IEnumerable)
-            {
-                IDictionary<string, object> expando = new ExpandoObject();
-                foreach (var name in names)
-                {
-                    expando[name] = record[name];
-                }
-                result.Add(expando);
-            }
-            return result;
-        }
-
-        public static async Task<IList<dynamic>> ConvertToDynamicListAsync(this SqlDataReader reader)
-        {
-            IList<dynamic> dynamicList = new List<dynamic>();
-            while (await reader.ReadAsync())
-            {
-                IDictionary<string, object> expandoObject = new ExpandoObject();
-
-                for (var i = 0; i < reader.FieldCount; i++)
-                {
-                    expandoObject.Add(reader.GetName(i), reader[i]);
-                }
-
-
-                dynamicList.Add((dynamic) expandoObject);
-            }
-            return dynamicList;
-        }*/
-
         public static IList<ExpandoObject> ConvertToDynamicList(this SqlDataReader reader)
         {
             IList<ExpandoObject> expandoList = new List<ExpandoObject>();
@@ -192,9 +158,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         public static ExpandoObject ConvertToExpando(IDataRecord record)
         {
-            var expandoObject = new ExpandoObject() as IDictionary<string, object>;
+            IDictionary<string, object> expandoObject = new ExpandoObject();
 
-            for (var i = 0; i < record.FieldCount; i++)
+            for (int i = 0; i < record.FieldCount; i++)
                 expandoObject.Add(record.GetName(i), record[i]);
 
             return (ExpandoObject) expandoObject;

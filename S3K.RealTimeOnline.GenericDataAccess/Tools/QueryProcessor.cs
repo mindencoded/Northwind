@@ -1,4 +1,4 @@
-﻿using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
+﻿using System;
 using Unity;
 
 namespace S3K.RealTimeOnline.GenericDataAccess.Tools
@@ -14,7 +14,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         public TResult Process<TQuery, TResult>(TQuery query) where TQuery : IQuery<TResult>
         {
-            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
+            Type handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
 
             dynamic handler = _container.Resolve(handlerType);
 

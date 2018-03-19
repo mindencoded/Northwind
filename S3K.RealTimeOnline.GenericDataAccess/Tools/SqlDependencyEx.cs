@@ -130,15 +130,15 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             if (database == null)
                 throw new ArgumentNullException("database");
 
-            var result = new List<string>();
+            IList<string> result = new List<string>();
 
-            using (var connection = new SqlConnection(connectionString))
-            using (var command = connection.CreateCommand())
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlCommand command = connection.CreateCommand())
             {
                 connection.Open();
                 command.CommandText = string.Format(SQL_FORMAT_GET_DEPENDENCY_IDENTITIES, database);
                 command.CommandType = CommandType.Text;
-                using (var reader = command.ExecuteReader())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                         result.Add(reader.GetString(0));
@@ -165,7 +165,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             {
                 while (true)
                 {
-                    var message = ReceiveEvent();
+                    string message = ReceiveEvent();
                     Active = true;
                     if (!string.IsNullOrWhiteSpace(message))
                         OnTableChanged(message);
@@ -184,8 +184,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private static void ExecuteNonQuery(string commandText, string connectionString)
         {
-            using (var conn = new SqlConnection(connectionString))
-            using (var command = new SqlCommand(commandText, conn))
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand command = new SqlCommand(commandText, conn))
             {
                 conn.Open();
                 command.CommandType = CommandType.Text;
@@ -195,20 +195,20 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private string ReceiveEvent()
         {
-            var commandText = string.Format(
+            string commandText = string.Format(
                 SQL_FORMAT_RECEIVE_EVENT,
                 DatabaseName,
                 ConversationQueueName,
                 COMMAND_TIMEOUT / 2,
                 SchemaName);
 
-            using (var conn = new SqlConnection(ConnectionString))
-            using (var command = new SqlCommand(commandText, conn))
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlCommand command = new SqlCommand(commandText, conn))
             {
                 conn.Open();
                 command.CommandType = CommandType.Text;
                 command.CommandTimeout = COMMAND_TIMEOUT;
-                using (var reader = command.ExecuteReader())
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
                     if (!reader.Read() || reader.IsDBNull(0)) return string.Empty;
 
@@ -219,16 +219,16 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private string GetUninstallNotificationProcedureScript()
         {
-            var uninstallServiceBrokerNotificationScript = string.Format(
+            string uninstallServiceBrokerNotificationScript = string.Format(
                 SQL_FORMAT_UNINSTALL_SERVICE_BROKER_NOTIFICATION,
                 ConversationQueueName,
                 ConversationServiceName,
                 SchemaName);
-            var uninstallNotificationTriggerScript = string.Format(
+            string uninstallNotificationTriggerScript = string.Format(
                 SQL_FORMAT_DELETE_NOTIFICATION_TRIGGER,
                 ConversationTriggerName,
                 SchemaName);
-            var uninstallationProcedureScript =
+            string uninstallationProcedureScript =
                 string.Format(
                     SQL_FORMAT_CREATE_UNINSTALLATION_PROCEDURE,
                     DatabaseName,
@@ -242,13 +242,13 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private string GetInstallNotificationProcedureScript()
         {
-            var installServiceBrokerNotificationScript = string.Format(
+            string installServiceBrokerNotificationScript = string.Format(
                 SQL_FORMAT_INSTALL_SEVICE_BROKER_NOTIFICATION,
                 DatabaseName,
                 ConversationQueueName,
                 ConversationServiceName,
                 SchemaName);
-            var installNotificationTriggerScript =
+            string installNotificationTriggerScript =
                 string.Format(
                     SQL_FORMAT_CREATE_NOTIFICATION_TRIGGER,
                     TableName,
@@ -257,12 +257,12 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
                     ConversationServiceName,
                     DetailsIncluded ? string.Empty : @"NOT",
                     SchemaName);
-            var uninstallNotificationTriggerScript =
+            string uninstallNotificationTriggerScript =
                 string.Format(
                     SQL_FORMAT_CHECK_NOTIFICATION_TRIGGER,
                     ConversationTriggerName,
                     SchemaName);
-            var installationProcedureScript =
+            string installationProcedureScript =
                 string.Format(
                     SQL_FORMAT_CREATE_INSTALLATION_PROCEDURE,
                     DatabaseName,
@@ -277,7 +277,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private string GetTriggerTypeByListenerType()
         {
-            var result = new StringBuilder();
+            StringBuilder result = new StringBuilder();
             if (NotificaionTypes.HasFlag(NotificationTypes.Insert))
                 result.Append("INSERT");
             if (NotificaionTypes.HasFlag(NotificationTypes.Update))
@@ -291,7 +291,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private void UninstallNotification()
         {
-            var execUninstallationProcedureScript = string.Format(
+            string execUninstallationProcedureScript = string.Format(
                 SQL_FORMAT_EXECUTE_PROCEDURE,
                 DatabaseName,
                 UninstallListenerProcedureName,
@@ -301,7 +301,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private void InstallNotification()
         {
-            var execInstallationProcedureScript = string.Format(
+            string execInstallationProcedureScript = string.Format(
                 SQL_FORMAT_EXECUTE_PROCEDURE,
                 DatabaseName,
                 InstallListenerProcedureName,
@@ -313,7 +313,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private void OnTableChanged(string message)
         {
-            var evnt = TableChanged;
+            EventHandler<TableChangedEventArgs> evnt = TableChanged;
             if (evnt == null) return;
 
             evnt.Invoke(this, new TableChangedEventArgs(message));
@@ -321,7 +321,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
 
         private void OnNotificationProcessStopped()
         {
-            var evnt = NotificationProcessStopped;
+            EventHandler evnt = NotificationProcessStopped;
             if (evnt == null) return;
 
             evnt.BeginInvoke(this, EventArgs.Empty, null, null);
@@ -367,10 +367,10 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
             {
                 XDocument xDocument = null;
 
-                var xmlReaderSettings = new XmlReaderSettings {CheckCharacters = false};
+                XmlReaderSettings xmlReaderSettings = new XmlReaderSettings {CheckCharacters = false};
 
-                using (var stream = new StringReader(xml))
-                using (var xmlReader = XmlReader.Create(stream, xmlReaderSettings))
+                using (StringReader stream = new StringReader(xml))
+                using (XmlReader xmlReader = XmlReader.Create(stream, xmlReaderSettings))
                 {
                     // Load our XDocument
                     xmlReader.MoveToContent();

@@ -15,7 +15,7 @@ namespace S3K.RealTimeOnline.Core.Decorators
 
         public void Handle(TCommand command)
         {
-            using (var scope = new TransactionScope())
+            using (TransactionScope scope = new TransactionScope())
             {
                 _decorated.Handle(command);
                 scope.Complete();
@@ -24,7 +24,7 @@ namespace S3K.RealTimeOnline.Core.Decorators
 
         public async Task HandleAsync(TCommand command)
         {
-            using (var scope = new TransactionScope())
+            using (TransactionScope scope = new TransactionScope())
             {
                 await _decorated.HandleAsync(command);
                 scope.Complete();

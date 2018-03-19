@@ -18,7 +18,7 @@
 
 //IEnumerable<Version> list = repository.Select(version);
 
-//foreach (var item in list)
+//foreach (Version item in list)
 //{
 //    Console.WriteLine(@"id = {0}, nro {1}", item.id, item.nro);
 //}

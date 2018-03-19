@@ -18,23 +18,22 @@ namespace S3K.RealTimeOnline.Dtos
 
         public override DynamicMetaObject BindGetMember(GetMemberBinder binder)
         {
-            var self = Expression;
-            var dynObj = (SerializableDynamicObject) Value;
-            var keyExpr = Expression.Constant(binder.Name);
-            var getMethod = _type.GetMethod("getValue", BindingFlags.NonPublic | BindingFlags.Instance);
+            Expression self = Expression;
+            ConstantExpression keyExpr = Expression.Constant(binder.Name);
+            MethodInfo getMethod = _type.GetMethod("getValue", BindingFlags.NonPublic | BindingFlags.Instance);
             if (getMethod == null) return null;
-            var target = Expression.Call(Expression.Convert(self, _type), getMethod, keyExpr);
+            MethodCallExpression target = Expression.Call(Expression.Convert(self, _type), getMethod, keyExpr);
             return new DynamicMetaObject(target, BindingRestrictions.GetTypeRestriction(self, _type));
         }
 
         public override DynamicMetaObject BindSetMember(SetMemberBinder binder, DynamicMetaObject value)
         {
-            var self = Expression;
-            var keyExpr = Expression.Constant(binder.Name);
-            var valueExpression = Expression.Convert(value.Expression, typeof(object));
-            var setMethod = _type.GetMethod("setValue", BindingFlags.NonPublic | BindingFlags.Instance);
+            Expression self = Expression;
+            ConstantExpression keyExpr = Expression.Constant(binder.Name);
+            UnaryExpression valueExpression = Expression.Convert(value.Expression, typeof(object));
+            MethodInfo setMethod = _type.GetMethod("setValue", BindingFlags.NonPublic | BindingFlags.Instance);
             if (setMethod == null) return null;
-            var target = Expression.Call(Expression.Convert(self, _type),
+            Expression target = Expression.Call(Expression.Convert(self, _type),
                 setMethod,
                 keyExpr,
                 valueExpression);
@@ -43,7 +42,7 @@ namespace S3K.RealTimeOnline.Dtos
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            var serializableDynamicObject = (SerializableDynamicObject) Value;
+            SerializableDynamicObject serializableDynamicObject = (SerializableDynamicObject) Value;
             return serializableDynamicObject.GetDynamicMemberNames();
         }
     }

@@ -81,7 +81,7 @@ namespace S3K.RealTimeOnline.Core.Services
                             andCondition.Split(new[] {" or ", " OR ", "Or"}, StringSplitOptions.RemoveEmptyEntries);
                         if (orConditions.Length > 1)
                         {
-                            foreach (var orCondition in orConditions)
+                            foreach (string orCondition in orConditions)
                             {
                                 ParameterBuilder parameterBuilder = ParameterBuilder.Create(orCondition, Condition.Or);
                                 if (parameterBuilder != null)

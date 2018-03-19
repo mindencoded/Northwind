@@ -6,7 +6,7 @@ namespace S3K.RealTimeOnline.CommonUtils
     {
         public static string ConcatMessages(Exception exception)
         {
-            var message = "";
+            string message = "";
             while (true)
             {
                 message += exception.Message + Environment.NewLine;
