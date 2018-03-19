@@ -4,7 +4,6 @@ using S3K.RealTimeOnline.Dtos;
 namespace S3K.RealTimeOnline.Contracts.Services
 {
     [ServiceContract]
-
     public interface IOrderDetailCrudService : ICrudService<OrderDetailDto>
     {
     }

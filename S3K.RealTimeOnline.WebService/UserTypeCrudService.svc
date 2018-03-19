@@ -1,1 +1,1 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="S3K.RealTimeOnline.Core.Services.UserTypeCrudService"  Factory="S3K.RealTimeOnline.Core.WcfServiceFactory" %>
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="S3K.RealTimeOnline.Core.Services.UserTypeCrudService"  Factory="S3K.RealTimeOnline.WebService.WcfServiceFactory" %>

@@ -13,7 +13,9 @@ namespace S3K.RealTimeOnline.BusinessDomain
             PostedToInventory = false;
         }
 
-        [Key] [Column("ID")] public int Id { get; set; }
+        [Key]
+        [Column("ID")]
+        public int Id { get; set; }
 
         [ForeignKey("PurchaseOrder")]
         [Column("PURCHASE_ORDER_ID")]
@@ -35,9 +37,11 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [RegularExpression(@"^\d+\.\d{0,4}$")]
         public decimal UnitCost { get; set; }
 
-        [Column("DATE_RECEIVED")] public DateTime? DateReceived { get; set; }
+        [Column("DATE_RECEIVED")]
+        public DateTime? DateReceived { get; set; }
 
-        [Column("POSTED_TO_INVENTORY")] public bool PostedToInventory { get; set; }
+        [Column("POSTED_TO_INVENTORY")]
+        public bool PostedToInventory { get; set; }
 
         public virtual InventoryTransaction InventoryTransaction { get; set; }
 

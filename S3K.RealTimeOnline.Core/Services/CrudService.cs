@@ -26,12 +26,17 @@ namespace S3K.RealTimeOnline.Core.Services
         {
         }
 
-        public virtual Stream SelectA(string page, string pageSize, string orderby)
+        public virtual Stream SelectA(string page, string pageSize)
+        {
+            return Select(page, pageSize, null, null, null);
+        }
+
+        public virtual Stream SelectB(string page, string pageSize, string orderby)
         {
             return Select(page, pageSize, orderby, null, null);
         }
 
-        public virtual Stream SelectB(string page, string pageSize, string orderby, string filter)
+        public virtual Stream SelectC(string page, string pageSize, string orderby, string filter)
         {
             return Select(page, pageSize, orderby, filter, null);
         }
@@ -111,7 +116,6 @@ namespace S3K.RealTimeOnline.Core.Services
                         selectQuery.Columns = columns;
                     }
                 }
-
                 IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>> selectQueryHandler =
                     ResolveGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>(
                         ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
@@ -121,7 +125,6 @@ namespace S3K.RealTimeOnline.Core.Services
                     ResolveGenericQueryHandler<GenericCountQuery, int>(
                         ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
                         GenericQueryType.Count);
-
                 IList<ExpandoObject> selectResult = selectQueryHandler.Handle<TEntity>(selectQuery).ToList();
                 int countResult = countQueryHandler.Handle<TEntity>(countQuery);
                 QueryResponse response = new QueryResponse

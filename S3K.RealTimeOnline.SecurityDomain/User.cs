@@ -13,7 +13,9 @@ namespace S3K.RealTimeOnline.SecurityDomain
             Active = true;
         }
 
-        [Key] [Column("ID")] public int Id { get; set; }
+        [Key]
+        [Column("ID")]
+        public int Id { get; set; }
 
         [MaxLength(50)]
         [Required(AllowEmptyStrings = false)]
@@ -25,7 +27,8 @@ namespace S3K.RealTimeOnline.SecurityDomain
         [Column("PASSWORD")]
         public string Password { get; set; }
 
-        [Column("ACTIVE")] public bool Active { get; set; }
+        [Column("ACTIVE")]
+        public bool Active { get; set; }
 
         [ForeignKey("UserType")]
         [Column("USER_TYPE_ID")]

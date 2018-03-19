@@ -7,7 +7,9 @@ namespace S3K.RealTimeOnline.SecurityDomain
 {
     public class UserType : Entity
     {
-        [Key] [Column("ID")] public byte Id { get; set; }
+        [Key]
+        [Column("ID")]
+        public byte Id { get; set; }
 
         [Column("TYPE_NAME")]
         [StringLength(25)]

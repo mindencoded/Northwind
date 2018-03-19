@@ -8,7 +8,9 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("INVENTORY_TRANSACTION_TYPE")]
     public class InventoryTransactionType : Entity
     {
-        [Key] [Column("ID")] public byte Id { get; set; }
+        [Key]
+        [Column("ID")]
+        public byte Id { get; set; }
 
         [Column("TYPE_NAME")]
         [StringLength(50)]

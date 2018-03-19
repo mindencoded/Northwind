@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
+using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
@@ -19,8 +20,6 @@ namespace S3K.RealTimeOnline.Core
 {
     public class ConfigContainer
     {
-        private static ConfigContainer _instance;
-
         public static readonly IDictionary<GenericCommandType, Type> GenericCommandHandlerTypeDictionary =
             new Dictionary<GenericCommandType, Type>
             {
@@ -51,17 +50,7 @@ namespace S3K.RealTimeOnline.Core
             "S3K.RealTimeOnline.CommonDataAccess"
         };
 
-        private ConfigContainer(IUnityContainer container)
-        {
-            Init(container);
-        }
-
-        public static ConfigContainer Instance(IUnityContainer container)
-        {
-            return _instance ?? (_instance = new ConfigContainer(container));
-        }
-
-        private void Init(IUnityContainer container)
+        public IUnityContainer Init(IUnityContainer container)
         {
             string securityDbConnectionName = ConfigurationManager.AppSettings["SecurityDbConnectionName"];
             string businessDbConnectionName = ConfigurationManager.AppSettings["BusinessDbConnectionName"];
@@ -176,8 +165,21 @@ namespace S3K.RealTimeOnline.Core
                     }
                 }
             }
-        }
 
+            Type[] serviceTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(p => typeof(IBaseService).IsAssignableFrom(p) && p.IsClass && !p.IsAbstract).ToArray();
+            foreach (var serviceType in serviceTypes)
+            {
+                Type contractType = serviceType.GetInterfaces().FirstOrDefault(p => typeof(IBaseService).IsAssignableFrom(p) && p != typeof(IBaseService));
+                if (contractType != null)
+                {
+                    container.RegisterType(contractType, serviceType);
+                }
+            }
+
+            return container;
+        }
+         
         private IEnumerable<Type> GetTypesByAssemblyName(Type type, string assemblyName)
         {
             return AppDomain.CurrentDomain.GetAssemblies()

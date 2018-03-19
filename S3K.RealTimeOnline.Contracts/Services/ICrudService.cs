@@ -5,30 +5,39 @@ using System.ServiceModel.Web;
 namespace S3K.RealTimeOnline.Contracts.Services
 {
     [ServiceContract]
-    public interface ICrudService<TDto> where TDto : class
+    public interface ICrudService<TDto> : IBaseService where TDto : class
     {
         [OperationContract]
         [WebInvoke(
             Method = "GET",
-            UriTemplate = "/{page}/{pageSize}/{*orderby}",
+            UriTemplate = "/{page}/{pageSize}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectA(string page, string pageSize, string orderby);
+        Stream SelectA(string page, string pageSize);
 
         [OperationContract]
         [WebInvoke(
             Method = "GET",
-            UriTemplate = "/{page}/{pageSize}/{orderby}/{*filter}",
+            UriTemplate = "/{page}/{pageSize}/{orderby}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectB(string page, string pageSize, string orderby, string filter);
+        Stream SelectB(string page, string pageSize, string orderby);
 
         [OperationContract]
         [WebInvoke(
             Method = "GET",
-            UriTemplate = "/{page}/{pageSize}/{orderby}/{filter}/{*select}",
+            UriTemplate = "/{page}/{pageSize}/{orderby}/{filter}",
+            RequestFormat = WebMessageFormat.Json,
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare)]
+        Stream SelectC(string page, string pageSize, string orderby, string filter);
+
+        [OperationContract]
+        [WebInvoke(
+            Method = "GET",
+            UriTemplate = "/{page}/{pageSize}/{orderby}/{filter}/{select}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]

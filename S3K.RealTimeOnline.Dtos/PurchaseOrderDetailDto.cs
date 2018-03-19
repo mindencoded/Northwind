@@ -29,6 +29,5 @@ namespace S3K.RealTimeOnline.Dtos
 
         [DataMember]
         public bool PostedToInventory { get; set; }
-
     }
 }

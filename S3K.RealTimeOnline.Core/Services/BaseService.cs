@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
+using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using System.ServiceModel.Web;
 using System.Text;
-using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
@@ -29,6 +29,15 @@ namespace S3K.RealTimeOnline.Core.Services
         {
             Container = container;
         }
+
+        protected static void WebHttpConfigure<TService>(ServiceConfiguration config, string address)
+        {
+            config.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true });
+            config.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });  
+            config.AddServiceEndpoint(typeof(TService), new WebHttpBinding(), address).Behaviors.Add(new WebHttpBehavior());
+        }
+     
+        
 
         protected virtual string DataToString(dynamic data)
         {

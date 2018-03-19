@@ -19,10 +19,13 @@ namespace S3K.RealTimeOnline.Core
             Exception = error.GetType().Name;
         }
 
-        [DataMember] public string StackTrace { get; set; }
+        [DataMember]
+        public string StackTrace { get; set; }
 
-        [DataMember] public string Message { get; set; }
+        [DataMember]
+        public string Message { get; set; }
 
-        [DataMember] public string Exception { get; set; }
+        [DataMember]
+        public string Exception { get; set; }
     }
 }

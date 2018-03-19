@@ -1,6 +1,4 @@
-﻿
-
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace S3K.RealTimeOnline.Dtos
@@ -12,7 +10,8 @@ namespace S3K.RealTimeOnline.Dtos
         public byte Id { get; set; }
 
         [DataMember]
-        [Required] [StringLength(25)] public string TypeName { get; set; }
+        [Required]
+        [StringLength(25)]
+        public string TypeName { get; set; }
     }
-    
 }

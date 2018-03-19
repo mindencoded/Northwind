@@ -9,7 +9,9 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("ORDER")]
     public class Order : Entity
     {
-        [Key] [Column("ID")] public int Id { get; set; }
+        [Key]
+        [Column("ID")]
+        public int Id { get; set; }
 
         [ForeignKey("Employee")]
         [Column("EMPLOYEE_ID")]
@@ -23,9 +25,11 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Column("SHIPPER_ID")]
         public int ShipperId { get; set; }
 
-        [Column("ORDER_DATE")] public DateTime OrderDate { get; set; }
+        [Column("ORDER_DATE")]
+        public DateTime OrderDate { get; set; }
 
-        [Column("SHIPPED_DATE")] public DateTime ShippedDate { get; set; }
+        [Column("SHIPPED_DATE")]
+        public DateTime ShippedDate { get; set; }
 
         [Column("SHIP_NAME")]
         [StringLength(50)]
@@ -67,9 +71,12 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [StringLength(50)]
         public string PaymentType { get; set; }
 
-        [Column("PAID_DATE")] public DateTime PaidDate { get; set; }
+        [Column("PAID_DATE")]
+        public DateTime PaidDate { get; set; }
 
-        [Column("NOTES")] [StringLength(250)] public string Notes { get; set; }
+        [Column("NOTES")]
+        [StringLength(250)]
+        public string Notes { get; set; }
 
         [ForeignKey("OrderTaxStatus")]
         [Column("TAX_STATUS_ID")]

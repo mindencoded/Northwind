@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.ServiceModel;
 using System.ServiceModel.Web;
 using S3K.RealTimeOnline.BusinessDataAccess.CommandHandlers.MoveCustomer;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
@@ -17,6 +18,11 @@ namespace S3K.RealTimeOnline.Core.Services
     {
         public CustomerCrudService(IUnityContainer container) : base(container)
         {
+        }
+
+        public static void Configure(ServiceConfiguration config)
+        {
+            WebHttpConfigure<ICustomerCrudService>(config, "");
         }
 
         public void Move()

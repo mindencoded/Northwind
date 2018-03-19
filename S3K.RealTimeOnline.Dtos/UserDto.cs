@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace S3K.RealTimeOnline.Dtos
@@ -13,13 +12,13 @@ namespace S3K.RealTimeOnline.Dtos
         [DataMember]
         [MaxLength(50)]
         [Required(AllowEmptyStrings = false)]
-     
+
         public string Username { get; set; }
 
         [DataMember]
         [MaxLength(32)]
         [Required(AllowEmptyStrings = false)]
-       
+
         public string Password { get; set; }
 
         [DataMember]
