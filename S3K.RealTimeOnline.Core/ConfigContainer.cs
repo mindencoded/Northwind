@@ -170,7 +170,8 @@ namespace S3K.RealTimeOnline.Core
                 .Where(p => typeof(IBaseService).IsAssignableFrom(p) && p.IsClass && !p.IsAbstract).ToArray();
             foreach (var serviceType in serviceTypes)
             {
-                Type contractType = serviceType.GetInterfaces().FirstOrDefault(p => typeof(IBaseService).IsAssignableFrom(p) && p != typeof(IBaseService));
+                Type contractType = serviceType.GetInterfaces().FirstOrDefault(p =>
+                    typeof(IBaseService).IsAssignableFrom(p) && p != typeof(IBaseService));
                 if (contractType != null)
                 {
                     container.RegisterType(contractType, serviceType);
@@ -179,7 +180,7 @@ namespace S3K.RealTimeOnline.Core
 
             return container;
         }
-         
+
         private IEnumerable<Type> GetTypesByAssemblyName(Type type, string assemblyName)
         {
             return AppDomain.CurrentDomain.GetAssemblies()

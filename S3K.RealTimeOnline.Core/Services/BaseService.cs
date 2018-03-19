@@ -32,12 +32,12 @@ namespace S3K.RealTimeOnline.Core.Services
 
         protected static void WebHttpConfigure<TService>(ServiceConfiguration config, string address)
         {
-            config.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true });
-            config.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });  
-            config.AddServiceEndpoint(typeof(TService), new WebHttpBinding(), address).Behaviors.Add(new WebHttpBehavior());
+            config.Description.Behaviors.Add(new ServiceMetadataBehavior {HttpGetEnabled = true});
+            config.Description.Behaviors.Add(new ServiceDebugBehavior {IncludeExceptionDetailInFaults = true});
+            config.AddServiceEndpoint(typeof(TService), new WebHttpBinding(), address).Behaviors
+                .Add(new WebHttpBehavior());
         }
-     
-        
+
 
         protected virtual string DataToString(dynamic data)
         {

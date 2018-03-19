@@ -17,9 +17,11 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [Column("TYPE_ID")]
         public byte? TypeId { get; set; }
 
-        [Column("TRANSACTION_CREATED_DATE")] public DateTime? TransactionCreatedDate { get; set; }
+        [Column("TRANSACTION_CREATED_DATE")]
+        public DateTime? TransactionCreatedDate { get; set; }
 
-        [Column("TRANSACTION_MODIFIED_DATE")] public DateTime? TransactionModifiedDate { get; set; }
+        [Column("TRANSACTION_MODIFIED_DATE")]
+        public DateTime? TransactionModifiedDate { get; set; }
 
         [ForeignKey("Product")]
         [Column("PRODUCT_ID")]
