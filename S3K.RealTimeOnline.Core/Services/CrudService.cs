@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Permissions;
 using System.ServiceModel.Web;
 using System.Text.RegularExpressions;
 using S3K.RealTimeOnline.CommonUtils;
@@ -27,6 +27,7 @@ namespace S3K.RealTimeOnline.Core.Services
         {
         }
 
+        [PrincipalPermission(SecurityAction.Demand, Role = "ADMIN")]
         public virtual Stream SelectA(string page, string pageSize)
         {
             return Select(page, pageSize, null, null, null);
@@ -117,15 +118,13 @@ namespace S3K.RealTimeOnline.Core.Services
                         selectQuery.Columns = columns;
                     }
                 }
-                IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>> selectQueryHandler =
-                    ResolveGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>(
-                        ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
-                        GenericQueryType.Select);
 
-                IGenericQueryHandler<GenericCountQuery, int> countQueryHandler =
-                    ResolveGenericQueryHandler<GenericCountQuery, int>(
-                        ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
-                        GenericQueryType.Count);
+                IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>> selectQueryHandler =
+                    InstanceSelectQueryHandler<TUnitOfWork>();
+
+                IGenericQueryHandler<GenericCountQuery, int>
+                    countQueryHandler = InstanceCountQueryHandler<TUnitOfWork>();
+
                 IList<ExpandoObject> selectResult = selectQueryHandler.Handle<TEntity>(selectQuery).ToList();
                 int countResult = countQueryHandler.Handle<TEntity>(countQuery);
                 QueryResponse response = new QueryResponse
@@ -140,7 +139,7 @@ namespace S3K.RealTimeOnline.Core.Services
             {
                 throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), ex is ValidationException
                     ? HttpStatusCode.BadRequest
-                    : HttpStatusCode.InternalServerError);           
+                    : HttpStatusCode.InternalServerError);
             }
         }
 

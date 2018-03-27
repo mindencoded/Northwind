@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using S3K.RealTimeOnline.BusinessDataAccess.UnitOfWork;
+using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.Contracts.Services;
 using S3K.RealTimeOnline.Core.Decorators;
 using S3K.RealTimeOnline.GenericDataAccess.GenericCommandHandlers;
@@ -50,14 +50,23 @@ namespace S3K.RealTimeOnline.Core
             "S3K.RealTimeOnline.CommonDataAccess"
         };
 
-        public IUnityContainer Init(IUnityContainer container)
+        public IUnityContainer Instance(IUnityContainer container)
         {
-            string securityDbConnectionName = ConfigurationManager.AppSettings["SecurityDbConnectionName"];
-            string businessDbConnectionName = ConfigurationManager.AppSettings["BusinessDbConnectionName"];
+            return Build(container);
+        }
+
+        public IUnityContainer Instance()
+        {
+            return Build(new UnityContainer());
+        }
+
+
+        private IUnityContainer Build(IUnityContainer container)
+        {
             container.RegisterType<ISecurityUnitOfWork, SecurityUnitOfWork>(new HierarchicalLifetimeManager(),
-                new InjectionConstructor(DbManager.GetSqlConnection(securityDbConnectionName)));
+                new InjectionConstructor(DbManager.GetSqlConnection(AppConfig.SecurityDbConnectionName)));
             container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
-                new InjectionConstructor(DbManager.GetSqlConnection(businessDbConnectionName)));
+                new InjectionConstructor(DbManager.GetSqlConnection(AppConfig.BusinessDbConnectionName)));
             IEnumerable<Assembly> currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
             IEnumerable<Assembly> dataAccessAssemblies =
                 currentAssemblies.Where(x => DataAccessAssemblyNames.Contains(x.GetName().Name));

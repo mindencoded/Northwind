@@ -71,27 +71,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\MainServiceReference\MainService.disco" />
-    <None Include="Connected Services\MainServiceReference\configuration91.svcinfo" />
-    <None Include="Connected Services\MainServiceReference\configuration.svcinfo" />
-    <None Include="Connected Services\MainServiceReference\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
     <Content Include="Index.cshtml" />
-    <None Include="Connected Services\MainServiceReference\MainService.wsdl" />
-    <None Include="Connected Services\MainServiceReference\MainService.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MainServiceReference\MainService1.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MainServiceReference\MainService2.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="Connected Services\MainServiceReference\MainService3.xsd">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
     <Content Include="Post.cshtml" />
     <None Include="Web.Debug.config">
@@ -105,18 +85,10 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connected Services\MainServiceReference\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadataStorage Include="Connected Services\MainServiceReference\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
@@ -15,6 +16,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.Core.Decorators;
+using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
 using Unity;
@@ -32,12 +34,60 @@ namespace S3K.RealTimeOnline.Core.Services
 
         protected static void WebHttpConfigure<TService>(ServiceConfiguration config, string address)
         {
-            config.Description.Behaviors.Add(new ServiceMetadataBehavior {HttpGetEnabled = true});
-            config.Description.Behaviors.Add(new ServiceDebugBehavior {IncludeExceptionDetailInFaults = true});
-            config.AddServiceEndpoint(typeof(TService), new WebHttpBinding(), address).Behaviors
-                .Add(new WebHttpBehavior());
-        }
+            config.Description.Behaviors.Add(new ServiceMetadataBehavior
+            {
+                HttpGetEnabled = true,
+                HttpsGetEnabled = true
+            });
 
+            config.Description.Behaviors.Add(new ServiceDebugBehavior
+            {
+                IncludeExceptionDetailInFaults = true
+            });
+
+            WebHttpBinding webHttpBinding = new WebHttpBinding
+            {
+                MaxBufferPoolSize = 2147483647,
+                MaxReceivedMessageSize = 2147483647,
+                MaxBufferSize = 2147483647
+            };
+
+            WebHttpSecurity webHttpSecurity = new WebHttpSecurity
+            {
+                Mode = WebHttpSecurityMode.None,
+                Transport = new HttpTransportSecurity
+                {
+                    ClientCredentialType = HttpClientCredentialType.None
+                }
+            };
+
+            if (AppConfig.SslFlags.Contains(SslFlag.Ssl))
+            {
+                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
+            }
+
+            if (AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert) ||
+                AppConfig.SslFlags.Contains(SslFlag.SslRequireCert))
+            {
+                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
+                webHttpSecurity.Transport = new HttpTransportSecurity
+                {
+                    ClientCredentialType = HttpClientCredentialType.Certificate
+                };
+            }
+
+            webHttpBinding.Security = webHttpSecurity;
+
+            if (AppConfig.EnableSecurity)
+            {
+                //IUnityContainer container = new ConfigContainer().Instance();
+                //config.Authorization.ServiceAuthorizationManager = new AuthorizationManager(container);
+                //config.Authorization.ExternalAuthorizationPolicies =
+                //    new List<IAuthorizationPolicy> {new AuthorizationPolicy(container)}.AsReadOnly();
+            }
+            config.AddServiceEndpoint(typeof(TService), webHttpBinding, address)
+                .Behaviors.Add(new WebHttpBehavior());
+        }
 
         protected virtual string DataToString(dynamic data)
         {
@@ -77,6 +127,23 @@ namespace S3K.RealTimeOnline.Core.Services
             }
 
             return new MemoryStream(Encoding.UTF8.GetBytes(response));
+        }
+
+        protected virtual IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>
+            InstanceSelectQueryHandler<TUnitOfWork>()
+        {
+            return
+                ResolveGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>(
+                    ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
+                    GenericQueryType.Select);
+        }
+
+        protected virtual IGenericQueryHandler<GenericCountQuery, int> InstanceCountQueryHandler<TUnitOfWork>()
+        {
+            return
+                ResolveGenericQueryHandler<GenericCountQuery, int>(
+                    ConfigContainer.UnitOfWorkDictionary.FirstOrDefault(x => x.Value == typeof(TUnitOfWork)).Key,
+                    GenericQueryType.Count);
         }
 
         protected virtual IGenericCommandHandler ResolveGenericCommandHandler(UnitOfWorkType unitOfWorkType,

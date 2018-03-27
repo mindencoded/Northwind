@@ -9,7 +9,7 @@ namespace S3K.RealTimeOnline.WebService
         protected override void ConfigureContainer(IUnityContainer container)
         {
             ConfigContainer configContainer = new ConfigContainer();
-            configContainer.Init(container);
+            configContainer.Instance(container);
         }
     }
 }
