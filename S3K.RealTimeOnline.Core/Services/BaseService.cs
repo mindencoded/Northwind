@@ -88,6 +88,7 @@ namespace S3K.RealTimeOnline.Core.Services
                     ClientCredentialType = HttpClientCredentialType.Certificate
                 };
 
+                
                 /*config.Credentials.ClientCertificate.Authentication.CertificateValidationMode =
                     X509CertificateValidationMode.PeerTrust;
                 config.Credentials.ClientCertificate.Authentication.TrustedStoreLocation = StoreLocation.LocalMachine;
@@ -95,9 +96,9 @@ namespace S3K.RealTimeOnline.Core.Services
                     StoreLocation.LocalMachine,
                     StoreName.My,
                     X509FindType.FindBySubjectName,
-                    "DESKTOP-ESKS7BS");*/
+                    "MyCert");*/
+                    
             }
-;
 
             webHttpBinding.Security = webHttpSecurity;
 
