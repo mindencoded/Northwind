@@ -6,9 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
+using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
+using System.ServiceModel.Security;
 using System.ServiceModel.Web;
 using System.Text;
 using Newtonsoft.Json;
@@ -30,6 +32,18 @@ namespace S3K.RealTimeOnline.Core.Services
         protected BaseService(IUnityContainer container)
         {
             Container = container;
+        }
+
+        protected JsonSerializerSettings JsonSerializerSettings
+        {
+            get
+            {
+                return new JsonSerializerSettings
+ {
+                    NullValueHandling = NullValueHandling.Include,
+                    Formatting = Formatting.Indented
+                };
+            }
         }
 
         protected static void WebHttpConfigure<TService>(ServiceConfiguration config, string address)
@@ -54,7 +68,7 @@ namespace S3K.RealTimeOnline.Core.Services
 
             WebHttpSecurity webHttpSecurity = new WebHttpSecurity
             {
-                Mode = WebHttpSecurityMode.None,
+                Mode = WebHttpSecurityMode.TransportCredentialOnly,
                 Transport = new HttpTransportSecurity
                 {
                     ClientCredentialType = HttpClientCredentialType.None
@@ -63,18 +77,27 @@ namespace S3K.RealTimeOnline.Core.Services
 
             if (AppConfig.SslFlags.Contains(SslFlag.Ssl))
             {
-                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
+                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;            
             }
 
-            if (AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert) ||
-                AppConfig.SslFlags.Contains(SslFlag.SslRequireCert))
+            if ( AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) || AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
                 webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
                 webHttpSecurity.Transport = new HttpTransportSecurity
                 {
                     ClientCredentialType = HttpClientCredentialType.Certificate
                 };
+
+                /*config.Credentials.ClientCertificate.Authentication.CertificateValidationMode =
+                    X509CertificateValidationMode.PeerTrust;
+                config.Credentials.ClientCertificate.Authentication.TrustedStoreLocation = StoreLocation.LocalMachine;
+                config.Credentials.ClientCertificate.SetCertificate(
+                    StoreLocation.LocalMachine,
+                    StoreName.My,
+                    X509FindType.FindBySubjectName,
+                    "DESKTOP-ESKS7BS");*/
             }
+;
 
             webHttpBinding.Security = webHttpSecurity;
 
@@ -127,6 +150,23 @@ namespace S3K.RealTimeOnline.Core.Services
             }
 
             return new MemoryStream(Encoding.UTF8.GetBytes(response));
+        }
+
+        protected Message CreateResponseMessage(object message, string contentType = "application/json; charset=utf-8")
+        {
+            string myResponseBody = JsonConvert.SerializeObject(message, Formatting.None, JsonSerializerSettings);
+            return WebOperationContext.Current != null
+                ? WebOperationContext.Current.CreateTextResponse(myResponseBody,
+                    contentType,
+                    Encoding.UTF8)
+                : null;
+        }
+
+        protected Message CreateJsonStream(object obj)
+        {
+            string jsonSerialized = JsonConvert.SerializeObject(obj, Formatting.None, JsonSerializerSettings);
+            MemoryStream memoryStream = new MemoryStream(new UTF8Encoding().GetBytes(jsonSerialized)) {Position = 0};
+            return WebOperationContext.Current != null ? WebOperationContext.Current.CreateStreamResponse(memoryStream, "application/json; charset=utf-8") : null;
         }
 
         protected virtual IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>

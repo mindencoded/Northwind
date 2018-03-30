@@ -20,7 +20,8 @@ namespace S3K.RealTimeOnline.CommonUtils
             get
             {
                 IList<SslFlag> resultList = new List<SslFlag>();
-                string[] sslFlags = ConfigurationManager.AppSettings["SslFlags"].Split(',');
+                string[] sslFlags = ConfigurationManager.AppSettings["SslFlags"].Split(',').Select(p => p.Trim())
+                    .ToArray();
                 foreach (SslFlag sslFlag in Enum.GetValues(typeof(SslFlag)))
                 {
                     if (sslFlags.Contains(sslFlag.ToString()))
