@@ -6,11 +6,9 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
-using System.Security.Cryptography.X509Certificates;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
-using System.ServiceModel.Security;
 using System.ServiceModel.Web;
 using System.Text;
 using Newtonsoft.Json;
@@ -87,17 +85,6 @@ namespace S3K.RealTimeOnline.Core.Services
                 {
                     ClientCredentialType = HttpClientCredentialType.Certificate
                 };
-
-                
-                /*config.Credentials.ClientCertificate.Authentication.CertificateValidationMode =
-                    X509CertificateValidationMode.PeerTrust;
-                config.Credentials.ClientCertificate.Authentication.TrustedStoreLocation = StoreLocation.LocalMachine;
-                config.Credentials.ClientCertificate.SetCertificate(
-                    StoreLocation.LocalMachine,
-                    StoreName.My,
-                    X509FindType.FindBySubjectName,
-                    "MyCert");*/
-                    
             }
 
             webHttpBinding.Security = webHttpSecurity;
@@ -121,7 +108,6 @@ namespace S3K.RealTimeOnline.Core.Services
             {
                 s.Serialize(sw, data);
             }
-
             return sb.ToString();
         }
 

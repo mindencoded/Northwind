@@ -129,26 +129,26 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Global.asax" />
-    <Content Include="UserTypeCrudService.svc" />
-    <Content Include="UserCrudService.svc" />
-    <Content Include="RoleDetailCrudService.svc" />
-    <Content Include="RoleCrudService.svc" />
-    <Content Include="SupplierCrudService.svc" />
-    <Content Include="ShipperCrudService.svc" />
-    <Content Include="ProductCrudService.svc" />
-    <Content Include="OrderCrudService.svc" />
-    <Content Include="InventoryTransactionTypeCrudService.svc" />
-    <Content Include="InventoryTransactionCrudService.svc" />
-    <Content Include="EmployeeCrudService.svc" />
-    <Content Include="CustomerCrudService.svc" />
-    <Content Include="InvoiceCrudService.svc" />
-    <Content Include="OrderDetailCrudService.svc" />
-    <Content Include="OrderDetailStatusCrudService.svc" />
-    <Content Include="OrderTaxStatusCrudService.svc" />
-    <Content Include="OrderStatusCrudService.svc" />
-    <Content Include="PurchaseOrderDetailCrudService.svc" />
-    <Content Include="PurchaseOrderCrudService.svc" />
-    <Content Include="PurchaseOrderStatusCrudService.svc" />
+    <Content Include="UserTypeCrud.svc" />
+    <Content Include="UserCrud.svc" />
+    <Content Include="RoleDetailCrud.svc" />
+    <Content Include="RoleCrud.svc" />
+    <Content Include="SupplierCrud.svc" />
+    <Content Include="ShipperCrud.svc" />
+    <Content Include="ProductCrud.svc" />
+    <Content Include="OrderCrud.svc" />
+    <Content Include="InventoryTransactionTypeCrud.svc" />
+    <Content Include="InventoryTransactionCrud.svc" />
+    <Content Include="EmployeeCrud.svc" />
+    <Content Include="CustomerCrud.svc" />
+    <Content Include="InvoiceCrud.svc" />
+    <Content Include="OrderDetailCrud.svc" />
+    <Content Include="OrderDetailStatusCrud.svc" />
+    <Content Include="OrderTaxStatusCrud.svc" />
+    <Content Include="OrderStatusCrud.svc" />
+    <Content Include="PurchaseOrderDetailCrud.svc" />
+    <Content Include="PurchaseOrderCrud.svc" />
+    <Content Include="PurchaseOrderStatusCrud.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

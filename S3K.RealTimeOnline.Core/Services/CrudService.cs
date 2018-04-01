@@ -5,7 +5,6 @@ using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Permissions;
 using System.ServiceModel.Web;
 using System.Text.RegularExpressions;
 using S3K.RealTimeOnline.CommonUtils;
@@ -27,7 +26,6 @@ namespace S3K.RealTimeOnline.Core.Services
         {
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "ADMIN")]
         public virtual Stream SelectA(string page, string pageSize)
         {
             return Select(page, pageSize, null, null, null);
@@ -43,7 +41,7 @@ namespace S3K.RealTimeOnline.Core.Services
             return Select(page, pageSize, orderby, filter, null);
         }
 
-        public Stream Select(string page, string pageSize, string orderby, string filter, string select)
+        public virtual Stream Select(string page, string pageSize, string orderby, string filter, string select)
         {
             try
             {
@@ -143,7 +141,7 @@ namespace S3K.RealTimeOnline.Core.Services
             }
         }
 
-        public Stream SelectById(string id)
+        public virtual Stream SelectById(string id)
         {
             try
             {
@@ -171,7 +169,7 @@ namespace S3K.RealTimeOnline.Core.Services
             }
         }
 
-        public void Insert(TDto dto)
+        public virtual void Insert(TDto dto)
         {
             try
             {
@@ -193,7 +191,7 @@ namespace S3K.RealTimeOnline.Core.Services
             }
         }
 
-        public void Update(string id, TDto dto)
+        public virtual void Update(string id, TDto dto)
         {
             try
             {
@@ -234,7 +232,7 @@ namespace S3K.RealTimeOnline.Core.Services
             }
         }
 
-        public void PartialUpdate(string id, string json)
+        public virtual void PartialUpdate(string id, string data)
         {
             try
             {
@@ -248,7 +246,7 @@ namespace S3K.RealTimeOnline.Core.Services
                     Id = id
                 };
 
-                IDictionary<string, object> obj = DeserializeToDictionary<TEntity>(json);
+                IDictionary<string, object> obj = DeserializeToDictionary<TEntity>(data);
                 ValidationHelper.ValidateProperties<TEntity>(obj);
                 GenericSelectByIdQueryHandler<TUnitOfWork, TEntity> queryHandler =
                     Container.Resolve<GenericSelectByIdQueryHandler<TUnitOfWork, TEntity>>();
@@ -276,7 +274,7 @@ namespace S3K.RealTimeOnline.Core.Services
             }
         }
 
-        public void DeleteById(string id)
+        public virtual void DeleteById(string id)
         {
             try
             {
