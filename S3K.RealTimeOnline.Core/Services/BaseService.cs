@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IdentityModel.Policy;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,6 +17,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.Core.Decorators;
+using S3K.RealTimeOnline.Core.Security;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
@@ -75,10 +77,11 @@ namespace S3K.RealTimeOnline.Core.Services
 
             if (AppConfig.SslFlags.Contains(SslFlag.Ssl))
             {
-                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;            
+                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
             }
 
-            if ( AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) || AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
+            if (AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) ||
+                AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
                 webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
                 webHttpSecurity.Transport = new HttpTransportSecurity
@@ -91,11 +94,19 @@ namespace S3K.RealTimeOnline.Core.Services
 
             if (AppConfig.EnableSecurity)
             {
-                //IUnityContainer container = new ConfigContainer().Instance();
-                //config.Authorization.ServiceAuthorizationManager = new AuthorizationManager(container);
-                //config.Authorization.ExternalAuthorizationPolicies =
-                //    new List<IAuthorizationPolicy> {new AuthorizationPolicy(container)}.AsReadOnly();
+                IUnityContainer container = new ConfigContainer().Instance();
+                config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
+                config.Authorization.ServiceAuthorizationManager = new CustomAuthorizationManager(container);                
+                config.Authorization.ExternalAuthorizationPolicies =
+                    new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy(container)}.AsReadOnly();
             }
+
+            config.Credentials.ClientCertificate.SetCertificate(
+                AppConfig.StoreLocation,
+                AppConfig.StoreName,
+                AppConfig.X509FindType,
+                AppConfig.FindValue);
+
             config.AddServiceEndpoint(typeof(TService), webHttpBinding, address)
                 .Behaviors.Add(new WebHttpBehavior());
         }

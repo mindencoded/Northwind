@@ -20,55 +20,55 @@ namespace S3K.RealTimeOnline.Core.Services
             WebHttpConfigure<IEmployeeCrudService>(config, "");
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudCustomer.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Select")]
         public override Stream SelectA(string page, string pageSize)
         {
             return base.SelectA(page, pageSize);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudCustomer.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Select")]
         public override Stream SelectB(string page, string pageSize, string orderby)
         {
             return base.SelectB(page, pageSize, orderby);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudEmployee.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Select")]
         public override Stream SelectC(string page, string pageSize, string orderby, string filter)
         {
             return base.SelectC(page, pageSize, orderby, filter);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudEmployee.Select")]
-        public override Stream Select(string page, string pageSize, string @orderby, string filter, string select)
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Select")]
+        public override Stream Select(string page, string pageSize, string orderby, string filter, string select)
         {
             return base.Select(page, pageSize, orderby, filter, select);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudEmployee.Insert")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Insert")]
         public override void Insert(EmployeeDto dto)
         {
             base.Insert(dto);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudCustomer.Update")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Update")]
         public override void Update(string id, EmployeeDto dto)
         {
             base.Update(id, dto);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudCustomer.Update")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Update")]
         public override void PartialUpdate(string id, string data)
         {
             base.PartialUpdate(id, data);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudCustomer.DeleteById")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Delete")]
         public override void DeleteById(string id)
         {
             base.DeleteById(id);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudCustomer.SelectById")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "EmployeeCrud.Select")]
         public override Stream SelectById(string id)
         {
             return base.SelectById(id);

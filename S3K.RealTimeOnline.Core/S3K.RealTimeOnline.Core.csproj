@@ -83,12 +83,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Security\AuthorizationPolicy.cs" />
-    <Compile Include="Security\CustomPrincipal.cs" />
-    <Compile Include="Security\CustomAuthorizationPolicy.cs" />
-    <Compile Include="Security\AuthorizationManager.cs" />
+    <Compile Include="Security\CustomAuthorizationManager.cs" />
     <Compile Include="ConfigContainer.cs" />
     <Compile Include="ConfigContracts.cs" />
+    <Compile Include="Security\CustomAuthorizationPolicy.cs" />
+    <Compile Include="Security\CustomPrincipal.cs" />
     <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\RoleCrudService.svc.cs" />
     <Compile Include="Services\RoleDetailCrudService.svc.cs" />

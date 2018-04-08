@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace S3K.RealTimeOnline.CommonUtils
 {
@@ -36,5 +37,55 @@ namespace S3K.RealTimeOnline.CommonUtils
                 return resultList.ToArray();
             }
         }
+
+        public static StoreLocation StoreLocation
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["StoreLocation"];
+                foreach (StoreLocation storeLocation in Enum.GetValues(typeof(StoreLocation)))
+                {
+                    if (storeLocation.ToString() == value)
+                    {
+                        return storeLocation;
+                    }
+                }
+                return StoreLocation.LocalMachine;
+            }
+        }
+
+        public static StoreName StoreName
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["StoreName"];
+                foreach (StoreName storeName in Enum.GetValues(typeof(StoreName)))
+                {
+                    if (storeName.ToString() == value)
+                    {
+                        return storeName;
+                    }
+                }
+                return StoreName.My;
+            }
+        }
+
+        public static X509FindType X509FindType
+        {
+            get
+            {
+                string value = ConfigurationManager.AppSettings["X509FindType"];
+                foreach (X509FindType x509FindType in Enum.GetValues(typeof(X509FindType)))
+                {
+                    if (x509FindType.ToString() == value)
+                    {
+                        return x509FindType;
+                    }
+                }
+                return X509FindType.FindBySubjectName;
+            }
+        }
+
+        public static string FindValue => ConfigurationManager.AppSettings["FindValue"];
     }
 }

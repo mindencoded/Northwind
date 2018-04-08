@@ -1,22 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IdentityModel.Claims;
 using System.IdentityModel.Policy;
+using System.Runtime.InteropServices;
+using System.Security.Claims;
+using System.Security.Principal;
+using System.ServiceModel;
+using System.Threading;
+using Unity;
 
 namespace S3K.RealTimeOnline.Core.Security
 {
     public class CustomAuthorizationPolicy : IAuthorizationPolicy
     {
-        private readonly string _id;
+        private IUnityContainer _container;
 
-        public CustomAuthorizationPolicy()
+        public CustomAuthorizationPolicy(IUnityContainer container)
         {
-            _id = Guid.NewGuid().ToString();
+            _container = container;
         }
+
+        private readonly Guid _id = Guid.NewGuid();
 
         public string Id
         {
-            get { return _id; }
+            get { return _id.ToString(); }
         }
 
         public ClaimSet Issuer
@@ -26,86 +35,27 @@ namespace S3K.RealTimeOnline.Core.Security
 
         public bool Evaluate(EvaluationContext evaluationContext, ref object state)
         {
-            CustomAuthState customstate;
+            IPrincipal principal;
 
-            // If the state is null, then this has not been called before so 
-            // set up a custom state.
-            if (state == null)
+            if (OperationContext.Current.IncomingMessageProperties.ContainsKey("Principal"))
             {
-                customstate = new CustomAuthState();
-                state = customstate;
+                principal = OperationContext.Current.IncomingMessageProperties["Principal"] as IPrincipal;
             }
             else
             {
-                customstate = (CustomAuthState) state;
+                principal = Thread.CurrentPrincipal;
             }
 
-            // If claims have not been added yet...
-            if (!customstate.ClaimsAdded)
+            if (principal != null)
             {
-                // Create an empty list of claims.
-                IList<Claim> claims = new List<Claim>();
-
-                // Iterate through each of the claim sets in the evaluation context.
-                foreach (ClaimSet cs in evaluationContext.ClaimSets)
-                    // Look for Name claims in the current claimset.
-                foreach (Claim c in cs.FindClaims(ClaimTypes.Name, Rights.PossessProperty))
-                    // Get the list of operations the given username is allowed to call.
-                foreach (string s in GetAllowedOpList(c.Resource.ToString()))
-                {
-                    // Add claims to the list.
-                    claims.Add(new Claim("http://example.org/claims/allowedoperation", s, Rights.PossessProperty));
-                    Console.WriteLine(@"Claim added {0}", s);
-                }
-
-                // Add claims to the evaluation context.
-                if (Issuer != null) evaluationContext.AddClaimSet(this, new DefaultClaimSet(Issuer, claims));
-
-                // Record that claims were added.
-                customstate.ClaimsAdded = true;
-
-                // Return true, indicating that this method does not need to be called again.
+                //do stuff with principal
+                evaluationContext.Properties["Principal"] = principal;
+                evaluationContext.Properties["Identities"] = new List<IIdentity> { principal.Identity };
+                Debug.WriteLine(string.Format("Identity Name : {0}", principal.Identity.Name));
                 return true;
             }
 
             return false;
-        }
-
-        // This method returns a collection of action strings that indicate the 
-        // operations the specified username is allowed to call.
-        private IEnumerable<string> GetAllowedOpList(string username)
-        {
-            IList<string> ret = new List<string>();
-
-            if (username == "test1")
-            {
-                ret.Add("http://Microsoft.ServiceModel.Samples/ICalculator/Add");
-                ret.Add("http://Microsoft.ServiceModel.Samples/ICalculator/Multiply");
-                ret.Add("http://Microsoft.ServiceModel.Samples/ICalculator/Subtract");
-            }
-            else if (username == "test2")
-            {
-                ret.Add("http://Microsoft.ServiceModel.Samples/ICalculator/Add");
-                ret.Add("http://Microsoft.ServiceModel.Samples/ICalculator/Subtract");
-            }
-            return ret;
-        }
-
-        // Internal class for keeping track of state.
-        class CustomAuthState
-        {
-            bool _bClaimsAdded;
-
-            public CustomAuthState()
-            {
-                _bClaimsAdded = false;
-            }
-
-            public bool ClaimsAdded
-            {
-                get { return _bClaimsAdded; }
-                set { _bClaimsAdded = value; }
-            }
         }
     }
 }

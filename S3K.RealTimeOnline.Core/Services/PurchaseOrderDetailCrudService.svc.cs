@@ -21,55 +21,55 @@ namespace S3K.RealTimeOnline.Core.Services
             WebHttpConfigure<IPurchaseOrderDetailCrudService>(config, "");
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Select")]
         public override Stream SelectA(string page, string pageSize)
         {
             return base.SelectA(page, pageSize);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Select")]
         public override Stream SelectB(string page, string pageSize, string orderby)
         {
             return base.SelectB(page, pageSize, orderby);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Select")]
         public override Stream SelectC(string page, string pageSize, string orderby, string filter)
         {
             return base.SelectC(page, pageSize, orderby, filter);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Select")]
-        public override Stream Select(string page, string pageSize, string @orderby, string filter, string select)
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Select")]
+        public override Stream Select(string page, string pageSize, string orderby, string filter, string select)
         {
             return base.Select(page, pageSize, orderby, filter, select);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Insert")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Insert")]
         public override void Insert(PurchaseOrderDetailDto dto)
         {
             base.Insert(dto);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Update")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Update")]
         public override void Update(string id, PurchaseOrderDetailDto dto)
         {
             base.Update(id, dto);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.Update")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Update")]
         public override void PartialUpdate(string id, string data)
         {
             base.PartialUpdate(id, data);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.DeleteById")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Delete")]
         public override void DeleteById(string id)
         {
             base.DeleteById(id);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CrudPurchaseOrderDetail.SelectById")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderDetailCrud.Select")]
         public override Stream SelectById(string id)
         {
             return base.SelectById(id);
