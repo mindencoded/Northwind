@@ -95,7 +95,6 @@ namespace S3K.RealTimeOnline.Core.Services
             {
                 config.Authorization.ServiceAuthorizationManager =
                     new BasicAuthorizationManager(new ConfigContainer().Instance());
-                //config.Authorization.ExternalAuthorizationPolicies = new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy()}.AsReadOnly();
             }
             else
             {
