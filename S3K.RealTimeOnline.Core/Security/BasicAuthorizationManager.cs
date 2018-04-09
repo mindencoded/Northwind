@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Security.Principal;
 using System.ServiceModel;
@@ -6,6 +7,9 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
 using System.Threading;
+using S3K.RealTimeOnline.GenericDataAccess.Tools;
+using S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernameAndPassword;
+using S3K.RealTimeOnline.SecurityDomain;
 using Unity;
 
 namespace S3K.RealTimeOnline.Core.Security
@@ -32,20 +36,23 @@ namespace S3K.RealTimeOnline.Core.Security
                         .GetString(Convert.FromBase64String(authorizationHeader.Substring(6)))
                         .Split(':');
 
-                    if (credentials.Length == 2 && credentials[0] == "testuser" &&
-                        credentials[1] == "testpassword")
+                    if (credentials.Length == 2)
                     {
-                        string[] roles =
+
+                        FindUserByUsernameAndPasswordQuery parameter =
+                            new FindUserByUsernameAndPasswordQuery { Username = credentials[0], Password = credentials[1] };
+                        IQueryProcessor queryProcessor = new QueryProcessor(_container);
+                        User user = queryProcessor.Process<IQuery<User>, User>(parameter);
+                        if (user != null)
                         {
-                            "CustomerCrud.Select",
-                            "RoleGroupCrud.Select"
-                        };
-                        IPrincipal principal = new CustomPrincipal(new GenericIdentity("testuser"), roles);
-                        Thread.CurrentPrincipal = principal;
-                        operationContext.IncomingMessageProperties.Add("Principal", principal);
-                        operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] =
-                            principal;
-                        return true;
+                            string[] roles = user.RoleDetails.Select(x => x.Role.Name).ToArray();
+                            IPrincipal principal = new CustomPrincipal(new GenericIdentity(user.Username), roles);
+                            Thread.CurrentPrincipal = principal;
+                            operationContext.IncomingMessageProperties.Add("Principal", principal);
+                            operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] =
+                                principal;
+                            return true;
+                        }
                     }
                 }
                 UriTemplateMatch uriTemplateMatchResults =

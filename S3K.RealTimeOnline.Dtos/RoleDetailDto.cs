@@ -10,5 +10,8 @@ namespace S3K.RealTimeOnline.Dtos
 
         [DataMember]
         public int RoleId { get; set; }
+
+        [DataMember]
+        public bool Active { get; set; }
     }
 }

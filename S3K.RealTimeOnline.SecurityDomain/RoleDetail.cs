@@ -17,6 +17,9 @@ namespace S3K.RealTimeOnline.SecurityDomain
         [Column("ROLE_ID")]
         public int RoleId { get; set; }
 
+        [Column("ACTIVE")]
+        public bool Active { get; set; }
+
         public virtual User User { get; set; }
 
         public virtual Role Role { get; set; }

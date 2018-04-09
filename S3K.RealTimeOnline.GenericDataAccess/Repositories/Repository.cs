@@ -1772,11 +1772,12 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     if (value != null)
                     {
-                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType());
+                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType().IsArray  ? value.GetType().GetElementType() : value.GetType());
                     }
 
                     sqlParameterList.Add(sqlParameter);
                 }
+                count++;
             }
 
             if (conditionList.Count > 0)

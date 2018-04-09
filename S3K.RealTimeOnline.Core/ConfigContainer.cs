@@ -175,6 +175,8 @@ namespace S3K.RealTimeOnline.Core
                 }
             }
 
+
+
             Type[] serviceTypes = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(p => typeof(IBaseService).IsAssignableFrom(p) && p.IsClass && !p.IsAbstract).ToArray();
             foreach (Type serviceType in serviceTypes)

@@ -75,6 +75,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="QueryHandlers\FindUserByUsernameAndPassword\FindUserByUsernameAndPasswordQuery.cs" />
+    <Compile Include="QueryHandlers\FindUserByUsernameAndPassword\FindUserByUsernameAndPasswordQueryHandler.cs" />
     <Compile Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchTextQuery.cs" />
     <Compile Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchTextQueryHandler.cs" />
     <Compile Include="Repositories\Contracts\IRoleDetailRepository.cs" />

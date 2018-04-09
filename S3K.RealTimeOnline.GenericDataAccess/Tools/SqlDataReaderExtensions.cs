@@ -75,11 +75,11 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         public static IList<T> ConvertToList<T>(this SqlDataReader reader)
         {
             Type type = typeof(T);
-            T instance = (T) Activator.CreateInstance(type);
             PropertyInfo[] properties = type.GetProperties();
             IList<T> result = new List<T>();
             while (reader.Read())
             {
+                T instance = (T) Activator.CreateInstance(type);
                 foreach (PropertyInfo property in properties)
                 {
                     try
