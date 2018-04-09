@@ -6,7 +6,6 @@
     <TargetDatabaseName>S3K.RealTimeOnline.SecurityDb</TargetDatabaseName>
     <DeployScriptFileName>S3K.RealTimeOnline.SecurityDb.sql</DeployScriptFileName>
     <TargetConnectionString>Data Source=(localdb)\MSSQLLocalDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True</TargetConnectionString>
-    <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
     <ProfileVersionNumber>1</ProfileVersionNumber>
   </PropertyGroup>
 </Project>

@@ -129,6 +129,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <Content Include="Global.asax" />
+    <Content Include="RoleGroupCrud.svc" />
     <Content Include="UserTypeCrud.svc" />
     <Content Include="UserCrud.svc" />
     <Content Include="RoleDetailCrud.svc" />

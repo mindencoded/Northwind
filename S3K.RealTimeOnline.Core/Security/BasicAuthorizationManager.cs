@@ -38,11 +38,12 @@ namespace S3K.RealTimeOnline.Core.Security
                         string[] roles =
                         {
                             "CustomerCrud.Select"
-                        };                                           
-                        IPrincipal principal = new CustomPrincipal(new GenericIdentity("testuser"), roles);                      
+                        };
+                        IPrincipal principal = new CustomPrincipal(new GenericIdentity("testuser"), roles);
                         Thread.CurrentPrincipal = principal;
                         operationContext.IncomingMessageProperties.Add("Principal", principal);
-                        operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] = principal;
+                        operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] =
+                            principal;
                         return true;
                     }
                 }
@@ -52,7 +53,8 @@ namespace S3K.RealTimeOnline.Core.Security
                 {
                     var webContext = new WebOperationContext(operationContext);
                     webContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
-                    webContext.OutgoingResponse.Headers.Add(HttpResponseHeader.WwwAuthenticate, string.Format("Basic realm=\"{0}\"", uriTemplateMatchResults.BaseUri.AbsoluteUri));
+                    webContext.OutgoingResponse.Headers.Add(HttpResponseHeader.WwwAuthenticate,
+                        string.Format("Basic realm=\"{0}\"", uriTemplateMatchResults.BaseUri.AbsoluteUri));
                 }
             }
             throw new WebFaultException<InfoMessage>(new InfoMessage("Unauthorized"), HttpStatusCode.Unauthorized);

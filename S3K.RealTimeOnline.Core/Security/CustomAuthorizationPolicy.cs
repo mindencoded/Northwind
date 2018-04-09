@@ -38,7 +38,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 //do stuff with principal
                 evaluationContext.Properties["Principal"] = principal;
-                evaluationContext.Properties["Identities"] = new List<IIdentity> { principal.Identity };
+                evaluationContext.Properties["Identities"] = new List<IIdentity> {principal.Identity};
                 return true;
             }
 

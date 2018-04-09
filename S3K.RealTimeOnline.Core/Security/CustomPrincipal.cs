@@ -29,10 +29,7 @@ namespace S3K.RealTimeOnline.Core.Security
 
         public string[] Roles
         {
-            get
-            {
-                return _roles;
-            }
+            get { return _roles; }
         }
 
         public bool IsInRole(string role)

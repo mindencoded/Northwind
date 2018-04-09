@@ -74,6 +74,8 @@
     <Build Include="dbo\Foreign keys\FK_ROLE_DETAIL__ROLE.sql" />
     <Build Include="dbo\Tables\USER_TYPE.sql" />
     <Build Include="dbo\Foreign keys\FK_USER__USER_TYPE.sql" />
+    <Build Include="dbo\Tables\ROLE_GROUP.sql" />
+    <Build Include="dbo\Foreign keys\FK_ROLE__ROLE_GROUP.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="S3K.RealTimeOnline.SecurityDb.publish.xml" />

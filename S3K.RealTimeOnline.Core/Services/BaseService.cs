@@ -38,7 +38,7 @@ namespace S3K.RealTimeOnline.Core.Services
             get
             {
                 return new JsonSerializerSettings
- {
+                {
                     NullValueHandling = NullValueHandling.Include,
                     Formatting = Formatting.Indented
                 };
@@ -164,7 +164,9 @@ namespace S3K.RealTimeOnline.Core.Services
         {
             string jsonSerialized = JsonConvert.SerializeObject(obj, Formatting.None, JsonSerializerSettings);
             MemoryStream memoryStream = new MemoryStream(new UTF8Encoding().GetBytes(jsonSerialized)) {Position = 0};
-            return WebOperationContext.Current != null ? WebOperationContext.Current.CreateStreamResponse(memoryStream, "application/json; charset=utf-8") : null;
+            return WebOperationContext.Current != null
+                ? WebOperationContext.Current.CreateStreamResponse(memoryStream, "application/json; charset=utf-8")
+                : null;
         }
 
         protected virtual IGenericQueryHandler<GenericSelectQuery, IEnumerable<ExpandoObject>>

@@ -53,7 +53,7 @@ namespace S3K.RealTimeOnline.Core.Services
         [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
         public override Stream SelectA(string page, string pageSize)
         {
-           return base.SelectA(page, pageSize);
+            return base.SelectA(page, pageSize);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]

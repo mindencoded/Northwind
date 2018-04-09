@@ -39,6 +39,7 @@
   <ItemGroup>
     <Compile Include="RoleDetailDto.cs" />
     <Compile Include="RoleDto.cs" />
+    <Compile Include="RoleGroupDto.cs" />
     <Compile Include="SupplierDto.cs" />
     <Compile Include="ShipperDto.cs" />
     <Compile Include="EmployeeDto.cs" />

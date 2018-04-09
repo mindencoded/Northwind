@@ -5,7 +5,7 @@ using S3K.RealTimeOnline.GenericDomain;
 
 namespace S3K.RealTimeOnline.SecurityDomain
 {
-    public class Role : Entity
+    public class RoleGroup : Entity
     {
         [Key]
         [Column("ID")]
@@ -16,16 +16,6 @@ namespace S3K.RealTimeOnline.SecurityDomain
         [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 
-        [Column("DESCRIPTION")]
-        [StringLength(250)]
-        public string Description { get; set; }
-
-        [ForeignKey("RoleGroup")]
-        [Column("ROLE_GROUP_ID")]
-        public int RoleGroupId { get; set; }
-
-        public virtual RoleGroup RoleGroup { get; set; }
-
-        public virtual ICollection<RoleDetail> RoleDetails { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
     }
 }

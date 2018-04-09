@@ -16,7 +16,9 @@ namespace S3K.RealTimeOnline.Core.Security
         {
             IList<string> roles = new List<string>();
             string operationName = operationContext.IncomingMessageProperties["HttpOperationName"].ToString();
-            DispatchOperation operation = operationContext.EndpointDispatcher.DispatchRuntime.Operations.FirstOrDefault(o => o.Name == operationName);     
+            DispatchOperation operation =
+                operationContext.EndpointDispatcher.DispatchRuntime.Operations.FirstOrDefault(o =>
+                    o.Name == operationName);
             if (operation != null)
             {
                 Type hostType = operationContext.Host.Description.ServiceType;
@@ -28,8 +30,8 @@ namespace S3K.RealTimeOnline.Core.Security
                         .Cast<PrincipalPermissionAttribute>().FirstOrDefault();
                     if (principalPermissionAttribute != null)
                     {
-                       string role = principalPermissionAttribute.Role;
-                       roles.Add(role);
+                        string role = principalPermissionAttribute.Role;
+                        roles.Add(role);
                     }
                 }
             }

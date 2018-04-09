@@ -78,10 +78,12 @@
     <Compile Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchTextQuery.cs" />
     <Compile Include="QueryHandlers\FindUsersBySearchText\FindUsersBySearchTextQueryHandler.cs" />
     <Compile Include="Repositories\Contracts\IRoleDetailRepository.cs" />
+    <Compile Include="Repositories\Contracts\IRoleGroupRepository.cs" />
     <Compile Include="Repositories\Contracts\IRoleRepository.cs" />
     <Compile Include="Repositories\Contracts\IUserRepository.cs" />
     <Compile Include="Repositories\Contracts\IUserTypeRepository.cs" />
     <Compile Include="Repositories\RoleDetailRepository.cs" />
+    <Compile Include="Repositories\RoleGroupRepository.cs" />
     <Compile Include="Repositories\RoleRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\UserTypeRepository.cs" />
