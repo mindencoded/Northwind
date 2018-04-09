@@ -83,7 +83,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Security\CustomAuthorizationManager.cs" />
+    <Compile Include="InfoMessage.cs" />
+    <Compile Include="Security\AnonymousAuthorizationManager.cs" />
+    <Compile Include="Security\BasicAuthorizationManager.cs" />
     <Compile Include="ConfigContainer.cs" />
     <Compile Include="ConfigContracts.cs" />
     <Compile Include="Security\CustomAuthorizationPolicy.cs" />

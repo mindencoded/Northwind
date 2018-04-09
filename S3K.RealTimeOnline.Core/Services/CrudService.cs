@@ -41,7 +41,12 @@ namespace S3K.RealTimeOnline.Core.Services
             return Select(page, pageSize, orderby, filter, null);
         }
 
-        public virtual Stream Select(string page, string pageSize, string orderby, string filter, string select)
+        public virtual Stream SelectD(string page, string pageSize, string orderby, string filter, string select)
+        {
+            return Select(page, pageSize, orderby, filter, select);
+        }
+
+        protected virtual Stream Select(string page, string pageSize, string orderby, string filter, string select)
         {
             try
             {

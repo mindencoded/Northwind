@@ -40,9 +40,9 @@ namespace S3K.RealTimeOnline.Core.Services
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "OrderDetailCrud.Select")]
-        public override Stream Select(string page, string pageSize, string orderby, string filter, string select)
+        public override Stream SelectD(string page, string pageSize, string orderby, string filter, string select)
         {
-            return base.Select(page, pageSize, orderby, filter, select);
+            return base.SelectD(page, pageSize, orderby, filter, select);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "OrderDetailCrud.Insert")]

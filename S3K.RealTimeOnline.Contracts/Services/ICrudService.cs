@@ -41,7 +41,7 @@ namespace S3K.RealTimeOnline.Contracts.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream Select(string page, string pageSize, string orderby, string filter, string select);
+        Stream SelectD(string page, string pageSize, string orderby, string filter, string select);
 
         [OperationContract]
         [WebInvoke(

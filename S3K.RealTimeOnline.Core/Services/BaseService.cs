@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
-using System.IdentityModel.Policy;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -91,14 +90,16 @@ namespace S3K.RealTimeOnline.Core.Services
             }
 
             webHttpBinding.Security = webHttpSecurity;
-
+            config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
             if (AppConfig.EnableSecurity)
             {
-                IUnityContainer container = new ConfigContainer().Instance();
-                config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
-                config.Authorization.ServiceAuthorizationManager = new CustomAuthorizationManager(container);                
-                config.Authorization.ExternalAuthorizationPolicies =
-                    new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy(container)}.AsReadOnly();
+                config.Authorization.ServiceAuthorizationManager =
+                    new BasicAuthorizationManager(new ConfigContainer().Instance());
+                //config.Authorization.ExternalAuthorizationPolicies = new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy()}.AsReadOnly();
+            }
+            else
+            {
+                config.Authorization.ServiceAuthorizationManager = new AnonymousAuthorizationManager();
             }
 
             config.Credentials.ClientCertificate.SetCertificate(
