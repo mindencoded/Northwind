@@ -8,5 +8,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Tools
         public IEnumerable<ExpandoObject> Value { get; set; }
 
         public int Total { get; set; }
+
+        public int Count { get; set; }
     }
 }

@@ -1,0 +1,25 @@
+﻿DBCC CHECKIDENT ('[ROLE_GROUP]', RESEED, 0);
+GO
+SET IDENTITY_INSERT [dbo].[ROLE_GROUP] ON 
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (1, N'CustomerCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (2, N'EmployeeCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (3, N'InventoryTransactionCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (4, N'InventoryTransactionTypeCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (5, N'InvoiceCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (6, N'OrderCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (7, N'OrderDetailCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (8, N'OrderDetailStatusCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (9, N'OrderStatusCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (10, N'OrderTaxStatusCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (11, N'ProductCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (12, N'PurchaseOrderCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (13, N'PurchaseOrderDetailCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (14, N'PurchaseOrderStatusCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (15, N'RoleCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (16, N'RoleDetailCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (17, N'RoleGroupCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (18, N'ShipperCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (19, N'SupplierCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (20, N'UserCrud')
+INSERT [dbo].[ROLE_GROUP] ([ID], [NAME]) VALUES (21, N'UserTypeCrud')
+SET IDENTITY_INSERT [dbo].[ROLE_GROUP] OFF

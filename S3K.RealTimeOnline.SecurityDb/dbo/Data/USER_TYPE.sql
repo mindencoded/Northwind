@@ -1,0 +1,8 @@
+﻿
+INSERT [dbo].[USER_TYPE] ([ID], [TYPE_NAME])
+VALUES
+ (1, N'CUSTOMER')
+,(2, N'EMPLOYEE')
+,(3, N'NO ONE')
+,(4, N'SHIPPER')
+,(5, N'SUPPLIER');

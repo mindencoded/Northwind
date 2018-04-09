@@ -133,7 +133,8 @@ namespace S3K.RealTimeOnline.Core.Services
                 QueryResponse response = new QueryResponse
                 {
                     Value = selectResult,
-                    Total = countResult
+                    Total = countResult,
+                    Count = selectResult.Count
                 };
                 string data = DataToString(response);
                 return CreateStreamResponse(data);

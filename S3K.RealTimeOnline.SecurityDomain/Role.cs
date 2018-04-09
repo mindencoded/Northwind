@@ -5,6 +5,7 @@ using S3K.RealTimeOnline.GenericDomain;
 
 namespace S3K.RealTimeOnline.SecurityDomain
 {
+    [Table("ROLE")]
     public class Role : Entity
     {
         [Key]

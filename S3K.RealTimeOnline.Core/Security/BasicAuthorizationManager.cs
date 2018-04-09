@@ -37,7 +37,8 @@ namespace S3K.RealTimeOnline.Core.Security
                     {
                         string[] roles =
                         {
-                            "CustomerCrud.Select"
+                            "CustomerCrud.Select",
+                            "RoleGroupCrud.Select"
                         };
                         IPrincipal principal = new CustomPrincipal(new GenericIdentity("testuser"), roles);
                         Thread.CurrentPrincipal = principal;
