@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Claims;
 using System.IdentityModel.Policy;
 using System.Security.Principal;
 using System.ServiceModel;
 using System.Threading;
 
-namespace S3K.RealTimeOnline.Core.Security
+namespace S3K.RealTimeOnline.Core
 {
     public class CustomAuthorizationPolicy : IAuthorizationPolicy
     {
@@ -33,15 +32,12 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 principal = Thread.CurrentPrincipal;
             }
-
             if (principal != null)
             {
                 //do stuff with principal
                 evaluationContext.Properties["Principal"] = principal;
-                evaluationContext.Properties["Identities"] = new List<IIdentity> {principal.Identity};
                 return true;
             }
-
             return false;
         }
     }

@@ -6,18 +6,18 @@ using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.UnitOfWork;
 using S3K.RealTimeOnline.SecurityDomain;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernameAndPassword
+namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernamePassword
 {
-    public class FindUserByUsernameAndPasswordQueryHandler : IQueryHandler<FindUserByUsernameAndPasswordQuery, User>
+    public class FindUserByUsernamePasswordQueryHandler : IQueryHandler<FindUserByUsernamePasswordQuery, User>
     {
         private readonly ISecurityUnitOfWork _unitOfWork;
 
-        public FindUserByUsernameAndPasswordQueryHandler(ISecurityUnitOfWork unitOfWork)
+        public FindUserByUsernamePasswordQueryHandler(ISecurityUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public User Handle(FindUserByUsernameAndPasswordQuery query)
+        public User Handle(FindUserByUsernamePasswordQuery query)
         {
             IDictionary<string, object> parameters = new Dictionary<string, object>
             {
@@ -49,7 +49,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsername
                     IList<RoleDetail> roleDetails = roleDetailRepository.Select(parameters).ToList();
                     if (roleDetails.Any())
                     {
-                        object[] roleDetailIds = roleDetails.Select(rd => rd.RoleId).ToArray().Cast<object>().ToArray();                        
+                        object[] roleDetailIds = roleDetails.Select(rd => rd.RoleId).ToArray().Cast<object>().ToArray();
                         IRepository<Role> roleRepository = _unitOfWork.Repository<Role>();
                         parameters = new Dictionary<string, object>
                         {
@@ -63,7 +63,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsername
                             RoleDetail roleDetail = roleDetails.FirstOrDefault(rd => rd.RoleId == role.Id);
                             if (roleDetail != null) roleDetail.Role = role;
                         }
-                        
+
                         user.RoleDetails = roleDetails;
                     }
                 }
@@ -71,7 +71,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsername
             }
         }
 
-        public Task<User> HandleAsync(FindUserByUsernameAndPasswordQuery query)
+        public Task<User> HandleAsync(FindUserByUsernamePasswordQuery query)
         {
             throw new System.NotImplementedException();
         }

@@ -1,13 +1,12 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDomain;
 
-namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernameAndPassword
+namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernamePassword
 {
-    public class FindUserByUsernameAndPasswordQuery : IQuery<User>
+    public class FindUserByUsernamePasswordQuery : IQuery<User>
     {
-        public FindUserByUsernameAndPasswordQuery()
+        public FindUserByUsernamePasswordQuery()
         {
             Active = true;
         }

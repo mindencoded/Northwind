@@ -38,6 +38,7 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\IRoleGroupCrudService.cs" />
     <Compile Include="Services\IRoleCrudService.cs" />
     <Compile Include="Services\IRoleDetailCrudService.cs" />

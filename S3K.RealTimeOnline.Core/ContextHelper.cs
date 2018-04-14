@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Permissions;
-using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Dispatcher;
-using System.Threading;
 
-namespace S3K.RealTimeOnline.Core.Security
+namespace S3K.RealTimeOnline.Core
 {
-    public class AnonymousAuthorizationManager : ServiceAuthorizationManager
+    public class ContextHelper
     {
-        protected override bool CheckAccessCore(OperationContext operationContext)
+        public static string GetRoleName(OperationContext operationContext)
         {
-            IList<string> roles = new List<string>();
             string operationName = operationContext.IncomingMessageProperties["HttpOperationName"].ToString();
             DispatchOperation operation =
                 operationContext.EndpointDispatcher.DispatchRuntime.Operations.FirstOrDefault(o =>
@@ -30,16 +26,11 @@ namespace S3K.RealTimeOnline.Core.Security
                         .Cast<PrincipalPermissionAttribute>().FirstOrDefault();
                     if (principalPermissionAttribute != null)
                     {
-                        string role = principalPermissionAttribute.Role;
-                        roles.Add(role);
+                        return principalPermissionAttribute.Role;
                     }
                 }
             }
-            IPrincipal principal = new GenericPrincipal(new GenericIdentity("anonymous"), roles.ToArray());
-            Thread.CurrentPrincipal = principal;
-            operationContext.IncomingMessageProperties.Add("Principal", principal);
-            operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] = principal;
-            return true;
+            return null;
         }
     }
 }

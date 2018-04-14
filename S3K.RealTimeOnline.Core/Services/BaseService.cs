@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IdentityModel.Policy;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -16,7 +17,6 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.Core.Decorators;
-using S3K.RealTimeOnline.Core.Security;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
@@ -67,7 +67,7 @@ namespace S3K.RealTimeOnline.Core.Services
 
             WebHttpSecurity webHttpSecurity = new WebHttpSecurity
             {
-                Mode = WebHttpSecurityMode.TransportCredentialOnly,
+                Mode = WebHttpSecurityMode.None,
                 Transport = new HttpTransportSecurity
                 {
                     ClientCredentialType = HttpClientCredentialType.None
@@ -91,7 +91,14 @@ namespace S3K.RealTimeOnline.Core.Services
 
             webHttpBinding.Security = webHttpSecurity;
             config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
-            if (AppConfig.EnableSecurity)
+            ServiceEndpoint serviceEndpoint = config.AddServiceEndpoint(typeof(TService), webHttpBinding, address);
+            serviceEndpoint.Behaviors.Add(new WebHttpBehavior());
+            serviceEndpoint.EndpointBehaviors.Add(new JwtTokenBehaviorExtension());
+            config.Authorization.ExternalAuthorizationPolicies =
+                new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy()}.AsReadOnly();
+
+
+            /*if (AppConfig.EnableSecurity)
             {
                 config.Authorization.ServiceAuthorizationManager =
                     new BasicAuthorizationManager(new ConfigContainer().Instance());
@@ -99,16 +106,13 @@ namespace S3K.RealTimeOnline.Core.Services
             else
             {
                 config.Authorization.ServiceAuthorizationManager = new AnonymousAuthorizationManager();
-            }
+            }*/
 
             config.Credentials.ClientCertificate.SetCertificate(
                 AppConfig.StoreLocation,
                 AppConfig.StoreName,
                 AppConfig.X509FindType,
                 AppConfig.FindValue);
-
-            config.AddServiceEndpoint(typeof(TService), webHttpBinding, address)
-                .Behaviors.Add(new WebHttpBehavior());
         }
 
         protected virtual string DataToString(dynamic data)
@@ -130,7 +134,7 @@ namespace S3K.RealTimeOnline.Core.Services
             return new MemoryStream(Encoding.UTF8.GetBytes(response));
         }
 
-        protected virtual Message CreateExceptionMessage<T>(T error, WebContentFormat format = WebContentFormat.Json)
+        public static Message CreateExceptionMessage<T>(T error, WebContentFormat format = WebContentFormat.Json)
         {
             Message message = Message.CreateMessage(MessageVersion.None, "", error,
                 new DataContractJsonSerializer(typeof(T)));
@@ -231,7 +235,6 @@ namespace S3K.RealTimeOnline.Core.Services
                 KeyValuePair<string, object> keyValuePair = new KeyValuePair<string, object>(name, value);
                 keyValuePairs.Add(keyValuePair);
             }
-
             expandoObject = keyValuePairs as ExpandoObject;
             return expandoObject;
         }

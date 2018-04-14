@@ -37,6 +37,12 @@
     <Reference Include="CommonServiceLocator, Version=2.0.3.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.8.5\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=5.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.5.2.1\lib\net451\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=5.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.5.2.1\lib\net451\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -50,6 +56,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.2.1\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -57,6 +66,7 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
     <Reference Include="Unity.Abstractions, Version=3.3.0.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.5.8.5\lib\net45\Unity.Abstractions.dll</HintPath>
     </Reference>
@@ -84,11 +94,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="InfoMessage.cs" />
-    <Compile Include="Security\AnonymousAuthorizationManager.cs" />
-    <Compile Include="Security\BasicAuthorizationManager.cs" />
+    <Compile Include="ContextHelper.cs" />
+    <Compile Include="AnonymousAuthorizationManager.cs" />
+    <Compile Include="BasicAuthorizationManager.cs" />
     <Compile Include="ConfigContainer.cs" />
-    <Compile Include="Security\CustomAuthorizationPolicy.cs" />
-    <Compile Include="Security\CustomPrincipal.cs" />
+    <Compile Include="CustomAuthorizationPolicy.cs" />
+    <Compile Include="CustomPrincipal.cs" />
+    <Compile Include="JwtTokenBehaviorExtension.cs" />
+    <Compile Include="JwtTokenGenerator.cs" />
+    <Compile Include="JwtTokenDispatchMessageInspector .cs" />
+    <Compile Include="JwtTokenValidator.cs" />
+    <Compile Include="TokenCreator.cs" />
+    <Compile Include="Services\AccountService.svc.cs" />
     <Compile Include="Services\BaseService.cs" />
     <Compile Include="Services\RoleGroupCrudService.svc.cs" />
     <Compile Include="Services\RoleCrudService.svc.cs" />
@@ -168,5 +185,6 @@
       <Name>S3K.RealTimeOnline.SecurityDomain</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

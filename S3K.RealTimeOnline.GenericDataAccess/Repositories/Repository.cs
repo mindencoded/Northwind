@@ -1704,17 +1704,8 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                 string parameterName = "@p" + count;
                 IDictionary<string, object> parameters = new Dictionary<string, object>();
-                if (value != null && value is string)
-                {
-                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" +
-                                      EntityUtils.GetTableName<T>() +
-                                      "].[" + columnName + "] LIKE '%' + " + parameterName +
-                                      " + '%'");
-
-                    parameters.Add(parameterName, value);
-                }
-                else if (value != null && value.GetType().IsGenericType &&
-                         value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>) && value is DateTime)
+                if (value != null && value.GetType().IsGenericType &&
+                    value.GetType().GetGenericTypeDefinition() == typeof(Tuple<,>) && value is DateTime)
                 {
                     conditionList.Add("(" + EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
                                       "].[" + columnName + "] BETWEEN " + parameterName + "_1 AND " + parameterName +
@@ -1734,8 +1725,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
                         for (int i = 0; i < items.Length; i++)
                         {
                             subConditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() +
-                                                 "].[" + columnName + "] LIKE '%' + " + parameterName + "_" + i +
-                                                 " + '%'");
+                                                 "].[" + columnName + "] = " + parameterName + "_" + i);
                             parameters.Add(parameterName + "_" + i, items[i]);
                         }
 
@@ -1772,7 +1762,9 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     if (value != null)
                     {
-                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType().IsArray  ? value.GetType().GetElementType() : value.GetType());
+                        sqlParameter.SqlDbType = TypeConvertor.ToSqlDbType(value.GetType().IsArray
+                            ? value.GetType().GetElementType()
+                            : value.GetType());
                     }
 
                     sqlParameterList.Add(sqlParameter);

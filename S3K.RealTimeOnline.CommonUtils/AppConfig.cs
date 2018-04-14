@@ -1,20 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace S3K.RealTimeOnline.CommonUtils
 {
     public class AppConfig
     {
-        public static string DbDateFormat => ConfigurationManager.AppSettings["DbDateFormat"];
-
         public static string SecurityDbConnectionName => ConfigurationManager.AppSettings["SecurityDbConnectionName"];
 
         public static string BusinessDbConnectionName => ConfigurationManager.AppSettings["BusinessDbConnectionName"];
+
+        public static string BaseUri => ConfigurationManager.AppSettings["BaseUri"];
+
+        public static string DbDateFormat => ConfigurationManager.AppSettings["DbDateFormat"];
 
         public static bool EnableSecurity => Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSecurity"]);
 
@@ -89,5 +89,14 @@ namespace S3K.RealTimeOnline.CommonUtils
         }
 
         public static string FindValue => ConfigurationManager.AppSettings["FindValue"];
+
+        public static string PrivateKey => ConfigurationManager.AppSettings["PrivateKey"];
+
+        public static string Audience => ConfigurationManager.AppSettings["Audience"];
+
+        public static string Issuer => ConfigurationManager.AppSettings["Issuer"];
+
+        public static double TokenExpirationMinutes =>
+            double.Parse(ConfigurationManager.AppSettings["TokenExpirationMinutes"]);
     }
 }

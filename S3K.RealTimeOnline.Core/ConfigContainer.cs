@@ -138,6 +138,12 @@ namespace S3K.RealTimeOnline.Core
                 }
             }
 
+            container
+                .RegisterType(typeof(IQueryHandler<,>),
+                    typeof(ValidationQueryHandlerDecorator<,>), HandlerDecoratorType.ValidationCommand.ToString(),
+                    new InjectionConstructor(
+                        new ResolvedParameter(typeof(IQueryHandler<,>))));
+
 
             foreach (GenericCommandType genericCommandType in Enum.GetValues(typeof(GenericCommandType)))
             {
@@ -174,7 +180,6 @@ namespace S3K.RealTimeOnline.Core
                     }
                 }
             }
-
 
 
             Type[] serviceTypes = Assembly.GetExecutingAssembly().GetTypes()
