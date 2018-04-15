@@ -1,10 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
-using System.Threading;
+using S3K.RealTimeOnline.CommonUtils;
 
 namespace S3K.RealTimeOnline.Core
 {
@@ -12,44 +13,51 @@ namespace S3K.RealTimeOnline.Core
     {
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
-            HttpRequestMessageProperty httpRequest = (HttpRequestMessageProperty)
-                OperationContext.Current.IncomingMessageProperties["httpRequest"];
-            string encryptedToken = httpRequest.Headers["JWTTOKEN"];
-            if (!string.IsNullOrEmpty(encryptedToken))
-            {
-                ClaimsPrincipal claimsPrincipal;
-                bool isValid = new JwtTokenValidator().Validate(encryptedToken, out claimsPrincipal);
-                if (isValid)
-                {
-                    ClaimsIdentity claimsIdentity = Thread.CurrentPrincipal.Identity as ClaimsIdentity;
-                    if (claimsIdentity != null)
-                    {
-                        foreach (var claim in claimsPrincipal.Claims)
-                        {
-                            claimsIdentity.AddClaim(new Claim(claim.Type, claim.Value));
-                        }
-                    }
 
-                    Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-                    if (nameClaim != null)
+            object value = OperationContext.Current.IncomingMessageProperties.TryGetValue("Principal", out value)
+                ? value
+                : null;
+            IPrincipal principal = value as IPrincipal;
+            if (principal != null) return null;
+            UriTemplateMatch uriTemplateMatch =
+                (UriTemplateMatch) OperationContext.Current.IncomingMessageProperties["UriTemplateMatchResults"];
+            if (ContextHelper.GetRoleName(OperationContext.Current) != null)
+            {
+                HttpRequestMessageProperty httpRequest = (HttpRequestMessageProperty)
+                    OperationContext.Current.IncomingMessageProperties["httpRequest"];
+                string encryptedToken = httpRequest.Headers["JWTTOKEN"];
+                if (!string.IsNullOrEmpty(encryptedToken))
+                {
+                    ClaimsPrincipal claimsPrincipal;
+                    string privateKey = RsaTokenTool.GetXmlString(AppConfig.PrivateKeyPath);
+                    //bool isValid = new JwtTokenValidator(privateKey, uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host).Validate(encryptedToken, out claimsPrincipal);
+                    bool isValid = new JwtTokenTool(privateKey, uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host,AppConfig.TokenExpirationMinutes).ValidateRsaJwtSecurityToken(encryptedToken, out claimsPrincipal);
+                    if (isValid)
                     {
-                        string[] roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role)
-                            .Select(c => c.Value).ToArray();
-                        IPrincipal principal = new CustomPrincipal(new GenericIdentity(nameClaim.Value), roles);
-                        Thread.CurrentPrincipal = principal;
-                        OperationContext.Current.IncomingMessageProperties.Add("Principal", principal);
-                        OperationContext.Current.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] =
-                            principal;
+                        Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                        if (nameClaim != null)
+                        {
+                            string[] roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role)
+                                .Select(c => c.Value).ToArray();
+                            principal = new CustomPrincipal(new GenericIdentity(nameClaim.Value), roles);
+                        }
                     }
                 }
             }
+            else
+            {
+                principal = new CustomPrincipal(new GenericIdentity("Anonymous"), new string[] { });
+            }
 
+            if (principal != null)
+            {
+                OperationContext.Current.IncomingMessageProperties.Add("Principal", principal);
+            }
             return null;
         }
 
         public void BeforeSendReply(ref Message reply, object correlationState)
         {
-            //throw new NotImplementedException();
         }
     }
 }

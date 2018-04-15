@@ -1,5 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Web;
+using S3K.RealTimeOnline.CommonUtils;
+using S3K.RealTimeOnline.Core;
 
 namespace S3K.RealTimeOnline.WebService
 {
@@ -7,6 +11,7 @@ namespace S3K.RealTimeOnline.WebService
     {
         protected void Application_Start(object sender, EventArgs e)
         {
+            RsaTokenTool.CreatePrivateAndPublicKeys(AppConfig.PrivateKeyPath, AppConfig.PublicKeyPath);
         }
 
         protected void Session_Start(object sender, EventArgs e)

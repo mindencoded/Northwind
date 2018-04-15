@@ -7,7 +7,6 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
-using System.Threading;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernamePassword;
 using S3K.RealTimeOnline.SecurityDomain;
@@ -15,21 +14,26 @@ using Unity;
 
 namespace S3K.RealTimeOnline.Core
 {
-    public class BasicAuthorizationManager : ServiceAuthorizationManager
+    public class CustomAuthorizationManager : ServiceAuthorizationManager
     {
         private IUnityContainer _container;
 
-        public BasicAuthorizationManager(IUnityContainer container)
+        public CustomAuthorizationManager(IUnityContainer container)
         {
             _container = container;
         }
 
         protected override bool CheckAccessCore(OperationContext operationContext)
         {
-            IPrincipal principal = null;
-
+            object value = operationContext.IncomingMessageProperties.TryGetValue("Principal", out value)
+                ? value
+                : null;
+            IPrincipal principal = value as IPrincipal;
+            //if (principal != null) return true;
             if (ContextHelper.GetRoleName(operationContext) != null)
             {
+                UriTemplateMatch uriTemplateMatch =
+                    (UriTemplateMatch) operationContext.IncomingMessageProperties["UriTemplateMatchResults"];
                 HttpRequestMessageProperty httpRequest = (HttpRequestMessageProperty)
                     operationContext.IncomingMessageProperties["httpRequest"];
                 string authorizationHeader = httpRequest.Headers["Authorization"];
@@ -56,6 +60,12 @@ namespace S3K.RealTimeOnline.Core
                             principal = new CustomPrincipal(new GenericIdentity(user.Username), roles.ToArray());
                         }
                     }
+
+
+                    WebOperationContext webContext = new WebOperationContext(operationContext);
+                    webContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
+                    webContext.OutgoingResponse.Headers.Add(HttpResponseHeader.WwwAuthenticate,
+                        string.Format("Basic realm=\"{0}\"", uriTemplateMatch.BaseUri.AbsoluteUri));
                 }
             }
             else
@@ -63,24 +73,12 @@ namespace S3K.RealTimeOnline.Core
                 principal = new CustomPrincipal(new GenericIdentity("Anonymous"), new string[] { });
             }
 
+
             if (principal != null)
             {
-                Thread.CurrentPrincipal = principal;
                 operationContext.IncomingMessageProperties.Add("Principal", principal);
-                operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] =
-                    principal;
-                return true;
             }
-
-
-            UriTemplateMatch uriTemplateMatchResults = (UriTemplateMatch)
-                operationContext.IncomingMessageProperties["UriTemplateMatchResults"];
-            var webContext = new WebOperationContext(operationContext);
-            webContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
-            webContext.OutgoingResponse.Headers.Add(HttpResponseHeader.WwwAuthenticate,
-                string.Format("Basic realm=\"{0}\"", uriTemplateMatchResults.BaseUri.AbsoluteUri));
-            //throw new WebFaultException(HttpStatusCode.Unauthorized);
-            return false;
+            return true;
         }
     }
 }

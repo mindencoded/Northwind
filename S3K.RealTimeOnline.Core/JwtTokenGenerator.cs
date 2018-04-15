@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using S3K.RealTimeOnline.CommonUtils;
 using SecurityAlgorithms = Microsoft.IdentityModel.Tokens.SecurityAlgorithms;
 using SecurityTokenDescriptor = Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor;
 using SigningCredentials = Microsoft.IdentityModel.Tokens.SigningCredentials;
@@ -21,12 +20,12 @@ namespace S3K.RealTimeOnline.Core
         private readonly string _issuer;
         private readonly double _tokenExpirationMinutes;
 
-        public JwtTokenGenerator()
+        public JwtTokenGenerator(string privateKey, string audience, string issuer, double tokenExpirationMinutes)
         {
-            _privateKey = AppConfig.PrivateKey;
-            _audience = AppConfig.Audience;
-            _issuer = AppConfig.Issuer;
-            _tokenExpirationMinutes = AppConfig.TokenExpirationMinutes;
+            _privateKey = privateKey;
+            _audience = audience;
+            _issuer = issuer;
+            _tokenExpirationMinutes = tokenExpirationMinutes;
         }
 
         /// <summary>
@@ -95,18 +94,6 @@ namespace S3K.RealTimeOnline.Core
             JwtSecurityToken securityToken = handler.CreateJwtSecurityToken(securityTokenDescriptor);
             // Return the token to Encode function call, which in turn return to Main function.
             return securityToken;
-        }
-
-        /// <summary>
-        /// This method convert the received string into bytes. 
-        /// </summary>
-        /// <param name="str">Private key values</param>
-        /// <returns></returns>
-        private static byte[] GetBytes(string str)
-        {
-            var bytes = new byte[str.Length * sizeof(char)];
-            Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
         }
     }
 }

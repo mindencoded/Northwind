@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
+using System.ServiceModel.Web;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using S3K.RealTimeOnline.CommonUtils;
 
 namespace S3K.RealTimeOnline.Core
 {
@@ -13,11 +14,11 @@ namespace S3K.RealTimeOnline.Core
         private readonly string _audience;
         private readonly string _issuer;
 
-        public JwtTokenValidator()
+        public JwtTokenValidator(string privateKey, string audience, string issuer)
         {
-            _privateKey = AppConfig.PrivateKey;
-            _audience = AppConfig.Audience;
-            _issuer = AppConfig.Issuer;
+            _privateKey = privateKey;
+            _audience = audience;
+            _issuer = issuer;
         }
 
         public bool Validate(string encryptedToken)
@@ -27,40 +28,36 @@ namespace S3K.RealTimeOnline.Core
 
         public bool Validate(string encryptedToken, out ClaimsPrincipal claimsPrincipal)
         {
-            claimsPrincipal = null;
-            byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey); //GetBytes(_privateKey);
-            SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
-            var tokenValidationParameters = new TokenValidationParameters()
+            try
             {
-                ValidAudiences = new[]
+                claimsPrincipal = null;
+                byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey);
+                SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
+                var tokenValidationParameters = new TokenValidationParameters()
                 {
-                    _audience
-                },
-                ValidIssuers = new[]
-                {
-                    _issuer
-                },
-                IssuerSigningKey = signingKey
-            };
+                    ValidAudiences = new[]
+                    {
+                        _audience
+                    },
+                    ValidIssuers = new[]
+                    {
+                        _issuer
+                    },
+                    IssuerSigningKey = signingKey
+                };
 
-            SecurityToken validatedToken;
+                SecurityToken validatedToken;
 
-            claimsPrincipal =
-                new JwtSecurityTokenHandler().ValidateToken(encryptedToken, tokenValidationParameters,
-                    out validatedToken);
+                claimsPrincipal =
+                    new JwtSecurityTokenHandler().ValidateToken(encryptedToken, tokenValidationParameters,
+                        out validatedToken);
 
-            if (validatedToken != null)
-            {
-                return true;
+                return validatedToken != null;
             }
-            return false;
-        }
-
-        private static byte[] GetBytes(string str)
-        {
-            var bytes = new byte[str.Length * sizeof(char)];
-            Buffer.BlockCopy(str.ToCharArray(), 0, bytes, 0, bytes.Length);
-            return bytes;
+            catch (Exception ex)
+            {
+                throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), HttpStatusCode.Unauthorized);
+            }
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System.Linq;
-using System.Net;
 using System.Security.Principal;
-using System.ServiceModel.Web;
 using System.Threading;
 
 namespace S3K.RealTimeOnline.Core
@@ -34,12 +32,7 @@ namespace S3K.RealTimeOnline.Core
 
         public bool IsInRole(string role)
         {
-            if (_roles.Contains(role))
-            {
-                return true;
-            }
-
-            throw new WebFaultException(HttpStatusCode.Unauthorized);
+            return _roles.Contains(role);
         }
     }
 }

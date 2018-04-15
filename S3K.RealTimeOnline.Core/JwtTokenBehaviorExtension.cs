@@ -15,12 +15,10 @@ namespace S3K.RealTimeOnline.Core
 
         public void AddBindingParameters(ServiceEndpoint endpoint, BindingParameterCollection bindingParameters)
         {
-            //throw new NotImplementedException();
         }
 
         public void ApplyClientBehavior(ServiceEndpoint endpoint, ClientRuntime clientRuntime)
         {
-            //throw new NotImplementedException();
         }
 
         public void ApplyDispatchBehavior(ServiceEndpoint endpoint, EndpointDispatcher endpointDispatcher)
@@ -30,7 +28,6 @@ namespace S3K.RealTimeOnline.Core
 
         public void Validate(ServiceEndpoint endpoint)
         {
-            //throw new NotImplementedException();
         }
 
         protected override object CreateBehavior()

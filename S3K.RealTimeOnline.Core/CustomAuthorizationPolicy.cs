@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IdentityModel.Claims;
 using System.IdentityModel.Policy;
+using System.Net;
 using System.Security.Principal;
 using System.ServiceModel;
+using System.ServiceModel.Web;
 using System.Threading;
 
 namespace S3K.RealTimeOnline.Core
@@ -23,22 +25,16 @@ namespace S3K.RealTimeOnline.Core
 
         public bool Evaluate(EvaluationContext evaluationContext, ref object state)
         {
-            IPrincipal principal;
-            if (OperationContext.Current.IncomingMessageProperties.ContainsKey("Principal"))
+            object value;
+            if (OperationContext.Current.IncomingMessageProperties.TryGetValue("Principal", out value))
             {
-                principal = OperationContext.Current.IncomingMessageProperties["Principal"] as IPrincipal;
-            }
-            else
-            {
-                principal = Thread.CurrentPrincipal;
-            }
-            if (principal != null)
-            {
-                //do stuff with principal
+                IPrincipal principal = value as IPrincipal;
                 evaluationContext.Properties["Principal"] = principal;
+                Thread.CurrentPrincipal = principal;
                 return true;
+
             }
-            return false;
+            throw new WebFaultException(HttpStatusCode.Unauthorized);
         }
     }
 }

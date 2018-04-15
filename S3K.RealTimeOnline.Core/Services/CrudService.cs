@@ -17,7 +17,7 @@ using Unity;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
-    public abstract class CrudService<TUnitOfWork, TEntity, TDto> : BaseService
+    public abstract class CrudService<TUnitOfWork, TEntity, TDto> : RestService
         where TUnitOfWork : IUnitOfWork
         where TEntity : Entity
         where TDto : class

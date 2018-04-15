@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace S3K.RealTimeOnline.CommonUtils
@@ -90,13 +92,14 @@ namespace S3K.RealTimeOnline.CommonUtils
 
         public static string FindValue => ConfigurationManager.AppSettings["FindValue"];
 
-        public static string PrivateKey => ConfigurationManager.AppSettings["PrivateKey"];
+        public static double TokenExpirationMinutes => double.Parse(ConfigurationManager.AppSettings["TokenExpirationMinutes"]);
 
-        public static string Audience => ConfigurationManager.AppSettings["Audience"];
+        public static string PrivateKeyPath => Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"PrivateKey.xml"));
 
-        public static string Issuer => ConfigurationManager.AppSettings["Issuer"];
+        public static string PublicKeyPath => Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"PublicKey.xml"));
 
-        public static double TokenExpirationMinutes =>
-            double.Parse(ConfigurationManager.AppSettings["TokenExpirationMinutes"]);
+        public static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
+
+        public static string BinDirectory => Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath); //Path.GetDirectoryName(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path);
     }
 }

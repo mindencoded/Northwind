@@ -1,6 +1,5 @@
 ﻿using System.Security.Principal;
 using System.ServiceModel;
-using System.Threading;
 
 namespace S3K.RealTimeOnline.Core
 {
@@ -8,11 +7,9 @@ namespace S3K.RealTimeOnline.Core
     {
         protected override bool CheckAccessCore(OperationContext operationContext)
         {
-            string role = ContextHelper.GetRoleName(operationContext); // ?? "AllowAnonymous";
+            string role = ContextHelper.GetRoleName(operationContext);
             IPrincipal principal = new CustomPrincipal(new GenericIdentity("Anonymous"), new[] {role});
-            Thread.CurrentPrincipal = principal;
             operationContext.IncomingMessageProperties.Add("Principal", principal);
-            operationContext.ServiceSecurityContext.AuthorizationContext.Properties["Principal"] = principal;
             return true;
         }
     }

@@ -130,6 +130,8 @@
     <None Include="packages.config" />
     <Content Include="Account.svc" />
     <Content Include="Global.asax" />
+    <Content Include="PrivateKey.xml" />
+    <Content Include="PublicKey.xml" />
     <Content Include="RoleGroupCrud.svc" />
     <Content Include="UserTypeCrud.svc" />
     <Content Include="UserCrud.svc" />
@@ -163,6 +165,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\S3K.RealTimeOnline.CommonUtils\S3K.RealTimeOnline.CommonUtils.csproj">
+      <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
+      <Name>S3K.RealTimeOnline.CommonUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\S3K.RealTimeOnline.Contracts\S3K.RealTimeOnline.Contracts.csproj">
       <Project>{1dc05a9c-72fe-4fb3-a3c8-0d2bbbbed85c}</Project>
       <Name>S3K.RealTimeOnline.Contracts</Name>

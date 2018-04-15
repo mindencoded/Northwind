@@ -6,7 +6,7 @@ using S3K.RealTimeOnline.Dtos;
 namespace S3K.RealTimeOnline.Contracts.Services
 {
     [ServiceContract]
-    public interface IAccountService : IBaseService
+    public interface IAccountService : IService
     {
         [OperationContract]
         [WebInvoke(

@@ -24,11 +24,11 @@ using Unity;
 
 namespace S3K.RealTimeOnline.Core.Services
 {
-    public abstract class BaseService
+    public abstract class RestService
     {
         protected readonly IUnityContainer Container;
 
-        protected BaseService(IUnityContainer container)
+        protected RestService(IUnityContainer container)
         {
             Container = container;
         }
@@ -67,22 +67,25 @@ namespace S3K.RealTimeOnline.Core.Services
 
             WebHttpSecurity webHttpSecurity = new WebHttpSecurity
             {
-                Mode = WebHttpSecurityMode.None,
+                Mode = WebHttpSecurityMode.TransportCredentialOnly,
                 Transport = new HttpTransportSecurity
                 {
                     ClientCredentialType = HttpClientCredentialType.None
                 }
             };
 
-            if (AppConfig.SslFlags.Contains(SslFlag.Ssl))
+            if (AppConfig.SslFlags.Contains(SslFlag.Ssl) || AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) || AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
                 webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
+                config.Credentials.ClientCertificate.SetCertificate(
+                    AppConfig.StoreLocation,
+                    AppConfig.StoreName,
+                    AppConfig.X509FindType,
+                    AppConfig.FindValue);
             }
 
-            if (AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) ||
-                AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
+            if (AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) || AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
-                webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
                 webHttpSecurity.Transport = new HttpTransportSecurity
                 {
                     ClientCredentialType = HttpClientCredentialType.Certificate
@@ -90,29 +93,28 @@ namespace S3K.RealTimeOnline.Core.Services
             }
 
             webHttpBinding.Security = webHttpSecurity;
-            config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
             ServiceEndpoint serviceEndpoint = config.AddServiceEndpoint(typeof(TService), webHttpBinding, address);
-            serviceEndpoint.Behaviors.Add(new WebHttpBehavior());
-            serviceEndpoint.EndpointBehaviors.Add(new JwtTokenBehaviorExtension());
-            config.Authorization.ExternalAuthorizationPolicies =
-                new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy()}.AsReadOnly();
-
-
-            /*if (AppConfig.EnableSecurity)
+            serviceEndpoint.Behaviors.Add(new WebHttpBehavior
             {
-                config.Authorization.ServiceAuthorizationManager =
-                    new BasicAuthorizationManager(new ConfigContainer().Instance());
+                DefaultOutgoingResponseFormat = WebMessageFormat.Json,
+                DefaultOutgoingRequestFormat = WebMessageFormat.Json,
+                AutomaticFormatSelectionEnabled = false
+            });
+            
+            config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
+            if (AppConfig.EnableSecurity)
+            {
+                serviceEndpoint.EndpointBehaviors.Add(new JwtTokenBehaviorExtension());
+                config.Authorization.ServiceAuthorizationManager = 
+                    new CustomAuthorizationManager(new ConfigContainer().Instance());
             }
             else
             {
                 config.Authorization.ServiceAuthorizationManager = new AnonymousAuthorizationManager();
-            }*/
-
-            config.Credentials.ClientCertificate.SetCertificate(
-                AppConfig.StoreLocation,
-                AppConfig.StoreName,
-                AppConfig.X509FindType,
-                AppConfig.FindValue);
+            }
+            
+            config.Authorization.ExternalAuthorizationPolicies =
+                new List<IAuthorizationPolicy> { new CustomAuthorizationPolicy() }.AsReadOnly();
         }
 
         protected virtual string DataToString(dynamic data)
