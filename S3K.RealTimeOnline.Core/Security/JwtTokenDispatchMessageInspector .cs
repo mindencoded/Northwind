@@ -7,13 +7,12 @@ using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
 using S3K.RealTimeOnline.CommonUtils;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtTokenDispatchMessageInspector : IDispatchMessageInspector
     {
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
-
             object value = OperationContext.Current.IncomingMessageProperties.TryGetValue("Principal", out value)
                 ? value
                 : null;
@@ -29,9 +28,21 @@ namespace S3K.RealTimeOnline.Core
                 if (!string.IsNullOrEmpty(encryptedToken))
                 {
                     ClaimsPrincipal claimsPrincipal;
-                    string privateKey = RsaTokenTool.GetXmlString(AppConfig.PrivateKeyPath);
-                    //bool isValid = new JwtTokenValidator(privateKey, uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host).Validate(encryptedToken, out claimsPrincipal);
-                    bool isValid = new JwtTokenTool(privateKey, uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host,AppConfig.TokenExpirationMinutes).ValidateRsaJwtSecurityToken(encryptedToken, out claimsPrincipal);
+                    bool isValid;
+                    if (AppConfig.UseRsa)
+                    {
+                        string xmlString = new FileAccessHelper(AppConfig.RsaPrivateKeyPath).Read();
+                        isValid =
+                            new JwtRsaValidator(xmlString, uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host)
+                                .IsValid(encryptedToken, out claimsPrincipal);
+                    }
+                    else
+                    {
+                        string hmacSecretKey = AppConfig.HmacSecretKey;
+                        isValid = new JwtHmacValidator(hmacSecretKey, uriTemplateMatch.BaseUri.Host,
+                            uriTemplateMatch.BaseUri.Host).IsValid(encryptedToken, out claimsPrincipal);
+                    }
+
                     if (isValid)
                     {
                         Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);

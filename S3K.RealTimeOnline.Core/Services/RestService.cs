@@ -17,6 +17,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.Core.Decorators;
+using S3K.RealTimeOnline.Core.Security;
 using S3K.RealTimeOnline.GenericDataAccess.QueryHandlers;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.GenericDataAccess.UnitOfWork;
@@ -74,7 +75,8 @@ namespace S3K.RealTimeOnline.Core.Services
                 }
             };
 
-            if (AppConfig.SslFlags.Contains(SslFlag.Ssl) || AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) || AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
+            if (AppConfig.SslFlags.Contains(SslFlag.Ssl) || AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) ||
+                AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
                 webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
                 config.Credentials.ClientCertificate.SetCertificate(
@@ -84,7 +86,8 @@ namespace S3K.RealTimeOnline.Core.Services
                     AppConfig.FindValue);
             }
 
-            if (AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) || AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
+            if (AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) ||
+                AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
                 webHttpSecurity.Transport = new HttpTransportSecurity
                 {
@@ -100,21 +103,21 @@ namespace S3K.RealTimeOnline.Core.Services
                 DefaultOutgoingRequestFormat = WebMessageFormat.Json,
                 AutomaticFormatSelectionEnabled = false
             });
-            
+
             config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
             if (AppConfig.EnableSecurity)
             {
                 serviceEndpoint.EndpointBehaviors.Add(new JwtTokenBehaviorExtension());
-                config.Authorization.ServiceAuthorizationManager = 
+                config.Authorization.ServiceAuthorizationManager =
                     new CustomAuthorizationManager(new ConfigContainer().Instance());
             }
             else
             {
                 config.Authorization.ServiceAuthorizationManager = new AnonymousAuthorizationManager();
             }
-            
+
             config.Authorization.ExternalAuthorizationPolicies =
-                new List<IAuthorizationPolicy> { new CustomAuthorizationPolicy() }.AsReadOnly();
+                new List<IAuthorizationPolicy> {new CustomAuthorizationPolicy()}.AsReadOnly();
         }
 
         protected virtual string DataToString(dynamic data)

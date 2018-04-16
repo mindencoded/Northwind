@@ -1,7 +1,7 @@
 ﻿using System.Security.Principal;
 using System.ServiceModel;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     public class AnonymousAuthorizationManager : ServiceAuthorizationManager
     {

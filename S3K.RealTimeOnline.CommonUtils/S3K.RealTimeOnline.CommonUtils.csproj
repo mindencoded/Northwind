@@ -47,6 +47,7 @@
     <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="DynamicExtensions.cs" />
     <Compile Include="ExceptionManager.cs" />
+    <Compile Include="FileAccessHelper.cs" />
     <Compile Include="ObjectToDictionaryHelper.cs" />
     <Compile Include="OrderBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

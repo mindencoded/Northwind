@@ -2,7 +2,7 @@
 using System.Security.Principal;
 using System.Threading;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     public class CustomPrincipal : IPrincipal
     {

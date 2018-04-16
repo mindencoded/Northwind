@@ -130,8 +130,6 @@
     <None Include="packages.config" />
     <Content Include="Account.svc" />
     <Content Include="Global.asax" />
-    <Content Include="PrivateKey.xml" />
-    <Content Include="PublicKey.xml" />
     <Content Include="RoleGroupCrud.svc" />
     <Content Include="UserTypeCrud.svc" />
     <Content Include="UserCrud.svc" />

@@ -4,7 +4,7 @@ using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
 using System.ServiceModel.Dispatcher;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtTokenBehaviorExtension : BehaviorExtensionElement, IEndpointBehavior
     {

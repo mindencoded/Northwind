@@ -96,17 +96,17 @@
   <ItemGroup>
     <Compile Include="InfoMessage.cs" />
     <Compile Include="ContextHelper.cs" />
-    <Compile Include="AnonymousAuthorizationManager.cs" />
-    <Compile Include="CustomAuthorizationManager.cs" />
+    <Compile Include="Security\AnonymousAuthorizationManager.cs" />
+    <Compile Include="Security\CustomAuthorizationManager.cs" />
     <Compile Include="ConfigContainer.cs" />
-    <Compile Include="CustomAuthorizationPolicy.cs" />
-    <Compile Include="CustomPrincipal.cs" />
-    <Compile Include="JwtTokenBehaviorExtension.cs" />
-    <Compile Include="JwtTokenDispatchMessageInspector .cs" />
-    <Compile Include="JwtTokenGenerator.cs" />
-    <Compile Include="JwtTokenValidator.cs" />
-    <Compile Include="JwtTokenTool.cs" />
-    <Compile Include="RsaTokenTool.cs" />
+    <Compile Include="Security\CustomAuthorizationPolicy.cs" />
+    <Compile Include="Security\CustomPrincipal.cs" />
+    <Compile Include="Security\JwtRsaValidator.cs" />
+    <Compile Include="Security\JwtTokenBehaviorExtension.cs" />
+    <Compile Include="Security\JwtTokenDispatchMessageInspector .cs" />
+    <Compile Include="Security\JwtHmacGenerator.cs" />
+    <Compile Include="Security\JwtHmacValidator.cs" />
+    <Compile Include="Security\JwtRsaGenerator.cs" />
     <Compile Include="Services\AccountService.svc.cs" />
     <Compile Include="Services\RestService.cs" />
     <Compile Include="Services\RoleGroupCrudService.svc.cs" />

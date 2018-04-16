@@ -1,36 +1,34 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
-using System.ServiceModel.Web;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
-    public class JwtTokenValidator
+    public class JwtHmacValidator
     {
         private readonly string _privateKey;
         private readonly string _audience;
         private readonly string _issuer;
 
-        public JwtTokenValidator(string privateKey, string audience, string issuer)
+        public JwtHmacValidator(string privateKey, string audience, string issuer)
         {
             _privateKey = privateKey;
             _audience = audience;
             _issuer = issuer;
         }
 
-        public bool Validate(string encryptedToken)
+        public bool IsValid(string encryptedToken)
         {
-            return Validate(encryptedToken, out _);
+            return IsValid(encryptedToken, out _);
         }
 
-        public bool Validate(string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        public bool IsValid(string encryptedToken, out ClaimsPrincipal claimsPrincipal)
         {
+            claimsPrincipal = null;
             try
             {
-                claimsPrincipal = null;
                 byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey);
                 SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
                 var tokenValidationParameters = new TokenValidationParameters()
@@ -43,20 +41,19 @@ namespace S3K.RealTimeOnline.Core
                     {
                         _issuer
                     },
-                    IssuerSigningKey = signingKey
+                    IssuerSigningKey = signingKey,
                 };
-
-                SecurityToken validatedToken;
-
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                SecurityToken securityToken;
                 claimsPrincipal =
-                    new JwtSecurityTokenHandler().ValidateToken(encryptedToken, tokenValidationParameters,
-                        out validatedToken);
+                    handler.ValidateToken(encryptedToken, tokenValidationParameters,
+                        out securityToken);
 
-                return validatedToken != null;
+                return securityToken != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), HttpStatusCode.Unauthorized);
+                return false;
             }
         }
     }

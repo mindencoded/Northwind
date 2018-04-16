@@ -7,7 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Threading;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     public class CustomAuthorizationPolicy : IAuthorizationPolicy
     {
@@ -32,7 +32,6 @@ namespace S3K.RealTimeOnline.Core
                 evaluationContext.Properties["Principal"] = principal;
                 Thread.CurrentPrincipal = principal;
                 return true;
-
             }
             throw new WebFaultException(HttpStatusCode.Unauthorized);
         }

@@ -3,24 +3,21 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using SecurityAlgorithms = Microsoft.IdentityModel.Tokens.SecurityAlgorithms;
-using SecurityTokenDescriptor = Microsoft.IdentityModel.Tokens.SecurityTokenDescriptor;
-using SigningCredentials = Microsoft.IdentityModel.Tokens.SigningCredentials;
-using SymmetricSecurityKey = Microsoft.IdentityModel.Tokens.SymmetricSecurityKey;
+using Microsoft.IdentityModel.Tokens;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     /// <summary>
     /// GenerateJwtToken class, build and creates the Jwt Token for the received parameters
     /// </summary>
-    public class JwtTokenGenerator
+    public class JwtHmacGenerator
     {
         private readonly string _privateKey;
         private readonly string _audience;
         private readonly string _issuer;
         private readonly double _tokenExpirationMinutes;
 
-        public JwtTokenGenerator(string privateKey, string audience, string issuer, double tokenExpirationMinutes)
+        public JwtHmacGenerator(string privateKey, string audience, string issuer, double tokenExpirationMinutes)
         {
             _privateKey = privateKey;
             _audience = audience;
@@ -36,23 +33,6 @@ namespace S3K.RealTimeOnline.Core
         /// <param name="roles">Roles</param>
         /// <returns></returns>
         public string Encode(string name, string email, string[] roles)
-        {
-            // Create the handler
-            var handler = new JwtSecurityTokenHandler();
-            // Build the token
-            var token = CreateJwtSecurityToken(name, email, roles);
-            // Return the token to Encode method
-            return handler.WriteToken(token);
-        }
-
-        /// <summary>
-        /// Build the Token body with email, name and roles.
-        /// </summary>
-        /// <param name="name">Name</param>
-        /// <param name="email">Email</param>
-        /// <param name="roles">Roles</param>
-        /// <returns></returns>
-        public JwtSecurityToken CreateJwtSecurityToken(string name, string email, string[] roles)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -75,25 +55,29 @@ namespace S3K.RealTimeOnline.Core
             }
 
             // Build the symmetric key.      
-            byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey); //GetBytes(_privateKey);
+            byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey);
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
-
+            SigningCredentials signingCredentials = new SigningCredentials(signingKey,
+                SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
+            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims);
             // Build the token descriptor
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(claims),
+                Subject = claimsIdentity,
                 Audience = _audience,
                 Issuer = _issuer,
                 Expires = DateTime.UtcNow.AddMinutes(_tokenExpirationMinutes),
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = signingCredentials
             };
-
             // Create the security handler to call    
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+
             // Create JWT token.
             JwtSecurityToken securityToken = handler.CreateJwtSecurityToken(securityTokenDescriptor);
             // Return the token to Encode function call, which in turn return to Main function.
-            return securityToken;
+
+            // Return the token to Encode method
+            return handler.WriteToken(securityToken);
         }
     }
 }

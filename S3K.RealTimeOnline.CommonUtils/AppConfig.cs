@@ -92,14 +92,17 @@ namespace S3K.RealTimeOnline.CommonUtils
 
         public static string FindValue => ConfigurationManager.AppSettings["FindValue"];
 
-        public static double TokenExpirationMinutes => double.Parse(ConfigurationManager.AppSettings["TokenExpirationMinutes"]);
+        public static double TokenExpirationMinutes =>
+            double.Parse(ConfigurationManager.AppSettings["TokenExpirationMinutes"]);
 
-        public static string PrivateKeyPath => Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"PrivateKey.xml"));
+        public static string RsaPrivateKeyXml => ConfigurationManager.AppSettings["RsaPrivateKeyXml"];
 
-        public static string PublicKeyPath => Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"PublicKey.xml"));
+        public static string RsaPublicKeyXml => ConfigurationManager.AppSettings["RsaPublicKeyXml"];
 
-        public static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
+        //public static string BinDirectory => Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 
-        public static string BinDirectory => Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath); //Path.GetDirectoryName(new UriBuilder(Assembly.GetExecutingAssembly().CodeBase).Path);
+        public static bool UseRsa => Convert.ToBoolean(ConfigurationManager.AppSettings["UseRsa"]);
+
+        public static string HmacSecretKey => ConfigurationManager.AppSettings["HmacSecretKey"];
     }
 }

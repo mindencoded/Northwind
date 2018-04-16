@@ -12,7 +12,7 @@ using S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernamePass
 using S3K.RealTimeOnline.SecurityDomain;
 using Unity;
 
-namespace S3K.RealTimeOnline.Core
+namespace S3K.RealTimeOnline.Core.Security
 {
     public class CustomAuthorizationManager : ServiceAuthorizationManager
     {
