@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace S3K.RealTimeOnline.CommonUtils
@@ -95,14 +93,6 @@ namespace S3K.RealTimeOnline.CommonUtils
         public static double TokenExpirationMinutes =>
             double.Parse(ConfigurationManager.AppSettings["TokenExpirationMinutes"]);
 
-        public static string RsaPrivateKeyXml => ConfigurationManager.AppSettings["RsaPrivateKeyXml"];
-
-        public static string RsaPublicKeyXml => ConfigurationManager.AppSettings["RsaPublicKeyXml"];
-
-        //public static string BinDirectory => Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-
         public static bool UseRsa => Convert.ToBoolean(ConfigurationManager.AppSettings["UseRsa"]);
-
-        public static string HmacSecretKey => ConfigurationManager.AppSettings["HmacSecretKey"];
     }
 }

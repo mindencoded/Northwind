@@ -8,28 +8,35 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtHmacValidator
     {
-        private readonly string _privateKey;
         private readonly string _audience;
         private readonly string _issuer;
 
-        public JwtHmacValidator(string privateKey, string audience, string issuer)
+        public JwtHmacValidator(string audience, string issuer)
         {
-            _privateKey = privateKey;
             _audience = audience;
             _issuer = issuer;
         }
 
-        public bool IsValid(string encryptedToken)
+        public bool IsValid(string symmetricKey, string encryptedToken)
         {
-            return IsValid(encryptedToken, out _);
+            return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, out _);
         }
 
-        public bool IsValid(string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        public bool IsValid(string symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        {
+            return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, out claimsPrincipal);
+        }
+
+        public bool IsValid(byte[] symmetricKey, string encryptedToken)
+        {
+            return IsValid(symmetricKey, encryptedToken, out _);
+        }
+
+        public bool IsValid(byte[] symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
         {
             claimsPrincipal = null;
             try
             {
-                byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey);
                 SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
                 var tokenValidationParameters = new TokenValidationParameters()
                 {

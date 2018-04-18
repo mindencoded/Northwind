@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Configuration;
-using System.IO;
-using System.Security.Cryptography;
 using System.Web;
 using S3K.RealTimeOnline.CommonUtils;
+using S3K.RealTimeOnline.Core.Security;
 
 namespace S3K.RealTimeOnline.WebService
 {
@@ -15,21 +13,11 @@ namespace S3K.RealTimeOnline.WebService
             {
                 if (AppConfig.UseRsa)
                 {
-                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(2048);
-                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfig.RsaPrivateKeyXml),
-                        rsa.ToXmlString(true));
-                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfig.RsaPublicKeyXml),
-                        rsa.ToXmlString(false));
+                    RsaStore.Add("Custom");
                 }
                 else
                 {
-                    string hmacSecretKey = Convert.ToBase64String(new HMACSHA256().Key);
-                    Configuration config =
-                        ConfigurationManager.OpenExeConfiguration(Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                            "Web.config"));
-                    ConfigurationManager.AppSettings.Set("HmacSecretKey", hmacSecretKey);
-                    config.Save(ConfigurationSaveMode.Modified);
-                    ConfigurationManager.RefreshSection("appSettings");
+                    HmacStore.Add("Custom");
                 }
             }
         }

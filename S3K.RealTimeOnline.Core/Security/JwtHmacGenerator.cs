@@ -7,33 +7,38 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace S3K.RealTimeOnline.Core.Security
 {
-    /// <summary>
-    /// GenerateJwtToken class, build and creates the Jwt Token for the received parameters
-    /// </summary>
     public class JwtHmacGenerator
     {
-        private readonly string _privateKey;
         private readonly string _audience;
         private readonly string _issuer;
         private readonly double _tokenExpirationMinutes;
 
-        public JwtHmacGenerator(string privateKey, string audience, string issuer, double tokenExpirationMinutes)
+        public JwtHmacGenerator(string audience, string issuer)
         {
-            _privateKey = privateKey;
+            _audience = audience;
+            _issuer = issuer;
+            _tokenExpirationMinutes = 30;
+        }
+
+        public JwtHmacGenerator(string audience, string issuer, double tokenExpirationMinutes)
+        {
             _audience = audience;
             _issuer = issuer;
             _tokenExpirationMinutes = tokenExpirationMinutes;
         }
 
-        /// <summary>
-        /// Create the token handler and build the token with claims.
-        /// </summary>
-        /// <param name="name">Name</param>
-        /// <param name="email">Email</param>
-        /// <param name="roles">Roles</param>
-        /// <returns></returns>
-        public string Encode(string name, string email, string[] roles)
+        public string Encode(string symmetricKey, string name, string email, string[] roles)
         {
+            return Encode(Encoding.UTF8.GetBytes(symmetricKey), name, email, roles);
+        }
+
+        public string Encode(byte[] symmetricKey, string name, string email, string[] roles)
+        {
+            if (symmetricKey == null)
+            {
+                throw new ArgumentNullException("symmetricKey");
+            }
+
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
@@ -54,8 +59,8 @@ namespace S3K.RealTimeOnline.Core.Security
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            // Build the symmetric key.      
-            byte[] symmetricKey = Encoding.UTF8.GetBytes(_privateKey);
+            DateTime expires = DateTime.UtcNow.AddMinutes(_tokenExpirationMinutes);
+            claims.Add(new Claim(ClaimTypes.Expiration, expires.ToString("yyyyMMddHHmmss")));
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
             SigningCredentials signingCredentials = new SigningCredentials(signingKey,
                 SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
@@ -66,8 +71,9 @@ namespace S3K.RealTimeOnline.Core.Security
                 Subject = claimsIdentity,
                 Audience = _audience,
                 Issuer = _issuer,
-                Expires = DateTime.UtcNow.AddMinutes(_tokenExpirationMinutes),
-                SigningCredentials = signingCredentials
+                Expires = expires,
+                SigningCredentials = signingCredentials,
+                NotBefore = DateTime.UtcNow
             };
             // Create the security handler to call    
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();

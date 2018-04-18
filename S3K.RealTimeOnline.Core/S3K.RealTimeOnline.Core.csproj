@@ -96,6 +96,8 @@
   <ItemGroup>
     <Compile Include="InfoMessage.cs" />
     <Compile Include="ContextHelper.cs" />
+    <Compile Include="Security\HmacStore.cs" />
+    <Compile Include="Security\RsaStore.cs" />
     <Compile Include="Security\AnonymousAuthorizationManager.cs" />
     <Compile Include="Security\CustomAuthorizationManager.cs" />
     <Compile Include="ConfigContainer.cs" />

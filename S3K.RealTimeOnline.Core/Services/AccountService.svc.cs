@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using S3K.RealTimeOnline.CommonUtils;
@@ -59,19 +60,20 @@ namespace S3K.RealTimeOnline.Core.Services
                         (UriTemplateMatch) OperationContext.Current
                             .IncomingMessageProperties["UriTemplateMatchResults"];
                     string token;
+                    string name = login.Username;
                     if (AppConfig.UseRsa)
                     {
-                        string xmlString = new FileAccessHelper(AppConfig.RsaPrivateKeyPath).Read();
-                        token = new JwtRsaGenerator(xmlString, uriTemplateMatch.BaseUri.Host,
+                        RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
+                        token = new JwtRsaGenerator(uriTemplateMatch.BaseUri.Host,
                             uriTemplateMatch.BaseUri.Host,
-                            AppConfig.TokenExpirationMinutes).Encode(login.Username, null, roles);
+                            AppConfig.TokenExpirationMinutes).Encode(rsa, name, null, roles);
                     }
                     else
                     {
-                        string hmacSecretKey = AppConfig.HmacSecretKey;
-                        token = new JwtHmacGenerator(hmacSecretKey, uriTemplateMatch.BaseUri.Host,
+                        byte[] symmetricKey = HmacStore.Get("Custom");
+                        token = new JwtHmacGenerator(uriTemplateMatch.BaseUri.Host,
                                 uriTemplateMatch.BaseUri.Host, AppConfig.TokenExpirationMinutes)
-                            .Encode(login.Username, null, roles);
+                            .Encode(symmetricKey, name, null, roles);
                     }
                     string data = DataToString(new {JWTTOKEN = token});
                     return CreateStreamResponse(data);

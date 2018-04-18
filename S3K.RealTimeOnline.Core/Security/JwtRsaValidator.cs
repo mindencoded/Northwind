@@ -8,42 +8,27 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtRsaValidator
     {
-        private readonly string _xmlString;
         private readonly string _audience;
         private readonly string _issuer;
 
-        public JwtRsaValidator(string xmlString, string audience, string issuer)
+        public JwtRsaValidator(string audience, string issuer)
         {
-            _xmlString = xmlString;
             _audience = audience;
             _issuer = issuer;
         }
 
-        public bool IsValid(string tokenString, string keyContainerName = null)
+        public bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString)
         {
-            return IsValid(tokenString, out _, keyContainerName);
+            return IsValid(rsaCryptoServiceProvider, tokenString, out _);
         }
 
-        public bool IsValid(string tokenString, out ClaimsPrincipal claimsPrincipal, string keyContainerName = null)
+        public bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString,
+            out ClaimsPrincipal claimsPrincipal)
         {
             claimsPrincipal = null;
             try
             {
-                RSACryptoServiceProvider
-                    cryptoServiceProvider;
-                if (keyContainerName != null)
-                {
-                    cryptoServiceProvider = new RSACryptoServiceProvider(2048, new CspParameters
-                    {
-                        KeyContainerName = keyContainerName
-                    });
-                }
-                else
-                {
-                    cryptoServiceProvider = new RSACryptoServiceProvider(2048);
-                }
-                cryptoServiceProvider.FromXmlString(_xmlString);
-                RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(cryptoServiceProvider);
+                RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(rsaCryptoServiceProvider);
                 TokenValidationParameters validationParameters = new TokenValidationParameters
                 {
                     ValidIssuer = _issuer,

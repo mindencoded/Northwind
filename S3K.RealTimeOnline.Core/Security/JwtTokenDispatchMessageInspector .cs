@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
@@ -31,26 +33,38 @@ namespace S3K.RealTimeOnline.Core.Security
                     bool isValid;
                     if (AppConfig.UseRsa)
                     {
-                        string xmlString = new FileAccessHelper(AppConfig.RsaPrivateKeyPath).Read();
+                        RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
                         isValid =
-                            new JwtRsaValidator(xmlString, uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host)
-                                .IsValid(encryptedToken, out claimsPrincipal);
+                            new JwtRsaValidator(uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host)
+                                .IsValid(rsa, encryptedToken, out claimsPrincipal);
                     }
                     else
                     {
-                        string hmacSecretKey = AppConfig.HmacSecretKey;
-                        isValid = new JwtHmacValidator(hmacSecretKey, uriTemplateMatch.BaseUri.Host,
-                            uriTemplateMatch.BaseUri.Host).IsValid(encryptedToken, out claimsPrincipal);
+                        byte[] symmetricKey = HmacStore.Get("Custom");
+                        isValid = new JwtHmacValidator(uriTemplateMatch.BaseUri.Host,
+                                uriTemplateMatch.BaseUri.Host)
+                            .IsValid(symmetricKey, encryptedToken, out claimsPrincipal);
                     }
 
                     if (isValid)
                     {
-                        Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-                        if (nameClaim != null)
+                        Claim expirationClaim =
+                            claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Expiration);
+                        if (expirationClaim != null)
                         {
-                            string[] roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role)
-                                .Select(c => c.Value).ToArray();
-                            principal = new CustomPrincipal(new GenericIdentity(nameClaim.Value), roles);
+                            DateTime expires = DateTime.ParseExact(expirationClaim.Value, "yyyyMMddHHmmss",
+                                CultureInfo.InvariantCulture);
+                            isValid = DateTime.Compare(expires, DateTime.Now) > 0;
+                            if (isValid)
+                            {
+                                Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                                if (nameClaim != null)
+                                {
+                                    string[] roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role)
+                                        .Select(c => c.Value).ToArray();
+                                    principal = new CustomPrincipal(new GenericIdentity(nameClaim.Value), roles);
+                                }
+                            }
                         }
                     }
                 }
