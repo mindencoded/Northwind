@@ -9,26 +9,21 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("INVENTORY_TRANSACTION")]
     public class InventoryTransaction : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [ForeignKey("InventoryTransactionType")]
         [Column("TYPE_ID")]
         public byte? TypeId { get; set; }
 
-        [Column("TRANSACTION_CREATED_DATE")]
-        public DateTime? TransactionCreatedDate { get; set; }
+        [Column("TRANSACTION_CREATED_DATE")] public DateTime? TransactionCreatedDate { get; set; }
 
-        [Column("TRANSACTION_MODIFIED_DATE")]
-        public DateTime? TransactionModifiedDate { get; set; }
+        [Column("TRANSACTION_MODIFIED_DATE")] public DateTime? TransactionModifiedDate { get; set; }
 
         [ForeignKey("Product")]
         [Column("PRODUCT_ID")]
         public int? ProductId { get; set; }
 
-        [Column("QUANTITY")]
-        public int Quantity { get; set; }
+        [Column("QUANTITY")] public int Quantity { get; set; }
 
         [ForeignKey("PurchaseOrder")]
         [Column("PURCHASE_ORDER_ID")]

@@ -33,6 +33,7 @@ namespace S3K.RealTimeOnline.Core.Security
                 Thread.CurrentPrincipal = principal;
                 return true;
             }
+
             throw new WebFaultException(HttpStatusCode.Unauthorized);
         }
     }

@@ -26,6 +26,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 return null;
             }
+
             return Store[key];
         }
 

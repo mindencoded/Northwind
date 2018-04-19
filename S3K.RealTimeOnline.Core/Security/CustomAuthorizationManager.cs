@@ -7,6 +7,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
+using S3K.RealTimeOnline.CommonUtils;
 using S3K.RealTimeOnline.GenericDataAccess.Tools;
 using S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsernamePassword;
 using S3K.RealTimeOnline.SecurityDomain;
@@ -49,7 +50,7 @@ namespace S3K.RealTimeOnline.Core.Security
                             new FindUserByUsernamePasswordQuery
                             {
                                 Username = credentials[0],
-                                Password = credentials[1]
+                                Password = Md5Hash.Create(credentials[1])
                             };
                         IQueryHandler<FindUserByUsernamePasswordQuery, User> handler =
                             _container.Resolve<IQueryHandler<FindUserByUsernamePasswordQuery, User>>();
@@ -78,6 +79,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 operationContext.IncomingMessageProperties.Add("Principal", principal);
             }
+
             return true;
         }
     }

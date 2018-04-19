@@ -8,21 +8,12 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtRsaValidator
     {
-        private readonly string _audience;
-        private readonly string _issuer;
-
-        public JwtRsaValidator(string audience, string issuer)
-        {
-            _audience = audience;
-            _issuer = issuer;
-        }
-
-        public bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString)
+        public static bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString)
         {
             return IsValid(rsaCryptoServiceProvider, tokenString, out _);
         }
 
-        public bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString,
+        public static bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString,
             out ClaimsPrincipal claimsPrincipal)
         {
             claimsPrincipal = null;
@@ -31,8 +22,6 @@ namespace S3K.RealTimeOnline.Core.Security
                 RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(rsaCryptoServiceProvider);
                 TokenValidationParameters validationParameters = new TokenValidationParameters
                 {
-                    ValidIssuer = _issuer,
-                    ValidAudience = _audience,
                     IssuerSigningKey = rsaSecurityKey
                 };
                 JwtSecurityTokenHandler securityTokenHandler = new JwtSecurityTokenHandler();

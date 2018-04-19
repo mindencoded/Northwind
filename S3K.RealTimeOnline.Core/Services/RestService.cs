@@ -128,6 +128,7 @@ namespace S3K.RealTimeOnline.Core.Services
             {
                 s.Serialize(sw, data);
             }
+
             return sb.ToString();
         }
 
@@ -240,6 +241,7 @@ namespace S3K.RealTimeOnline.Core.Services
                 KeyValuePair<string, object> keyValuePair = new KeyValuePair<string, object>(name, value);
                 keyValuePairs.Add(keyValuePair);
             }
+
             expandoObject = keyValuePairs as ExpandoObject;
             return expandoObject;
         }

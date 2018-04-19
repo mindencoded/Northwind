@@ -6,8 +6,7 @@ namespace S3K.RealTimeOnline.Dtos
     [DataContract]
     public class UserDto : SerializableDynamicObject
     {
-        [DataMember]
-        public int Id { get; set; }
+        [DataMember] public int Id { get; set; }
 
         [DataMember]
         [MaxLength(50)]
@@ -21,11 +20,8 @@ namespace S3K.RealTimeOnline.Dtos
 
         public string Password { get; set; }
 
-        [DataMember]
-        [Required]
-        public byte? UserTypeId { get; set; }
+        [DataMember] [Required] public byte? UserTypeId { get; set; }
 
-        [DataMember]
-        public int? ExternalUserId { get; set; }
+        [DataMember] public int? ExternalUserId { get; set; }
     }
 }

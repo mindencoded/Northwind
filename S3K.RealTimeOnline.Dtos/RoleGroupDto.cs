@@ -6,8 +6,7 @@ namespace S3K.RealTimeOnline.Dtos
     [DataContract]
     public class RoleGroupDto : SerializableDynamicObject
     {
-        [DataMember]
-        public int Id { get; set; }
+        [DataMember] public int Id { get; set; }
 
         [DataMember]
         [StringLength(50)]

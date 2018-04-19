@@ -53,9 +53,11 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.SelectRolesByUserN
                             Role role = roleRepository.Select(parameters).FirstOrDefault();
                             roles.Add(role);
                         }
+
                         return roles;
                     }
                 }
+
                 return roles;
             }
         }

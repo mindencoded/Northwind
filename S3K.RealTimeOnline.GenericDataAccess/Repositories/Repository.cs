@@ -1769,6 +1769,7 @@ namespace S3K.RealTimeOnline.GenericDataAccess.Repositories
 
                     sqlParameterList.Add(sqlParameter);
                 }
+
                 count++;
             }
 

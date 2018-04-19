@@ -9,30 +9,14 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtHmacGenerator
     {
-        private readonly string _audience;
-        private readonly string _issuer;
-        private readonly double _tokenExpirationMinutes;
-
-        public JwtHmacGenerator(string audience, string issuer)
+        public static string Encode(string symmetricKey, string name, string email, string[] roles,
+            double tokenExpirationMinutes = 30)
         {
-            _audience = audience;
-            _issuer = issuer;
-            _tokenExpirationMinutes = 30;
+            return Encode(Encoding.UTF8.GetBytes(symmetricKey), name, email, roles, tokenExpirationMinutes);
         }
 
-        public JwtHmacGenerator(string audience, string issuer, double tokenExpirationMinutes)
-        {
-            _audience = audience;
-            _issuer = issuer;
-            _tokenExpirationMinutes = tokenExpirationMinutes;
-        }
-
-        public string Encode(string symmetricKey, string name, string email, string[] roles)
-        {
-            return Encode(Encoding.UTF8.GetBytes(symmetricKey), name, email, roles);
-        }
-
-        public string Encode(byte[] symmetricKey, string name, string email, string[] roles)
+        public static string Encode(byte[] symmetricKey, string name, string email, string[] roles,
+            double tokenExpirationMinutes = 30)
         {
             if (symmetricKey == null)
             {
@@ -59,7 +43,7 @@ namespace S3K.RealTimeOnline.Core.Security
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            DateTime expires = DateTime.UtcNow.AddMinutes(_tokenExpirationMinutes);
+            DateTime expires = DateTime.UtcNow.AddMinutes(tokenExpirationMinutes);
             claims.Add(new Claim(ClaimTypes.Expiration, expires.ToString("yyyyMMddHHmmss")));
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
             SigningCredentials signingCredentials = new SigningCredentials(signingKey,
@@ -69,8 +53,6 @@ namespace S3K.RealTimeOnline.Core.Security
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
-                Audience = _audience,
-                Issuer = _issuer,
                 Expires = expires,
                 SigningCredentials = signingCredentials,
                 NotBefore = DateTime.UtcNow

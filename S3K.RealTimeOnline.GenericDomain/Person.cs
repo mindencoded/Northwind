@@ -5,13 +5,9 @@ namespace S3K.RealTimeOnline.GenericDomain
 {
     public class Person : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
-        [Column("COMPANY")]
-        [StringLength(50)]
-        public string Company { get; set; }
+        [Column("COMPANY")] [StringLength(50)] public string Company { get; set; }
 
         [Column("LAST_NAME")]
         [StringLength(50)]
@@ -50,9 +46,7 @@ namespace S3K.RealTimeOnline.GenericDomain
         [StringLength(250)]
         public string Address { get; set; }
 
-        [Column("CITY")]
-        [StringLength(50)]
-        public string City { get; set; }
+        [Column("CITY")] [StringLength(50)] public string City { get; set; }
 
         [Column("STATE_PROVINCE")]
         [StringLength(50)]
@@ -70,11 +64,8 @@ namespace S3K.RealTimeOnline.GenericDomain
         [StringLength(250)]
         public string WebPage { get; set; }
 
-        [Column("NOTES")]
-        [StringLength(250)]
-        public string Notes { get; set; }
+        [Column("NOTES")] [StringLength(250)] public string Notes { get; set; }
 
-        [Column("ATTACHMENTS")]
-        public byte[] Attachments { get; set; }
+        [Column("ATTACHMENTS")] public byte[] Attachments { get; set; }
     }
 }

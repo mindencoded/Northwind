@@ -16,7 +16,6 @@ namespace S3K.RealTimeOnline.Dtos
         [MaxLength(32)]
         public string Password { get; set; }
 
-        [DataMember]
-        public bool RememberMe { get; set; }
+        [DataMember] public bool RememberMe { get; set; }
     }
 }

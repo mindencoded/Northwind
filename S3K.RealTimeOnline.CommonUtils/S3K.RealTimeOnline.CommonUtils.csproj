@@ -48,6 +48,7 @@
     <Compile Include="DynamicExtensions.cs" />
     <Compile Include="ExceptionManager.cs" />
     <Compile Include="FileAccessHelper.cs" />
+    <Compile Include="MD5Hash.cs" />
     <Compile Include="ObjectToDictionaryHelper.cs" />
     <Compile Include="OrderBy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -67,6 +67,7 @@ namespace S3K.RealTimeOnline.SecurityDataAccess.QueryHandlers.FindUserByUsername
                         user.RoleDetails = roleDetails;
                     }
                 }
+
                 return user;
             }
         }

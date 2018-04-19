@@ -36,6 +36,7 @@ namespace S3K.RealTimeOnline.CommonUtils
                             itemList.Add(item);
                         }
                     }
+
                     expandoDic.Add(kvp.Key, itemList);
                 }
                 else
@@ -43,7 +44,6 @@ namespace S3K.RealTimeOnline.CommonUtils
                     expandoDic.Add(kvp);
                 }
             }
-
             return expando;
         }
 
@@ -58,7 +58,6 @@ namespace S3K.RealTimeOnline.CommonUtils
                     break;
                 }
             }
-
             return key;
             //return dictionary.FirstOrDefault(x => x.Value.Equals(value)).Key;
         }

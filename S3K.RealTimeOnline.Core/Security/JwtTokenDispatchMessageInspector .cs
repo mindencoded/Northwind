@@ -20,8 +20,6 @@ namespace S3K.RealTimeOnline.Core.Security
                 : null;
             IPrincipal principal = value as IPrincipal;
             if (principal != null) return null;
-            UriTemplateMatch uriTemplateMatch =
-                (UriTemplateMatch) OperationContext.Current.IncomingMessageProperties["UriTemplateMatchResults"];
             if (ContextHelper.GetRoleName(OperationContext.Current) != null)
             {
                 HttpRequestMessageProperty httpRequest = (HttpRequestMessageProperty)
@@ -34,16 +32,12 @@ namespace S3K.RealTimeOnline.Core.Security
                     if (AppConfig.UseRsa)
                     {
                         RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
-                        isValid =
-                            new JwtRsaValidator(uriTemplateMatch.BaseUri.Host, uriTemplateMatch.BaseUri.Host)
-                                .IsValid(rsa, encryptedToken, out claimsPrincipal);
+                        isValid = JwtRsaValidator.IsValid(rsa, encryptedToken, out claimsPrincipal);
                     }
                     else
                     {
                         byte[] symmetricKey = HmacStore.Get("Custom");
-                        isValid = new JwtHmacValidator(uriTemplateMatch.BaseUri.Host,
-                                uriTemplateMatch.BaseUri.Host)
-                            .IsValid(symmetricKey, encryptedToken, out claimsPrincipal);
+                        isValid = JwtHmacValidator.IsValid(symmetricKey, encryptedToken, out claimsPrincipal);
                     }
 
                     if (isValid)
@@ -78,6 +72,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 OperationContext.Current.IncomingMessageProperties.Add("Principal", principal);
             }
+
             return null;
         }
 

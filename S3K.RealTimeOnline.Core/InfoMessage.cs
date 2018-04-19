@@ -10,7 +10,6 @@ namespace S3K.RealTimeOnline.Core
             Message = message;
         }
 
-        [DataMember]
-        public string Message { get; set; }
+        [DataMember] public string Message { get; set; }
     }
 }

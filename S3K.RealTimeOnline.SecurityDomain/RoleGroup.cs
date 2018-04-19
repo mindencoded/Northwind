@@ -8,9 +8,7 @@ namespace S3K.RealTimeOnline.SecurityDomain
     [Table("ROLE_GROUP")]
     public class RoleGroup : Entity
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [Column("NAME")]
         [StringLength(50)]

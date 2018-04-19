@@ -32,10 +32,12 @@ namespace S3K.RealTimeOnline.CommonUtils
                         resultList.Add(sslFlag);
                     }
                 }
+
                 if (!sslFlags.Any())
                 {
                     resultList.Add(SslFlag.None);
                 }
+
                 return resultList.ToArray();
             }
         }
@@ -52,6 +54,7 @@ namespace S3K.RealTimeOnline.CommonUtils
                         return storeLocation;
                     }
                 }
+
                 return StoreLocation.LocalMachine;
             }
         }
@@ -68,6 +71,7 @@ namespace S3K.RealTimeOnline.CommonUtils
                         return storeName;
                     }
                 }
+
                 return StoreName.My;
             }
         }
@@ -84,6 +88,7 @@ namespace S3K.RealTimeOnline.CommonUtils
                         return x509FindType;
                     }
                 }
+
                 return X509FindType.FindBySubjectName;
             }
         }

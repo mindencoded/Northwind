@@ -56,6 +56,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 throw new Exception("RSACryptoServiceProvider not found.");
             }
+
             return rsa;
         }
 
@@ -66,6 +67,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 throw new Exception("RSACryptoServiceProvider not found.");
             }
+
             rsa.Clear();
             string rsaPrivateKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                 keyContainerName.ToLower().Replace("-", "_") + "-rsa-private-key.xml");
@@ -81,6 +83,7 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 throw new Exception("RSACryptoServiceProvider not found.");
             }
+
             rsa.Clear();
         }
 
@@ -91,11 +94,13 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 throw new Exception("RSACryptoServiceProvider not found.");
             }
+
             rsa.Clear();
             if (rsa.PersistKeyInCsp)
             {
                 rsa.PersistKeyInCsp = false;
             }
+
             Store.Remove(rsa);
         }
     }

@@ -13,9 +13,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
             Discontinued = false;
         }
 
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
+        [Key] [Column("ID")] public int Id { get; set; }
 
         [MaxLength(25)]
         [Required(AllowEmptyStrings = false)]
@@ -39,27 +37,21 @@ namespace S3K.RealTimeOnline.BusinessDomain
         [RegularExpression(@"^\d+\.\d{0,4}$")]
         public decimal Price { get; set; }
 
-        [Column("REORDER_LEVEL")]
-        public int? ReorderLevel { get; set; }
+        [Column("REORDER_LEVEL")] public int? ReorderLevel { get; set; }
 
-        [Column("TARGET_LEVEL")]
-        public int? TargetLevel { get; set; }
+        [Column("TARGET_LEVEL")] public int? TargetLevel { get; set; }
 
         [MaxLength(50)]
         [Column("QUANTITY_PER_UNIT")]
         public string QuantityPerUnit { get; set; }
 
-        [Column("MINIMUM_REORDER_QUANTITY")]
-        public int? MinimumReorderQuantity { get; set; }
+        [Column("MINIMUM_REORDER_QUANTITY")] public int? MinimumReorderQuantity { get; set; }
 
-        [Column("DISCONTINUED")]
-        public bool Discontinued { get; set; }
+        [Column("DISCONTINUED")] public bool Discontinued { get; set; }
 
-        [Column("CATEGORY_ID")]
-        public int? CategoryId { get; set; }
+        [Column("CATEGORY_ID")] public int? CategoryId { get; set; }
 
-        [Column("ATTACHMENTS")]
-        public byte[] Attachments { get; set; }
+        [Column("ATTACHMENTS")] public byte[] Attachments { get; set; }
 
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
 

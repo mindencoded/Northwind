@@ -8,9 +8,7 @@ namespace S3K.RealTimeOnline.BusinessDomain
     [Table("PURCHASE_ORDER_STATUS")]
     public class PurchaseOrderStatus : Entity
     {
-        [Key]
-        [Column("ID")]
-        public byte Id { get; set; }
+        [Key] [Column("ID")] public byte Id { get; set; }
 
         [Column("STATUS_NAME")]
         [StringLength(50)]

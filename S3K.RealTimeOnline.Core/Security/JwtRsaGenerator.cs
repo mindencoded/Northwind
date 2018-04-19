@@ -9,25 +9,8 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtRsaGenerator
     {
-        private readonly string _audience;
-        private readonly string _issuer;
-        private readonly double _tokenExpirationMinutes;
-
-        public JwtRsaGenerator(string audience, string issuer)
-        {
-            _audience = audience;
-            _issuer = issuer;
-            _tokenExpirationMinutes = 30;
-        }
-
-        public JwtRsaGenerator(string audience, string issuer, double tokenExpirationMinutes)
-        {
-            _audience = audience;
-            _issuer = issuer;
-            _tokenExpirationMinutes = tokenExpirationMinutes;
-        }
-
-        public string Encode(RSACryptoServiceProvider cryptoServiceProvider, string name, string email, string[] roles)
+        public static string Encode(RSACryptoServiceProvider cryptoServiceProvider, string name, string email,
+            string[] roles, double tokenExpirationMinutes = 30)
         {
             IList<Claim> claims = new List<Claim>
             {
@@ -44,12 +27,10 @@ namespace S3K.RealTimeOnline.Core.Security
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            DateTime expires = DateTime.UtcNow.AddMinutes(_tokenExpirationMinutes);
+            DateTime expires = DateTime.UtcNow.AddMinutes(tokenExpirationMinutes);
             claims.Add(new Claim(ClaimTypes.Expiration, expires.ToString("yyyyMMddHHmmss")));
             JwtSecurityToken securityToken = new JwtSecurityToken
             (
-                audience: _audience,
-                issuer: _issuer,
                 claims: claims,
                 signingCredentials: new SigningCredentials(new RsaSecurityKey(cryptoServiceProvider),
                     SecurityAlgorithms.RsaSha256Signature),

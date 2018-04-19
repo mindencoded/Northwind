@@ -39,7 +39,7 @@ namespace S3K.RealTimeOnline.Core.Services
                     new VerifyUsernamePasswordQuery
                     {
                         Username = login.Username,
-                        Password = login.Password
+                        Password = Md5Hash.Create(login.Password)
                     };
 
                 IQueryHandler<VerifyUsernamePasswordQuery, bool> verifyUsernamePasswordQueryHandler =
@@ -55,29 +55,24 @@ namespace S3K.RealTimeOnline.Core.Services
                         Container.Resolve<IQueryHandler<SelectRolesByUserNameQuery, IEnumerable<Role>>>();
                     string[] roles = selectRolesByUserNameQueryHandler.Handle(selectRolesByUserNameQuery)
                         .Select(r => r.Name).ToArray();
-
-                    UriTemplateMatch uriTemplateMatch =
-                        (UriTemplateMatch) OperationContext.Current
-                            .IncomingMessageProperties["UriTemplateMatchResults"];
                     string token;
                     string name = login.Username;
                     if (AppConfig.UseRsa)
                     {
                         RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
-                        token = new JwtRsaGenerator(uriTemplateMatch.BaseUri.Host,
-                            uriTemplateMatch.BaseUri.Host,
-                            AppConfig.TokenExpirationMinutes).Encode(rsa, name, null, roles);
+                        token = JwtRsaGenerator.Encode(rsa, name, null, roles, AppConfig.TokenExpirationMinutes);
                     }
                     else
                     {
                         byte[] symmetricKey = HmacStore.Get("Custom");
-                        token = new JwtHmacGenerator(uriTemplateMatch.BaseUri.Host,
-                                uriTemplateMatch.BaseUri.Host, AppConfig.TokenExpirationMinutes)
-                            .Encode(symmetricKey, name, null, roles);
+                        token = JwtHmacGenerator.Encode(symmetricKey, name, null, roles,
+                            AppConfig.TokenExpirationMinutes);
                     }
+
                     string data = DataToString(new {JWTTOKEN = token});
                     return CreateStreamResponse(data);
                 }
+
                 throw new WebFaultException(HttpStatusCode.Unauthorized);
             }
             catch (Exception ex)

@@ -8,31 +8,22 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtHmacValidator
     {
-        private readonly string _audience;
-        private readonly string _issuer;
-
-        public JwtHmacValidator(string audience, string issuer)
-        {
-            _audience = audience;
-            _issuer = issuer;
-        }
-
-        public bool IsValid(string symmetricKey, string encryptedToken)
+        public static bool IsValid(string symmetricKey, string encryptedToken)
         {
             return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, out _);
         }
 
-        public bool IsValid(string symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        public static bool IsValid(string symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
         {
             return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, out claimsPrincipal);
         }
 
-        public bool IsValid(byte[] symmetricKey, string encryptedToken)
+        public static bool IsValid(byte[] symmetricKey, string encryptedToken)
         {
             return IsValid(symmetricKey, encryptedToken, out _);
         }
 
-        public bool IsValid(byte[] symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        public static bool IsValid(byte[] symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
         {
             claimsPrincipal = null;
             try
@@ -40,14 +31,6 @@ namespace S3K.RealTimeOnline.Core.Security
                 SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
                 var tokenValidationParameters = new TokenValidationParameters()
                 {
-                    ValidAudiences = new[]
-                    {
-                        _audience
-                    },
-                    ValidIssuers = new[]
-                    {
-                        _issuer
-                    },
                     IssuerSigningKey = signingKey,
                 };
                 JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
