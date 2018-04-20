@@ -9,13 +9,16 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtHmacGenerator
     {
-        public static string Encode(string symmetricKey, string name, string email, string[] roles,
+        public static string Encode(string symmetricKey, string name, string email, string[] roles, string audience,
+            string issuer,
             double tokenExpirationMinutes = 30)
         {
-            return Encode(Encoding.UTF8.GetBytes(symmetricKey), name, email, roles, tokenExpirationMinutes);
+            return Encode(Encoding.UTF8.GetBytes(symmetricKey), name, email, roles, audience, issuer,
+                tokenExpirationMinutes);
         }
 
-        public static string Encode(byte[] symmetricKey, string name, string email, string[] roles,
+        public static string Encode(byte[] symmetricKey, string name, string email, string[] roles, string audience,
+            string issuer,
             double tokenExpirationMinutes = 30)
         {
             if (symmetricKey == null)
@@ -52,6 +55,8 @@ namespace S3K.RealTimeOnline.Core.Security
             // Build the token descriptor
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
+                Audience = audience,
+                Issuer = issuer,
                 Subject = claimsIdentity,
                 Expires = expires,
                 SigningCredentials = signingCredentials,

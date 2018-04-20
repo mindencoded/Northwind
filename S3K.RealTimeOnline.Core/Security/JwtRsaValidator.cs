@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -8,12 +9,14 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtRsaValidator
     {
-        public static bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString)
+        public static bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString,
+            string validAudience, string validIssuer)
         {
-            return IsValid(rsaCryptoServiceProvider, tokenString, out _);
+            return IsValid(rsaCryptoServiceProvider, tokenString, validAudience, validIssuer, out _);
         }
 
         public static bool IsValid(RSACryptoServiceProvider rsaCryptoServiceProvider, string tokenString,
+            string validAudience, string validIssuer,
             out ClaimsPrincipal claimsPrincipal)
         {
             claimsPrincipal = null;
@@ -22,6 +25,8 @@ namespace S3K.RealTimeOnline.Core.Security
                 RsaSecurityKey rsaSecurityKey = new RsaSecurityKey(rsaCryptoServiceProvider);
                 TokenValidationParameters validationParameters = new TokenValidationParameters
                 {
+                    ValidAudience = validAudience,
+                    ValidIssuer = validIssuer,
                     IssuerSigningKey = rsaSecurityKey
                 };
                 JwtSecurityTokenHandler securityTokenHandler = new JwtSecurityTokenHandler();
@@ -30,8 +35,9 @@ namespace S3K.RealTimeOnline.Core.Security
                     securityTokenHandler.ValidateToken(tokenString, validationParameters, out securityToken);
                 return securityToken != null;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex.Message);
                 return false;
             }
         }

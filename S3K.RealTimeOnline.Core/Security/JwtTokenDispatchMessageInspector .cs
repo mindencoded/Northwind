@@ -15,6 +15,9 @@ namespace S3K.RealTimeOnline.Core.Security
     {
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
+            UriTemplateMatch uriTemplateMatch =
+                (UriTemplateMatch) OperationContext.Current.IncomingMessageProperties["UriTemplateMatchResults"];
+            string host = uriTemplateMatch.BaseUri.Host;
             object value = OperationContext.Current.IncomingMessageProperties.TryGetValue("Principal", out value)
                 ? value
                 : null;
@@ -32,12 +35,13 @@ namespace S3K.RealTimeOnline.Core.Security
                     if (AppConfig.UseRsa)
                     {
                         RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
-                        isValid = JwtRsaValidator.IsValid(rsa, encryptedToken, out claimsPrincipal);
+                        isValid = JwtRsaValidator.IsValid(rsa, encryptedToken, host, host, out claimsPrincipal);
                     }
                     else
                     {
                         byte[] symmetricKey = HmacStore.Get("Custom");
-                        isValid = JwtHmacValidator.IsValid(symmetricKey, encryptedToken, out claimsPrincipal);
+                        isValid = JwtHmacValidator.IsValid(symmetricKey, encryptedToken, host, host,
+                            out claimsPrincipal);
                     }
 
                     if (isValid)

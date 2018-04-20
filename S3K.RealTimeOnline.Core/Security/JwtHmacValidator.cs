@@ -8,22 +8,25 @@ namespace S3K.RealTimeOnline.Core.Security
 {
     public class JwtHmacValidator
     {
-        public static bool IsValid(string symmetricKey, string encryptedToken)
+        public static bool IsValid(string symmetricKey, string encryptedToken, string validAudience, string validIssuer)
         {
-            return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, out _);
+            return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, validAudience, validIssuer, out _);
         }
 
-        public static bool IsValid(string symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        public static bool IsValid(string symmetricKey, string encryptedToken, string validAudience, string validIssuer,
+            out ClaimsPrincipal claimsPrincipal)
         {
-            return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, out claimsPrincipal);
+            return IsValid(Encoding.UTF8.GetBytes(symmetricKey), encryptedToken, validAudience, validIssuer,
+                out claimsPrincipal);
         }
 
-        public static bool IsValid(byte[] symmetricKey, string encryptedToken)
+        public static bool IsValid(byte[] symmetricKey, string encryptedToken, string validAudience, string validIssuer)
         {
-            return IsValid(symmetricKey, encryptedToken, out _);
+            return IsValid(symmetricKey, encryptedToken, validAudience, validIssuer, out _);
         }
 
-        public static bool IsValid(byte[] symmetricKey, string encryptedToken, out ClaimsPrincipal claimsPrincipal)
+        public static bool IsValid(byte[] symmetricKey, string encryptedToken, string validAudience, string validIssuer,
+            out ClaimsPrincipal claimsPrincipal)
         {
             claimsPrincipal = null;
             try
@@ -31,7 +34,9 @@ namespace S3K.RealTimeOnline.Core.Security
                 SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
                 var tokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = signingKey,
+                    ValidAudience = validAudience,
+                    ValidIssuer = validIssuer,
+                    IssuerSigningKey = signingKey
                 };
                 JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
                 SecurityToken securityToken;

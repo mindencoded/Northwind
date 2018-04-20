@@ -35,11 +35,16 @@ namespace S3K.RealTimeOnline.Core.Services
         {
             try
             {
+                UriTemplateMatch uriTemplateMatch =
+                    (UriTemplateMatch) OperationContext.Current.IncomingMessageProperties["UriTemplateMatchResults"];
+                string host = uriTemplateMatch.BaseUri.Host;
+                string username = login.Username;
+                string password = Md5Hash.Create(login.Password);
                 VerifyUsernamePasswordQuery verifyUsernamePasswordQuery =
                     new VerifyUsernamePasswordQuery
                     {
-                        Username = login.Username,
-                        Password = Md5Hash.Create(login.Password)
+                        Username = username,
+                        Password = password
                     };
 
                 IQueryHandler<VerifyUsernamePasswordQuery, bool> verifyUsernamePasswordQueryHandler =
@@ -49,23 +54,23 @@ namespace S3K.RealTimeOnline.Core.Services
                 {
                     SelectRolesByUserNameQuery selectRolesByUserNameQuery = new SelectRolesByUserNameQuery
                     {
-                        Username = login.Username
+                        Username = username
                     };
                     IQueryHandler<SelectRolesByUserNameQuery, IEnumerable<Role>> selectRolesByUserNameQueryHandler =
                         Container.Resolve<IQueryHandler<SelectRolesByUserNameQuery, IEnumerable<Role>>>();
                     string[] roles = selectRolesByUserNameQueryHandler.Handle(selectRolesByUserNameQuery)
                         .Select(r => r.Name).ToArray();
                     string token;
-                    string name = login.Username;
                     if (AppConfig.UseRsa)
                     {
                         RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
-                        token = JwtRsaGenerator.Encode(rsa, name, null, roles, AppConfig.TokenExpirationMinutes);
+                        token = JwtRsaGenerator.Encode(rsa, username, null, roles, host, host,
+                            AppConfig.TokenExpirationMinutes);
                     }
                     else
                     {
                         byte[] symmetricKey = HmacStore.Get("Custom");
-                        token = JwtHmacGenerator.Encode(symmetricKey, name, null, roles,
+                        token = JwtHmacGenerator.Encode(symmetricKey, username, null, roles, host, host,
                             AppConfig.TokenExpirationMinutes);
                     }
 

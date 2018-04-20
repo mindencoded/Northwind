@@ -30,7 +30,7 @@ namespace S3K.RealTimeOnline.Core.Security
                 ? value
                 : null;
             IPrincipal principal = value as IPrincipal;
-            //if (principal != null) return true;
+            if (principal != null) return true;
             if (ContextHelper.GetRoleName(operationContext) != null)
             {
                 UriTemplateMatch uriTemplateMatch =
@@ -46,11 +46,13 @@ namespace S3K.RealTimeOnline.Core.Security
 
                     if (credentials.Length == 2)
                     {
+                        string username = credentials[0];
+                        string password = Md5Hash.Create(credentials[1]);
                         FindUserByUsernamePasswordQuery query =
                             new FindUserByUsernamePasswordQuery
                             {
-                                Username = credentials[0],
-                                Password = Md5Hash.Create(credentials[1])
+                                Username = username,
+                                Password = password
                             };
                         IQueryHandler<FindUserByUsernamePasswordQuery, User> handler =
                             _container.Resolve<IQueryHandler<FindUserByUsernamePasswordQuery, User>>();
@@ -62,7 +64,6 @@ namespace S3K.RealTimeOnline.Core.Security
                         }
                     }
 
-
                     WebOperationContext webContext = new WebOperationContext(operationContext);
                     webContext.OutgoingResponse.StatusCode = HttpStatusCode.Unauthorized;
                     webContext.OutgoingResponse.Headers.Add(HttpResponseHeader.WwwAuthenticate,
@@ -73,7 +74,6 @@ namespace S3K.RealTimeOnline.Core.Security
             {
                 principal = new CustomPrincipal(new GenericIdentity("Anonymous"), new string[] { });
             }
-
 
             if (principal != null)
             {
