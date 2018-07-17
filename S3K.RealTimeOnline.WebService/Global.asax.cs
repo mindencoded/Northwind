@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
 using S3K.RealTimeOnline.CommonUtils;
-using S3K.RealTimeOnline.Core.Security;
+using S3K.RealTimeOnline.WebService.Security;
 
 namespace S3K.RealTimeOnline.WebService
 {

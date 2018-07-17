@@ -1,0 +1,1 @@
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Northwind.WebRole.Global" Language="C#" %>

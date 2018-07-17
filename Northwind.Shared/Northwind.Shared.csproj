@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Northwind.Shared</RootNamespace>
+    <AssemblyName>Northwind.Shared</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Runtime.Serialization" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AppConfig.cs" />
+    <Compile Include="AttributeExtensions.cs" />
+    <Compile Include="ColumnInfo.cs" />
+    <Compile Include="Comparison.cs" />
+    <Compile Include="ComparisonHelper.cs" />
+    <Compile Include="Condition.cs" />
+    <Compile Include="Dtos\CustomerDto.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
+    <Compile Include="DynamicExtensions.cs" />
+    <Compile Include="Dtos\EmployeeDto.cs" />
+    <Compile Include="ExceptionManager.cs" />
+    <Compile Include="FileAccessHelper.cs" />
+    <Compile Include="Dtos\InventoryTransactionDto.cs" />
+    <Compile Include="Dtos\InventoryTransactionTypeDto.cs" />
+    <Compile Include="Dtos\InvoiceDto.cs" />
+    <Compile Include="Dtos\LoginDto.cs" />
+    <Compile Include="MD5Hash.cs" />
+    <Compile Include="ObjectToDictionaryHelper.cs" />
+    <Compile Include="OrderBy.cs" />
+    <Compile Include="Dtos\OrderDetailDto.cs" />
+    <Compile Include="Dtos\OrderDetailStatusDto.cs" />
+    <Compile Include="Dtos\OrderDto.cs" />
+    <Compile Include="Dtos\OrderStatusDto.cs" />
+    <Compile Include="Dtos\OrderTaxStatusDto.cs" />
+    <Compile Include="Dtos\PersonDto.cs" />
+    <Compile Include="Dtos\ProductDto.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Dtos\PurchaseOrderDetailDto.cs" />
+    <Compile Include="Dtos\PurchaseOrderDto.cs" />
+    <Compile Include="Dtos\PurchaseOrderStatusDto.cs" />
+    <Compile Include="Dtos\RoleDetailDto.cs" />
+    <Compile Include="Dtos\RoleDto.cs" />
+    <Compile Include="Dtos\RoleGroupDto.cs" />
+    <Compile Include="SerializableDynamicMetaObject.cs" />
+    <Compile Include="SerializableDynamicObject.cs" />
+    <Compile Include="Dtos\ShipperDto.cs" />
+    <Compile Include="SslFlag.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Dtos\SupplierDto.cs" />
+    <Compile Include="TypeExtensions.cs" />
+    <Compile Include="Dtos\UserDto.cs" />
+    <Compile Include="Dtos\UserTypeDto.cs" />
+    <Compile Include="ValidationHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="connections.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

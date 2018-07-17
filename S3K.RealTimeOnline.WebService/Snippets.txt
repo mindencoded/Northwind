@@ -1,0 +1,47 @@
+﻿
+
+
+//SqlConnectionFactory.ApplicationName = "RealTimeServiceOnline";
+//SqlConnectionFactory.ConnectionTimeOut = 30;
+
+//GetSqlConnection sqlConnection = SqlConnectionFactory.GetSqlConnection();
+
+//Version version = new Version
+//{
+//    id = 17,
+//    nro = "2.3"
+//};
+
+//Console.WriteLine(sqlConnection.State);
+
+//VersionRepository repository = new VersionRepository(sqlConnection);
+
+//IEnumerable<Version> list = repository.Select(version);
+
+//foreach (Version item in list)
+//{
+//    Console.WriteLine(@"id = {0}, nro {1}", item.id, item.nro);
+//}
+
+//int count = repository.Count();
+
+//Console.WriteLine(@"Total Rows = {0}", count);
+
+//sqlConnection.Close();
+
+//Console.WriteLine(sqlConnection.State);
+
+//int lastId = repository.Insert(version);
+//Console.WriteLine();
+//Console.WriteLine(@"Last inserted id {0}", lastId);
+//Console.WriteLine();
+
+//Console.WriteLine();
+//int result = repository.Update(version);
+//Console.WriteLine(@"Update 'version' with id {0}", version.id);
+//Console.WriteLine();
+
+//Console.WriteLine();
+//int result = repository.Delete(version.id);
+//Console.WriteLine(@"Delete 'version' with id {0}", version.id);
+//Console.WriteLine();

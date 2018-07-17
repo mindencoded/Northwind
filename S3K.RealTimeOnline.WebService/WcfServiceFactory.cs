@@ -1,4 +1,3 @@
-using S3K.RealTimeOnline.Core;
 using Unity;
 using Unity.Wcf;
 
