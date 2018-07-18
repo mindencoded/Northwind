@@ -56,7 +56,6 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
-    <Folder Include="Properties" />
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
     <Folder Include="dbo\Keys" />
@@ -121,8 +120,5 @@
     <None Include="dbo\Data\PURCHASE_ORDER.sql" />
     <None Include="dbo\Data\PURCHASE_ORDER_DETAIL.sql" />
     <None Include="dbo\Data\INVOICE.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <RefactorLog Include="Northwind.BusinessDb.refactorlog" />
   </ItemGroup>
 </Project>

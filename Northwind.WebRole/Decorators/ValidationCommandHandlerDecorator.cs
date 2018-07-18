@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Northwind.Shared;
-using Northwind.WebRole.Tools;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Decorators
 {

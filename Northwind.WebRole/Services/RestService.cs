@@ -15,12 +15,11 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
-using Northwind.Shared;
 using Northwind.WebRole.Decorators;
-using Northwind.WebRole.QueryHandlers;
+using Northwind.WebRole.Queries;
 using Northwind.WebRole.Security;
-using Northwind.WebRole.Tools;
 using Northwind.WebRole.UnitOfWork;
+using Northwind.WebRole.Utils;
 using Unity;
 
 namespace Northwind.WebRole.Services

@@ -7,7 +7,7 @@ using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Dispatcher;
-using Northwind.Shared;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Security
 {

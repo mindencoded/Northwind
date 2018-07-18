@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Northwind.Shared;
-using Northwind.WebRole.CommandHandlers;
+using Northwind.WebRole.Commands;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;
-using Northwind.WebRole.QueryHandlers;
+using Northwind.WebRole.Queries;
 using Northwind.WebRole.Services;
-using Northwind.WebRole.Tools;
 using Northwind.WebRole.UnitOfWork;
+using Northwind.WebRole.Utils;
 using Unity;
 using Unity.Injection;
 using Unity.Lifetime;
@@ -59,20 +58,20 @@ namespace Northwind.WebRole
             container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
                 new InjectionConstructor(DbManager.GetSqlConnection(AppConfig.BusinessDbConnectionName)));
             IEnumerable<Assembly> currentAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-           
+
 
             foreach (Assembly assembly in currentAssemblies)
             {
                 IEnumerable<Type> types = assembly.GetTypes().Where(t => t.GetInterfaces()
-                                                                                       .Count(i => i.IsGenericType &&
-                                                                                                   (i.GetGenericTypeDefinition() ==
-                                                                                                    typeof(
-                                                                                                        ICommandHandler<
-                                                                                                        >) ||
-                                                                                                    i.GetGenericTypeDefinition() ==
-                                                                                                    typeof(IQueryHandler
-                                                                                                        <,>))) >
-                                                                                   0);
+                                                                             .Count(i => i.IsGenericType &&
+                                                                                         (i.GetGenericTypeDefinition() ==
+                                                                                          typeof(
+                                                                                              ICommandHandler<
+                                                                                              >) ||
+                                                                                          i.GetGenericTypeDefinition() ==
+                                                                                          typeof(IQueryHandler
+                                                                                              <,>))) >
+                                                                         0);
 
                 foreach (Type type in types)
                 {
@@ -118,7 +117,8 @@ namespace Northwind.WebRole
             {
                 IList<Type> domainTypes = currentAssemblies
                     .SelectMany(t => t.GetTypes())
-                    .Where(t => t.IsClass && !t.IsAbstract && t.Namespace == domainNamespaceKeyValuePair.Value && typeof(Entity).IsAssignableFrom(t)).ToList();
+                    .Where(t => t.IsClass && !t.IsAbstract && t.Namespace == domainNamespaceKeyValuePair.Value &&
+                                typeof(Entity).IsAssignableFrom(t)).ToList();
 
                 foreach (Type domainType in domainTypes)
                 {

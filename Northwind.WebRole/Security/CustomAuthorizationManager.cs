@@ -7,11 +7,9 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Web;
 using System.Text;
-using Northwind.Shared;
-using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Security;
-using Northwind.WebRole.QueryHandlers;
-using Northwind.WebRole.Tools;
+using Northwind.WebRole.Queries;
+using Northwind.WebRole.Utils;
 using Unity;
 
 namespace Northwind.WebRole.Security

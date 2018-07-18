@@ -1,5 +1,4 @@
 ﻿using System.Data.SqlClient;
-using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Business;
 using Northwind.WebRole.UnitOfWork;
 

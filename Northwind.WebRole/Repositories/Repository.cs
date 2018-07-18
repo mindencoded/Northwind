@@ -8,19 +8,18 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Northwind.Shared;
 using Northwind.WebRole.Domain;
-using Northwind.WebRole.Tools;
 using Northwind.WebRole.UnitOfWork;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        protected SqlConnection Connection;
-        protected SqlTransaction Transaction;
-        protected bool IgnoreNulls;
         private readonly IEnumerable<ColumnAttribute> _columnAttributes;
+        protected SqlConnection Connection;
+        protected bool IgnoreNulls;
+        protected SqlTransaction Transaction;
 
         public Repository(SqlConnection connection)
         {

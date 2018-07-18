@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Web;
-using Northwind.Shared;
 using Northwind.WebRole.Security;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole
 {

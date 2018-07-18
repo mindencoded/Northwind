@@ -2,7 +2,6 @@
 using System.Security.Permissions;
 using System.ServiceModel;
 using Northwind.Shared.Dtos;
-using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Business;
 using Northwind.WebRole.UnitOfWork;
 using Unity;
@@ -14,11 +13,6 @@ namespace Northwind.WebRole.Services
     {
         public PurchaseOrderCrudService(IUnityContainer container) : base(container)
         {
-        }
-
-        public static void Configure(ServiceConfiguration config)
-        {
-            WebHttpConfigure<IPurchaseOrderCrudService>(config, "");
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "PurchaseOrderCrud.Select")]
@@ -73,6 +67,11 @@ namespace Northwind.WebRole.Services
         public override Stream SelectById(string id)
         {
             return base.SelectById(id);
+        }
+
+        public static void Configure(ServiceConfiguration config)
+        {
+            WebHttpConfigure<IPurchaseOrderCrudService>(config, "");
         }
     }
 }

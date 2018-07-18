@@ -20,14 +20,14 @@ namespace Northwind.WebRole.Security
             get { return Thread.CurrentPrincipal as CustomPrincipal; }
         }
 
-        public IIdentity Identity
-        {
-            get { return _identity; }
-        }
-
         public string[] Roles
         {
             get { return _roles; }
+        }
+
+        public IIdentity Identity
+        {
+            get { return _identity; }
         }
 
         public bool IsInRole(string role)

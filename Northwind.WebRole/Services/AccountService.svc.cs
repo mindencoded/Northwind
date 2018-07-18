@@ -7,14 +7,12 @@ using System.Net;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Northwind.Shared;
 using Northwind.Shared.Dtos;
 using Northwind.WebRole.Decorators;
-using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Security;
-using Northwind.WebRole.QueryHandlers;
+using Northwind.WebRole.Queries;
 using Northwind.WebRole.Security;
-using Northwind.WebRole.Tools;
+using Northwind.WebRole.Utils;
 using Unity;
 
 namespace Northwind.WebRole.Services
@@ -23,11 +21,6 @@ namespace Northwind.WebRole.Services
     {
         public AccountService(IUnityContainer container) : base(container)
         {
-        }
-
-        public static void Configure(ServiceConfiguration config)
-        {
-            WebHttpConfigure<IAccountService>(config, "");
         }
 
         public Stream Login(LoginDto login)
@@ -85,6 +78,11 @@ namespace Northwind.WebRole.Services
                     ? HttpStatusCode.BadRequest
                     : HttpStatusCode.InternalServerError);
             }
+        }
+
+        public static void Configure(ServiceConfiguration config)
+        {
+            WebHttpConfigure<IAccountService>(config, "");
         }
     }
 }

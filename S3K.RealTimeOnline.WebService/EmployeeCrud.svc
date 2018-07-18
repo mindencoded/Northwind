@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="S3K.RealTimeOnline.Core.Services.EmployeeCrudService"  Factory="S3K.RealTimeOnline.WebService.WcfServiceFactory" %>

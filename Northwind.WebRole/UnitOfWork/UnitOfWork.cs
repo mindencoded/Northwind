@@ -3,25 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Northwind.WebRole.Domain;
 using Northwind.WebRole.Repositories;
-using Northwind.WebRole.Tools;
-using System.Diagnostics;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.UnitOfWork
 {
     public abstract class UnitOfWork : IUnitOfWork
     {
+        private static readonly TraceSource Trace = new TraceSource(typeof(UnitOfWork).Name);
         protected readonly SqlConnection Connection;
-        protected SqlTransaction Transaction;
         protected bool IsCommited;
         protected bool IsDisposed;
         protected IDictionary<Type, object> Repositories = new Dictionary<Type, object>();
-        private static readonly TraceSource Trace = new TraceSource(typeof(UnitOfWork).Name);
+        protected SqlTransaction Transaction;
 
         protected UnitOfWork(SqlConnection connection)
         {
@@ -38,13 +38,6 @@ namespace Northwind.WebRole.UnitOfWork
             }
 
             Initializer();
-        }
-
-        private void Initializer()
-        {
-            Connection.FireInfoMessageEventOnUserErrors = true;
-            Connection.InfoMessage += OnInfoMessage;
-            Connection.StateChange += OnStateChange;
         }
 
         public void Commit()
@@ -136,42 +129,6 @@ namespace Northwind.WebRole.UnitOfWork
 
             if (!Repositories.ContainsKey(repository.GetType()))
                 Repositories.Add(repository.GetType(), repository);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
-            {
-                if (disposing)
-                    if (Connection != null)
-                    {
-                        if (Transaction != null && !IsCommited)
-                            Transaction.Rollback();
-
-                        Connection.Close();
-                    }
-
-                IsDisposed = true;
-            }
-        }
-
-        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
-        {
-            foreach (SqlError err in args.Errors)
-            {
-                Trace.TraceInformation(
-                    "The {0} has received a severity {1}, state {2} error number {3}\n" +
-                    "on line {4} of procedure {5} on server {6}:\n{7}",
-                    err.Source, err.Class, err.State, err.Number, err.LineNumber,
-                    err.Procedure, err.Server, err.Message);
-            }
-        }
-
-        private void OnStateChange(object sender, StateChangeEventArgs args)
-        {
-            Trace.TraceInformation(
-                "The current Connection state has changed from {0} to {1}.",
-                args.OriginalState, args.CurrentState);
         }
 
         public virtual T ExecuteQuery<T>(string commandText, params object[] values)
@@ -548,6 +505,49 @@ namespace Northwind.WebRole.UnitOfWork
             }
 
             return (int) await command.ExecuteScalarAsync();
+        }
+
+        private void Initializer()
+        {
+            Connection.FireInfoMessageEventOnUserErrors = true;
+            Connection.InfoMessage += OnInfoMessage;
+            Connection.StateChange += OnStateChange;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                    if (Connection != null)
+                    {
+                        if (Transaction != null && !IsCommited)
+                            Transaction.Rollback();
+
+                        Connection.Close();
+                    }
+
+                IsDisposed = true;
+            }
+        }
+
+        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
+        {
+            foreach (SqlError err in args.Errors)
+            {
+                Trace.TraceInformation(
+                    "The {0} has received a severity {1}, state {2} error number {3}\n" +
+                    "on line {4} of procedure {5} on server {6}:\n{7}",
+                    err.Source, err.Class, err.State, err.Number, err.LineNumber,
+                    err.Procedure, err.Server, err.Message);
+            }
+        }
+
+        private void OnStateChange(object sender, StateChangeEventArgs args)
+        {
+            Trace.TraceInformation(
+                "The current Connection state has changed from {0} to {1}.",
+                args.OriginalState, args.CurrentState);
         }
 
         private T ExecuteCommand<T>(SqlCommand command)

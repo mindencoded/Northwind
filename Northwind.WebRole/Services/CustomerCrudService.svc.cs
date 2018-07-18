@@ -5,12 +5,12 @@ using System.Security.Permissions;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using Northwind.Shared.Dtos;
-using Northwind.WebRole.CommandHandlers;
+using Northwind.WebRole.Commands;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Business;
-using Northwind.WebRole.Tools;
 using Northwind.WebRole.UnitOfWork;
+using Northwind.WebRole.Utils;
 using Unity;
 
 namespace Northwind.WebRole.Services
@@ -19,11 +19,6 @@ namespace Northwind.WebRole.Services
     {
         public CustomerCrudService(IUnityContainer container) : base(container)
         {
-        }
-
-        public static void Configure(ServiceConfiguration config)
-        {
-            WebHttpConfigure<ICustomerCrudService>(config, "");
         }
 
         public void Move()
@@ -101,6 +96,11 @@ namespace Northwind.WebRole.Services
         public override Stream SelectById(string id)
         {
             return base.SelectById(id);
+        }
+
+        public static void Configure(ServiceConfiguration config)
+        {
+            WebHttpConfigure<ICustomerCrudService>(config, "");
         }
     }
 }

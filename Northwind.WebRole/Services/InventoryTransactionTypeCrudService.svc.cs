@@ -2,7 +2,6 @@
 using System.Security.Permissions;
 using System.ServiceModel;
 using Northwind.Shared.Dtos;
-using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Business;
 using Northwind.WebRole.UnitOfWork;
 using Unity;
@@ -15,11 +14,6 @@ namespace Northwind.WebRole.Services
     {
         public InventoryTransactionTypeCrudService(IUnityContainer container) : base(container)
         {
-        }
-
-        public static void Configure(ServiceConfiguration config)
-        {
-            WebHttpConfigure<IInventoryTransactionTypeCrudService>(config, "");
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "InventoryTransactionTypeCrud.Select")]
@@ -74,6 +68,11 @@ namespace Northwind.WebRole.Services
         public override Stream SelectById(string id)
         {
             return base.SelectById(id);
+        }
+
+        public static void Configure(ServiceConfiguration config)
+        {
+            WebHttpConfigure<IInventoryTransactionTypeCrudService>(config, "");
         }
     }
 }

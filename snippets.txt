@@ -1,3 +1,0 @@
-//if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>)) {...}  
-//if (value.IsNumericType() && int.Parse(value.ToString()) > 0){...}
-//var result = TypeDescriptor.GetConverter(value.GetType()).ConvertFrom(value.ToString());

@@ -2,7 +2,7 @@
 using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
-using Northwind.WebRole.Tools;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Decorators
 {

@@ -7,12 +7,11 @@ using System.Linq;
 using System.Net;
 using System.ServiceModel.Web;
 using System.Text.RegularExpressions;
-using Northwind.Shared;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;
-using Northwind.WebRole.QueryHandlers;
-using Northwind.WebRole.Tools;
+using Northwind.WebRole.Queries;
 using Northwind.WebRole.UnitOfWork;
+using Northwind.WebRole.Utils;
 using Unity;
 
 namespace Northwind.WebRole.Services
