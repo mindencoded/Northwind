@@ -50,7 +50,6 @@ namespace Northwind.WebRole
             return Build(new UnityContainer());
         }
 
-
         private IUnityContainer Build(IUnityContainer container)
         {
             container.RegisterType<ISecurityUnitOfWork, SecurityUnitOfWork>(new HierarchicalLifetimeManager(),

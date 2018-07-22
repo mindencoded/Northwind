@@ -1,68 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Security
 {
     public class RsaStore
     {
-        public static readonly IList<RSACryptoServiceProvider> Store = new List<RSACryptoServiceProvider>();
-
-        public static void Add(string keyContainerName, bool persistKeyInCsp = true)
+        private static readonly TraceSource Trace = new TraceSource(typeof(RsaStore).Name);
+ 
+        public static void Add(string keyContainerName)
         {
-            if (string.IsNullOrEmpty(keyContainerName))
-            {
-                throw new ArgumentNullException("keyContainerName");
-            }
-
-            RSACryptoServiceProvider rsa =
-                Store.FirstOrDefault(x => x.CspKeyContainerInfo.KeyContainerName == keyContainerName);
-
-            if (rsa != null)
-            {
-                throw new Exception("There is already a RSACryptoServiceProvider with the same container name.");
-            }
-
-
-            rsa = new RSACryptoServiceProvider(2048, new CspParameters
-            {
-                KeyContainerName = keyContainerName,
-                Flags = CspProviderFlags.UseMachineKeyStore
-            }) {PersistKeyInCsp = persistKeyInCsp};
-            Store.Add(rsa);
-        }
-
-        public static void AddAndSave(string keyContainerName)
-        {
-            Add(keyContainerName);
-            RSACryptoServiceProvider rsa = Get(keyContainerName);
+            RSACryptoServiceProvider rsa = GetServiceProvider(keyContainerName);
             string xmlStringPrivateKey = rsa.ToXmlString(true);
             string xmlStringPublicKey = rsa.ToXmlString(false);
-            string rsaPrivateKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                keyContainerName.ToLower().Replace("-", "_") + "-rsa-private-key.xml");
-            string rsaPublicKeyPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                keyContainerName.ToLower().Replace("-", "_") + "-rsa-public-key.xml");
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            string rsaPrivateKeyPath = Path.Combine(baseDirectory, keyContainerName + "-rsa-private-key.xml");
+            string rsaPublicKeyPath =  Path.Combine(baseDirectory, keyContainerName + "-rsa-public-key.xml");
             File.WriteAllText(rsaPrivateKeyPath, xmlStringPrivateKey);
             File.WriteAllText(rsaPublicKeyPath, xmlStringPublicKey);
         }
 
-        public static RSACryptoServiceProvider Get(string keyContainerName)
+        public static RSACryptoServiceProvider GetServiceProvider(string keyContainerName, bool persistKeyInCsp = true)
         {
-            RSACryptoServiceProvider rsa =
-                Store.FirstOrDefault(x => x.CspKeyContainerInfo.KeyContainerName == keyContainerName);
-            if (rsa == null)
+            RSACryptoServiceProvider rsa = null;
+            try
             {
-                throw new Exception("RSACryptoServiceProvider not found.");
-            }
+                CspParameters parameters = new CspParameters
+                {
+                    KeyContainerName = keyContainerName,
+                    Flags = CspProviderFlags.UseMachineKeyStore
+                };
+                rsa = new RSACryptoServiceProvider(2048, parameters) { PersistKeyInCsp = persistKeyInCsp };
 
+            }
+            catch (CryptographicException e)
+            {
+                Trace.TraceEvent(TraceEventType.Error, (int)TraceEventId.Error, e.Message);
+            }
             return rsa;
         }
 
         public static RSACryptoServiceProvider Load(string keyContainerName)
         {
-            RSACryptoServiceProvider rsa = Get(keyContainerName);
+            RSACryptoServiceProvider rsa = GetServiceProvider(keyContainerName);
             if (rsa == null)
             {
                 throw new Exception("RSACryptoServiceProvider not found.");
@@ -76,32 +58,16 @@ namespace Northwind.WebRole.Security
             return rsa;
         }
 
-        public static void Clear(string keyContainerName)
-        {
-            RSACryptoServiceProvider rsa = Get(keyContainerName);
-            if (rsa == null)
-            {
-                throw new Exception("RSACryptoServiceProvider not found.");
-            }
-
-            rsa.Clear();
-        }
-
         public static void Remove(string keyContainerName)
         {
-            RSACryptoServiceProvider rsa = Get(keyContainerName);
+            RSACryptoServiceProvider rsa = GetServiceProvider(keyContainerName);
             if (rsa == null)
             {
                 throw new Exception("RSACryptoServiceProvider not found.");
             }
 
             rsa.Clear();
-            if (rsa.PersistKeyInCsp)
-            {
-                rsa.PersistKeyInCsp = false;
-            }
-
-            Store.Remove(rsa);
+            rsa.PersistKeyInCsp = false;
         }
     }
 }

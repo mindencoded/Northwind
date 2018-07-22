@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Security.Permissions;
 using System.ServiceModel;
-using Northwind.Shared.Dtos;
+using Northwind.Shared;
 using Northwind.WebRole.Domain.Security;
 using Northwind.WebRole.UnitOfWork;
 using Unity;

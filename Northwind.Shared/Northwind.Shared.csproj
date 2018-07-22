@@ -39,30 +39,32 @@
     <Reference Include="System.Runtime.Serialization" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dtos\CustomerDto.cs" />
-    <Compile Include="Dtos\EmployeeDto.cs" />
-    <Compile Include="Dtos\InventoryTransactionDto.cs" />
-    <Compile Include="Dtos\InventoryTransactionTypeDto.cs" />
-    <Compile Include="Dtos\InvoiceDto.cs" />
-    <Compile Include="Dtos\LoginDto.cs" />
-    <Compile Include="Dtos\OrderDetailDto.cs" />
-    <Compile Include="Dtos\OrderDetailStatusDto.cs" />
-    <Compile Include="Dtos\OrderDto.cs" />
-    <Compile Include="Dtos\OrderStatusDto.cs" />
-    <Compile Include="Dtos\OrderTaxStatusDto.cs" />
-    <Compile Include="Dtos\PersonDto.cs" />
-    <Compile Include="Dtos\ProductDto.cs" />
+    <Compile Include="CustomerDto.cs" />
+    <Compile Include="EmployeeDto.cs" />
+    <Compile Include="InventoryTransactionDto.cs" />
+    <Compile Include="InventoryTransactionTypeDto.cs" />
+    <Compile Include="InvoiceDto.cs" />
+    <Compile Include="LoginDto.cs" />
+    <Compile Include="OrderDetailDto.cs" />
+    <Compile Include="OrderDetailStatusDto.cs" />
+    <Compile Include="OrderDto.cs" />
+    <Compile Include="OrderStatusDto.cs" />
+    <Compile Include="OrderTaxStatusDto.cs" />
+    <Compile Include="PersonDto.cs" />
+    <Compile Include="ProductDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Dtos\PurchaseOrderDetailDto.cs" />
-    <Compile Include="Dtos\PurchaseOrderDto.cs" />
-    <Compile Include="Dtos\PurchaseOrderStatusDto.cs" />
-    <Compile Include="Dtos\RoleDetailDto.cs" />
-    <Compile Include="Dtos\RoleDto.cs" />
-    <Compile Include="Dtos\RoleGroupDto.cs" />
-    <Compile Include="Dtos\ShipperDto.cs" />
-    <Compile Include="Dtos\SupplierDto.cs" />
-    <Compile Include="Dtos\UserDto.cs" />
-    <Compile Include="Dtos\UserTypeDto.cs" />
+    <Compile Include="PurchaseOrderDetailDto.cs" />
+    <Compile Include="PurchaseOrderDto.cs" />
+    <Compile Include="PurchaseOrderStatusDto.cs" />
+    <Compile Include="RoleDetailDto.cs" />
+    <Compile Include="RoleDto.cs" />
+    <Compile Include="RoleGroupDto.cs" />
+    <Compile Include="ShipperDto.cs" />
+    <Compile Include="SupplierDto.cs" />
+    <Compile Include="UserDto.cs" />
+    <Compile Include="UserTypeDto.cs" />
+    <Compile Include="SerializableDynamicMetaObject.cs" />
+    <Compile Include="SerializableDynamicObject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

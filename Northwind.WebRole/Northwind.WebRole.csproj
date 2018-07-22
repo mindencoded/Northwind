@@ -54,15 +54,6 @@
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.3.0.0\lib\net452\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Data.Edm, Version=5.8.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.Edm.5.8.3\lib\net40\Microsoft.Data.Edm.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Data.OData, Version=5.8.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.OData.5.8.3\lib\net40\Microsoft.Data.OData.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Data.Services.Client, Version=5.8.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Data.Services.Client.5.8.3\lib\net40\Microsoft.Data.Services.Client.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.5.2.4\lib\net451\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
     </Reference>
@@ -90,9 +81,6 @@
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.2.4\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
     <Reference Include="System.ServiceModel.Activation" />
-    <Reference Include="System.Spatial, Version=5.8.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Spatial.5.8.3\lib\net40\System.Spatial.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -327,6 +315,7 @@
     <Compile Include="Utils\IQuery.cs" />
     <Compile Include="Utils\IQueryHandler.cs" />
     <Compile Include="Utils\IQueryProcessor.cs" />
+    <Compile Include="Utils\TraceEventId.cs" />
     <Compile Include="Utils\MD5Hash.cs" />
     <Compile Include="Utils\ObjectToDictionaryHelper.cs" />
     <Compile Include="Utils\OrderBy.cs" />
@@ -334,8 +323,6 @@
     <Compile Include="Utils\QueryHelper.cs" />
     <Compile Include="Utils\QueryProcessor.cs" />
     <Compile Include="Utils\QueryResponse.cs" />
-    <Compile Include="Utils\SerializableDynamicMetaObject.cs" />
-    <Compile Include="Utils\SerializableDynamicObject.cs" />
     <Compile Include="Utils\SqlDataReaderExtensions.cs" />
     <Compile Include="Utils\SqlDependencyEx.cs" />
     <Compile Include="Utils\SqlNotificationRequestRegister.cs" />
@@ -383,7 +370,9 @@
     <Content Include="UserCrud.svc" />
     <Content Include="UserTypeCrud.svc" />
     <None Include="packages.config" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Northwind.Shared\Northwind.Shared.csproj">

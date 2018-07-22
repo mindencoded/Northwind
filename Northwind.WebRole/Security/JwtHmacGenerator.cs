@@ -46,30 +46,21 @@ namespace Northwind.WebRole.Security
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            DateTime expires = DateTime.UtcNow.AddMinutes(tokenExpirationMinutes);
-            claims.Add(new Claim(ClaimTypes.Expiration, expires.ToString("yyyyMMddHHmmss")));
             SymmetricSecurityKey signingKey = new SymmetricSecurityKey(symmetricKey);
             SigningCredentials signingCredentials = new SigningCredentials(signingKey,
                 SecurityAlgorithms.HmacSha256Signature, SecurityAlgorithms.Sha256Digest);
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims);
-            // Build the token descriptor
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Audience = audience,
                 Issuer = issuer,
                 Subject = claimsIdentity,
-                Expires = expires,
+                Expires = DateTime.UtcNow.AddMinutes(tokenExpirationMinutes),
                 SigningCredentials = signingCredentials,
-                NotBefore = DateTime.UtcNow
+                NotBefore = DateTime.UtcNow.AddSeconds(-1)
             };
-            // Create the security handler to call    
             JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-
-            // Create JWT token.
             JwtSecurityToken securityToken = handler.CreateJwtSecurityToken(securityTokenDescriptor);
-            // Return the token to Encode function call, which in turn return to Main function.
-
-            // Return the token to Encode method
             return handler.WriteToken(securityToken);
         }
     }

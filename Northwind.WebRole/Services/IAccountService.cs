@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Northwind.Shared.Dtos;
+using Northwind.Shared;
 
 namespace Northwind.WebRole.Services
 {

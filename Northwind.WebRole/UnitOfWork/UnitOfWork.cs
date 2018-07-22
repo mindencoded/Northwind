@@ -16,7 +16,6 @@ namespace Northwind.WebRole.UnitOfWork
 {
     public abstract class UnitOfWork : IUnitOfWork
     {
-        private static readonly TraceSource Trace = new TraceSource(typeof(UnitOfWork).Name);
         protected readonly SqlConnection Connection;
         protected bool IsCommited;
         protected bool IsDisposed;
@@ -535,7 +534,7 @@ namespace Northwind.WebRole.UnitOfWork
         {
             foreach (SqlError err in args.Errors)
             {
-                Trace.TraceInformation(
+                Trace.TraceError(
                     "The {0} has received a severity {1}, state {2} error number {3}\n" +
                     "on line {4} of procedure {5} on server {6}:\n{7}",
                     err.Source, err.Class, err.State, err.Number, err.LineNumber,
@@ -545,7 +544,7 @@ namespace Northwind.WebRole.UnitOfWork
 
         private void OnStateChange(object sender, StateChangeEventArgs args)
         {
-            Trace.TraceInformation(
+            Trace.TraceError(
                 "The current Connection state has changed from {0} to {1}.",
                 args.OriginalState, args.CurrentState);
         }

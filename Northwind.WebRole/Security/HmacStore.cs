@@ -20,7 +20,7 @@ namespace Northwind.WebRole.Security
             }
         }
 
-        public static byte[] Get(string key)
+        public static byte[] GetSecretKey(string key)
         {
             if (!Store.ContainsKey(key))
             {

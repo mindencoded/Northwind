@@ -7,7 +7,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Northwind.Shared.Dtos;
+using Northwind.Shared;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain.Security;
 using Northwind.WebRole.Queries;
@@ -53,17 +53,21 @@ namespace Northwind.WebRole.Services
                     string[] roles = selectRolesByUserNameQueryHandler.Handle(selectRolesByUserNameQuery)
                         .Select(r => r.Name).ToArray();
                     string token;
-                    if (AppConfig.UseRsa)
+                    if (AppConfig.EncryptionAlgorithm == "RSA")
                     {
-                        RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
+                        RSACryptoServiceProvider rsa = RsaStore.GetServiceProvider("Northwind");
                         token = JwtRsaGenerator.Encode(rsa, username, null, roles, host, host,
                             AppConfig.TokenExpirationMinutes);
                     }
-                    else
+                    else if (AppConfig.EncryptionAlgorithm == "HMAC")
                     {
-                        byte[] symmetricKey = HmacStore.Get("Custom");
+                        byte[] symmetricKey = HmacStore.GetSecretKey("Northwind");
                         token = JwtHmacGenerator.Encode(symmetricKey, username, null, roles, host, host,
                             AppConfig.TokenExpirationMinutes);
+                    } 
+                    else
+                    {
+                        throw new Exception("The encryption algorithm is not recognized.");
                     }
 
                     string data = DataToString(new {JWTTOKEN = token});

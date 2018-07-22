@@ -11,13 +11,17 @@ namespace Northwind.WebRole
         {
             if (AppConfig.EnableSecurity)
             {
-                if (AppConfig.UseRsa)
+                if (AppConfig.EncryptionAlgorithm == "RSA")
                 {
-                    RsaStore.Add("Custom");
+                    RsaStore.Add("Northwind");
+                }
+                else if (AppConfig.EncryptionAlgorithm == "HMAC")
+                {
+                    HmacStore.Add("Northwind");
                 }
                 else
                 {
-                    HmacStore.Add("Custom");
+                    throw new Exception("The encryption algorithm is not recognized.");
                 }
             }
         }

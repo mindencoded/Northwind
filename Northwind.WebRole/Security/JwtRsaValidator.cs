@@ -27,13 +27,24 @@ namespace Northwind.WebRole.Security
                 {
                     ValidAudience = validAudience,
                     ValidIssuer = validIssuer,
-                    IssuerSigningKey = rsaSecurityKey
+                    IssuerSigningKey = rsaSecurityKey,
+                    RequireExpirationTime = true
                 };
-                JwtSecurityTokenHandler securityTokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
                 SecurityToken securityToken;
                 claimsPrincipal =
-                    securityTokenHandler.ValidateToken(tokenString, validationParameters, out securityToken);
-                return securityToken != null;
+                    jwtSecurityTokenHandler.ValidateToken(tokenString, validationParameters, out securityToken);
+                JwtSecurityToken jwtSecurityToken = (JwtSecurityToken) securityToken;
+                JwtPayload jwtPayload = jwtSecurityToken.Payload;
+                int exp = Convert.ToInt32(jwtPayload.Exp);
+                TimeSpan expTime = TimeSpan.FromSeconds(exp);
+                DateTime expDate = new DateTime(1970, 1, 1, 0, 0, 0, 0).Add(expTime);
+                if (expDate < DateTime.UtcNow)
+                {
+                    return false;
+                }
+
+                return true;
             }
             catch (Exception ex)
             {

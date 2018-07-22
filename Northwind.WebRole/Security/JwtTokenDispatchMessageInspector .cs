@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -32,37 +31,30 @@ namespace Northwind.WebRole.Security
                 {
                     ClaimsPrincipal claimsPrincipal;
                     bool isValid;
-                    if (AppConfig.UseRsa)
+                    if (AppConfig.EncryptionAlgorithm == "RSA")
                     {
-                        RSACryptoServiceProvider rsa = RsaStore.Get("Custom");
-                        isValid = JwtRsaValidator.IsValid(rsa, encryptedToken, host, host, out claimsPrincipal);
+                        RSACryptoServiceProvider provider = RsaStore.GetServiceProvider("Northwind");
+                        isValid = JwtRsaValidator.IsValid(provider, encryptedToken, host, host, out claimsPrincipal);
+                    }
+                    else if (AppConfig.EncryptionAlgorithm == "HMAC")
+                    {
+                        byte[] secretKey = HmacStore.GetSecretKey("Northwind");
+                        isValid = JwtHmacValidator.IsValid(secretKey, encryptedToken, host, host,
+                            out claimsPrincipal);
                     }
                     else
                     {
-                        byte[] symmetricKey = HmacStore.Get("Custom");
-                        isValid = JwtHmacValidator.IsValid(symmetricKey, encryptedToken, host, host,
-                            out claimsPrincipal);
+                        throw new Exception("The encryption algorithm is not recognized.");
                     }
 
                     if (isValid)
                     {
-                        Claim expirationClaim =
-                            claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Expiration);
-                        if (expirationClaim != null)
+                        Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+                        if (nameClaim != null)
                         {
-                            DateTime expires = DateTime.ParseExact(expirationClaim.Value, "yyyyMMddHHmmss",
-                                CultureInfo.InvariantCulture);
-                            isValid = DateTime.Compare(expires, DateTime.Now) > 0;
-                            if (isValid)
-                            {
-                                Claim nameClaim = claimsPrincipal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-                                if (nameClaim != null)
-                                {
-                                    string[] roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role)
-                                        .Select(c => c.Value).ToArray();
-                                    principal = new CustomPrincipal(new GenericIdentity(nameClaim.Value), roles);
-                                }
-                            }
+                            string[] roles = claimsPrincipal.Claims.Where(c => c.Type == ClaimTypes.Role)
+                                .Select(c => c.Value).ToArray();
+                            principal = new CustomPrincipal(new GenericIdentity(nameClaim.Value), roles);
                         }
                     }
                 }

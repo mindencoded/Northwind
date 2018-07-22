@@ -42,9 +42,18 @@ namespace Northwind.WebRole.Security
                 SecurityToken securityToken;
                 claimsPrincipal =
                     handler.ValidateToken(encryptedToken, tokenValidationParameters,
-                        out securityToken);
+                        out securityToken);              
+                JwtSecurityToken jwtSecurityToken = (JwtSecurityToken) securityToken;
+                JwtPayload jwtPayload = jwtSecurityToken.Payload;
+                int exp = Convert.ToInt32(jwtPayload.Exp);
+                TimeSpan expTime = TimeSpan.FromSeconds(exp);
+                DateTime expDate = new DateTime(1970, 1, 1, 0, 0, 0, 0).Add(expTime);
+                if (expDate < DateTime.UtcNow)
+                {
+                    return false;
+                }
 
-                return securityToken != null;
+                return true;
             }
             catch (Exception)
             {
