@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA904C89-8435-491E-8224-91D3AF09AC76}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
+		.vs\config\applicationhost.config = .vs\config\applicationhost.config
 	EndProjectSection
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Northwind.SecurityDb", "Northwind.SecurityDb\Northwind.SecurityDb.sqlproj", "{6D21CD73-808B-42A2-A4E1-3583AB6BBF23}"
