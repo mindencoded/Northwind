@@ -68,7 +68,7 @@ namespace Northwind.WebRole.Services
 
             WebHttpSecurity webHttpSecurity = new WebHttpSecurity
             {
-                Mode = WebHttpSecurityMode.TransportCredentialOnly,
+                Mode = WebHttpSecurityMode.None,
                 Transport = new HttpTransportSecurity
                 {
                     ClientCredentialType = HttpClientCredentialType.None
@@ -79,11 +79,6 @@ namespace Northwind.WebRole.Services
                 AppConfig.SslFlags.Contains(SslFlag.SslNegotiateCert))
             {
                 webHttpSecurity.Mode = WebHttpSecurityMode.Transport;
-                config.Credentials.ClientCertificate.SetCertificate(
-                    AppConfig.StoreLocation,
-                    AppConfig.StoreName,
-                    AppConfig.X509FindType,
-                    AppConfig.FindValue);
             }
 
             if (AppConfig.SslFlags.Contains(SslFlag.SslRequireCert) ||
@@ -93,6 +88,12 @@ namespace Northwind.WebRole.Services
                 {
                     ClientCredentialType = HttpClientCredentialType.Certificate
                 };
+
+                config.Credentials.ClientCertificate.SetCertificate(
+                    AppConfig.StoreLocation,
+                    AppConfig.StoreName,
+                    AppConfig.X509FindType,
+                    AppConfig.FindValue);
             }
 
             webHttpBinding.Security = webHttpSecurity;

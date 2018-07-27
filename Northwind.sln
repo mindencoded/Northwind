@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.Shared", "Northwind.Shared\Northwind.Shared.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.DataTransferObjects", "Northwind.DataTransferObjects\Northwind.DataTransferObjects.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA904C89-8435-491E-8224-91D3AF09AC76}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,6 +19,14 @@ EndProject
 Project("{CC5FD16D-436D-48AD-A40C-5A424C6E3E79}") = "Northwind.CloudService", "Northwind.CloudService\Northwind.CloudService.ccproj", "{EC4CC4E7-1349-4F0E-8305-C4ABC2CD4E46}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.WebRole", "Northwind.WebRole\Northwind.WebRole.csproj", "{3D73A4B6-2F03-4918-B9B6-73A0ABBF10C5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Databases", "Databases", "{48A4A3B7-4147-4D66-93B7-7F90C3FE6AE5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{8FD3BE51-989A-44EF-9E40-4A4C6083B0D1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{1DA2A057-BC5E-47AC-A0BA-689085EAF5E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{EE957441-4C8F-4EE8-B99D-B2E415263A38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +65,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4} = {EE957441-4C8F-4EE8-B99D-B2E415263A38}
+		{6D21CD73-808B-42A2-A4E1-3583AB6BBF23} = {48A4A3B7-4147-4D66-93B7-7F90C3FE6AE5}
+		{94CBFB90-729D-45CC-8A09-52E5B06D4EC8} = {48A4A3B7-4147-4D66-93B7-7F90C3FE6AE5}
+		{33409481-8939-42D1-BF98-E884B981100C} = {1DA2A057-BC5E-47AC-A0BA-689085EAF5E5}
+		{EC4CC4E7-1349-4F0E-8305-C4ABC2CD4E46} = {8FD3BE51-989A-44EF-9E40-4A4C6083B0D1}
+		{3D73A4B6-2F03-4918-B9B6-73A0ABBF10C5} = {8FD3BE51-989A-44EF-9E40-4A4C6083B0D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DECA91E6-677C-458B-9E96-C0702324AC5E}

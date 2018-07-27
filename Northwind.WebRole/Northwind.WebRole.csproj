@@ -16,11 +16,12 @@
     <WcfConfigValidationEnabled>True</WcfConfigValidationEnabled>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <UseIISExpress>true</UseIISExpress>
-    <Use64BitIISExpress />
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -373,11 +374,12 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Northwind.Shared\Northwind.Shared.csproj">
+    <ProjectReference Include="..\Northwind.DataTransferObjects\Northwind.DataTransferObjects.csproj">
       <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>Northwind.Shared</Name>
+      <Name>Northwind.DataTransferObjects</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

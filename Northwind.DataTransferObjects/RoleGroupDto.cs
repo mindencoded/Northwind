@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace Northwind.Shared
+namespace Northwind.DataTransferObjects
 {
     [DataContract]
-    public class RoleDto : SerializableDynamicObject
+    public class RoleGroupDto : SerializableDynamicObject
     {
         [DataMember] public int Id { get; set; }
 

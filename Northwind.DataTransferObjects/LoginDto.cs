@@ -1,27 +1,21 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace Northwind.Shared
+namespace Northwind.DataTransferObjects
 {
     [DataContract]
-    public class UserDto : SerializableDynamicObject
+    public class LoginDto : SerializableDynamicObject
     {
-        [DataMember] public int Id { get; set; }
-
         [DataMember]
-        [MaxLength(50)]
         [Required(AllowEmptyStrings = false)]
-
+        [MaxLength(50)]
         public string Username { get; set; }
 
         [DataMember]
-        [MaxLength(32)]
         [Required(AllowEmptyStrings = false)]
-
+        [MaxLength(32)]
         public string Password { get; set; }
 
-        [DataMember] [Required] public byte? UserTypeId { get; set; }
-
-        [DataMember] public int? ExternalUserId { get; set; }
+        [DataMember] public bool RememberMe { get; set; }
     }
 }

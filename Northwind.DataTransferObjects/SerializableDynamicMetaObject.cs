@@ -4,7 +4,7 @@ using System.Dynamic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Northwind.Shared
+namespace Northwind.DataTransferObjects
 {
     public class SerializableDynamicMetaObject : DynamicMetaObject
     {

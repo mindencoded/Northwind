@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace Northwind.Shared
+namespace Northwind.DataTransferObjects
 {
     [DataContract]
     public class RoleDetailDto : SerializableDynamicObject

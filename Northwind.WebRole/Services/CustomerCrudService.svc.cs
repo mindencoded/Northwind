@@ -4,7 +4,7 @@ using System.Net;
 using System.Security.Permissions;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Northwind.Shared;
+using Northwind.DataTransferObjects;
 using Northwind.WebRole.Commands;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;

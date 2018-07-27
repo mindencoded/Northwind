@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace Northwind.Shared
+namespace Northwind.DataTransferObjects
 {
     [DataContract]
-    public class OrderStatusDto : SerializableDynamicObject
+    public class OrderTaxStatusDto : SerializableDynamicObject
     {
         [DataMember] public byte Id { get; set; }
 

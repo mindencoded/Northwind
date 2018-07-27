@@ -13,13 +13,16 @@ namespace Northwind.WebRole.Security
         public static void Add(string keyContainerName)
         {
             RSACryptoServiceProvider rsa = GetServiceProvider(keyContainerName);
-            string xmlStringPrivateKey = rsa.ToXmlString(true);
-            string xmlStringPublicKey = rsa.ToXmlString(false);
-            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            string rsaPrivateKeyPath = Path.Combine(baseDirectory, keyContainerName + "-rsa-private-key.xml");
-            string rsaPublicKeyPath =  Path.Combine(baseDirectory, keyContainerName + "-rsa-public-key.xml");
-            File.WriteAllText(rsaPrivateKeyPath, xmlStringPrivateKey);
-            File.WriteAllText(rsaPublicKeyPath, xmlStringPublicKey);
+            if (rsa != null)
+            {
+                string xmlStringPrivateKey = rsa.ToXmlString(true);
+                string xmlStringPublicKey = rsa.ToXmlString(false);
+                string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string rsaPrivateKeyPath = Path.Combine(baseDirectory, keyContainerName + "-rsa-private-key.xml");
+                string rsaPublicKeyPath = Path.Combine(baseDirectory, keyContainerName + "-rsa-public-key.xml");
+                File.WriteAllText(rsaPrivateKeyPath, xmlStringPrivateKey);
+                File.WriteAllText(rsaPublicKeyPath, xmlStringPublicKey);
+            }
         }
 
         public static RSACryptoServiceProvider GetServiceProvider(string keyContainerName, bool persistKeyInCsp = true)

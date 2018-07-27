@@ -7,8 +7,8 @@
     <ProjectGuid>{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Northwind.Shared</RootNamespace>
-    <AssemblyName>Northwind.Shared</AssemblyName>
+    <RootNamespace>Northwind.DataTransferObjects</RootNamespace>
+    <AssemblyName>Northwind.DataTransferObjects</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
