@@ -7,7 +7,7 @@ namespace Northwind.WebRole.Security
     {
         protected override bool CheckAccessCore(OperationContext operationContext)
         {
-            string role = ContextHelper.GetRoleName(operationContext);
+            string role = operationContext.GetRoleName();
             IPrincipal principal = new CustomPrincipal(new GenericIdentity("Anonymous"), new[] {role});
             operationContext.IncomingMessageProperties.Add("Principal", principal);
             return true;

@@ -22,7 +22,7 @@ namespace Northwind.WebRole.Security
                 : null;
             IPrincipal principal = value as IPrincipal;
             if (principal != null) return null;
-            if (ContextHelper.GetRoleName(OperationContext.Current) != null)
+            if (OperationContext.Current.GetRoleName() != null)
             {
                 HttpRequestMessageProperty httpRequest = (HttpRequestMessageProperty)
                     OperationContext.Current.IncomingMessageProperties["httpRequest"];

@@ -30,7 +30,7 @@ namespace Northwind.WebRole.Security
                 : null;
             IPrincipal principal = value as IPrincipal;
             if (principal != null) return true;
-            if (ContextHelper.GetRoleName(operationContext) != null)
+            if (operationContext.GetRoleName() != null)
             {
                 UriTemplateMatch uriTemplateMatch =
                     (UriTemplateMatch) operationContext.IncomingMessageProperties["UriTemplateMatchResults"];

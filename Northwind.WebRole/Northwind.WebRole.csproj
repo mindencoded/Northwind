@@ -134,7 +134,7 @@
     <Compile Include="Commands\MoveCustomerCommand.cs" />
     <Compile Include="Commands\MoveCustomerCommandHandler.cs" />
     <Compile Include="ConfigContainer.cs" />
-    <Compile Include="ContextHelper.cs" />
+    <Compile Include="OperationContextExtension.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\HandlerDecoratorType.cs" />
     <Compile Include="Decorators\TransactionCommandHandlerDecorator.cs" />
@@ -287,7 +287,7 @@
     <Compile Include="Services\PurchaseOrderCrudService.svc.cs" />
     <Compile Include="Services\PurchaseOrderDetailCrudService.svc.cs" />
     <Compile Include="Services\PurchaseOrderStatusCrudService.svc.cs" />
-    <Compile Include="Services\RestService.cs" />
+    <Compile Include="Services\WebHttpService.cs" />
     <Compile Include="Services\RoleCrudService.svc.cs" />
     <Compile Include="Services\RoleDetailCrudService.svc.cs" />
     <Compile Include="Services\RoleGroupCrudService.svc.cs" />

@@ -7,9 +7,9 @@ using System.ServiceModel.Dispatcher;
 
 namespace Northwind.WebRole
 {
-    public class ContextHelper
+    public static class OperationContextExtension
     {
-        public static string GetRoleName(OperationContext operationContext)
+        public static string GetRoleName(this OperationContext operationContext)
         {
             string operationName = operationContext.IncomingMessageProperties["HttpOperationName"].ToString();
             DispatchOperation operation =

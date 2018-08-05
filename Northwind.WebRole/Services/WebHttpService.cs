@@ -24,11 +24,11 @@ using Unity;
 
 namespace Northwind.WebRole.Services
 {
-    public abstract class RestService
+    public abstract class WebHttpService
     {
         protected readonly IUnityContainer Container;
 
-        protected RestService(IUnityContainer container)
+        protected WebHttpService(IUnityContainer container)
         {
             Container = container;
         }

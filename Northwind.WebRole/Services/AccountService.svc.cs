@@ -17,7 +17,7 @@ using Unity;
 
 namespace Northwind.WebRole.Services
 {
-    public class AccountService : RestService, IAccountService
+    public class AccountService : WebHttpService, IAccountService
     {
         public AccountService(IUnityContainer container) : base(container)
         {

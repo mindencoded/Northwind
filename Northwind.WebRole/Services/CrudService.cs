@@ -16,7 +16,7 @@ using Unity;
 
 namespace Northwind.WebRole.Services
 {
-    public abstract class CrudService<TUnitOfWork, TEntity, TDto> : RestService
+    public abstract class CrudService<TUnitOfWork, TEntity, TDto> : WebHttpService
         where TUnitOfWork : IUnitOfWork
         where TEntity : Entity
         where TDto : class
