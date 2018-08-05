@@ -72,7 +72,7 @@ namespace Northwind.WebRole.Services
 
         public static void Configure(ServiceConfiguration config)
         {
-            WebHttpConfigure<IOrderDetailStatusCrudService>(config, "");
+            Configure<IOrderDetailStatusCrudService>(config, "");
         }
     }
 }

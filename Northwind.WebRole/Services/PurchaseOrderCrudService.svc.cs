@@ -71,7 +71,7 @@ namespace Northwind.WebRole.Services
 
         public static void Configure(ServiceConfiguration config)
         {
-            WebHttpConfigure<IPurchaseOrderCrudService>(config, "");
+            Configure<IPurchaseOrderCrudService>(config, "");
         }
     }
 }

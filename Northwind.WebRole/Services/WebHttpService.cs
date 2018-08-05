@@ -45,7 +45,7 @@ namespace Northwind.WebRole.Services
             }
         }
 
-        protected static void WebHttpConfigure<TService>(ServiceConfiguration config, string address)
+        protected static void Configure<TService>(ServiceConfiguration config, string address)
         {
             config.Description.Behaviors.Add(new ServiceMetadataBehavior
             {

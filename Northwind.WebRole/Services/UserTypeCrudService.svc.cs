@@ -70,7 +70,7 @@ namespace Northwind.WebRole.Services
 
         public static void Configure(ServiceConfiguration config)
         {
-            WebHttpConfigure<IUserTypeCrudService>(config, "");
+            Configure<IUserTypeCrudService>(config, "");
         }
     }
 }
