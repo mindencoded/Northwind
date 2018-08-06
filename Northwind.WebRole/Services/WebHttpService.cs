@@ -106,6 +106,7 @@ namespace Northwind.WebRole.Services
             });
 
             config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;
+
             if (AppConfig.EnableSecurity)
             {
                 serviceEndpoint.EndpointBehaviors.Add(new JwtTokenBehaviorExtension());

@@ -315,7 +315,6 @@
     <Compile Include="Utils\IQuery.cs" />
     <Compile Include="Utils\IQueryHandler.cs" />
     <Compile Include="Utils\IQueryProcessor.cs" />
-    <Compile Include="Utils\TraceEventId.cs" />
     <Compile Include="Utils\MD5Hash.cs" />
     <Compile Include="Utils\ObjectToDictionaryHelper.cs" />
     <Compile Include="Utils\OrderBy.cs" />

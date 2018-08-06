@@ -40,7 +40,7 @@ namespace Northwind.WebRole.Security
             }
             catch (CryptographicException e)
             {
-                Trace.TraceEvent(TraceEventType.Error, (int)TraceEventId.Error, e.Message);
+                Trace.TraceEvent(TraceEventType.Error, 0, e.Message);
             }
             return rsa;
         }
