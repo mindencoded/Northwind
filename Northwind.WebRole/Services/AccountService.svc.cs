@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -19,6 +21,7 @@ namespace Northwind.WebRole.Services
 {
     public class AccountService : WebHttpService, IAccountService
     {
+        private static readonly TraceSource Trace = new TraceSource(Assembly.GetExecutingAssembly().GetName().Name);
         public AccountService(IUnityContainer container) : base(container)
         {
         }
@@ -78,6 +81,7 @@ namespace Northwind.WebRole.Services
             }
             catch (Exception ex)
             {
+                Trace.TraceEvent(TraceEventType.Error, 9000, ex.Message);
                 throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), ex is ValidationException
                     ? HttpStatusCode.BadRequest
                     : HttpStatusCode.InternalServerError);

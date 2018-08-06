@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using Northwind.WebRole.Utils;
 
@@ -8,8 +9,8 @@ namespace Northwind.WebRole.Security
 {
     public class RsaStore
     {
-        private static readonly TraceSource Trace = new TraceSource(typeof(RsaStore).Name);
- 
+        private static readonly TraceSource Trace = new TraceSource(Assembly.GetExecutingAssembly().GetName().Name);
+
         public static void Add(string keyContainerName)
         {
             RSACryptoServiceProvider rsa = GetServiceProvider(keyContainerName);

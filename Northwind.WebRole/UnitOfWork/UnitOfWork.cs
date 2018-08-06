@@ -21,6 +21,7 @@ namespace Northwind.WebRole.UnitOfWork
         protected bool IsDisposed;
         protected IDictionary<Type, object> Repositories = new Dictionary<Type, object>();
         protected SqlTransaction Transaction;
+        private static readonly TraceSource Trace = new TraceSource(Assembly.GetExecutingAssembly().GetName().Name);
 
         protected UnitOfWork(SqlConnection connection)
         {
@@ -534,8 +535,8 @@ namespace Northwind.WebRole.UnitOfWork
         {
             foreach (SqlError err in args.Errors)
             {
-                Trace.TraceError(
-                    "The {0} has received a severity {1}, state {2} error number {3}\n" +
+                Trace.TraceEvent(TraceEventType.Error, 9000,
+                   "The {0} has received a severity {1}, state {2} error number {3}\n" +
                     "on line {4} of procedure {5} on server {6}:\n{7}",
                     err.Source, err.Class, err.State, err.Number, err.LineNumber,
                     err.Procedure, err.Server, err.Message);
@@ -544,7 +545,7 @@ namespace Northwind.WebRole.UnitOfWork
 
         private void OnStateChange(object sender, StateChangeEventArgs args)
         {
-            Trace.TraceError(
+            Trace.TraceEvent(TraceEventType.Error, 9000,
                 "The current Connection state has changed from {0} to {1}.",
                 args.OriginalState, args.CurrentState);
         }
