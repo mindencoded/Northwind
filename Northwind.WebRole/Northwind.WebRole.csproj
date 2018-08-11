@@ -136,6 +136,8 @@
     <Compile Include="Commands\MoveCustomerCommand.cs" />
     <Compile Include="Commands\MoveCustomerCommandHandler.cs" />
     <Compile Include="ConfigContainer.cs" />
+    <Compile Include="ErrorServiceBehavior.cs" />
+    <Compile Include="ErrorHandler.cs" />
     <Compile Include="OperationContextExtension.cs" />
     <Compile Include="Decorators\DeadlockRetryCommandHandlerDecorator.cs" />
     <Compile Include="Decorators\HandlerDecoratorType.cs" />
@@ -193,6 +195,7 @@
     <Compile Include="Queries\SelectRolesByUserNameQueryHandler.cs" />
     <Compile Include="Queries\VerifyUsernamePasswordQuery.cs" />
     <Compile Include="Queries\VerifyUsernamePasswordQueryHandler.cs" />
+    <Compile Include="RemoveSvcModule.cs" />
     <Compile Include="Repositories\CustomerRepository.cs" />
     <Compile Include="Repositories\EmployeeRepository.cs" />
     <Compile Include="Repositories\ICustomerRepository.cs" />

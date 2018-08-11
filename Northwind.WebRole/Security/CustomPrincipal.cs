@@ -30,9 +30,9 @@ namespace Northwind.WebRole.Security
             get { return _identity; }
         }
 
-        public bool IsInRole(string role)
+        public bool IsInRole(string roles)
         {
-            return _roles.Contains(role);
+            return roles.Split(',').Any(role => _roles.Contains(role));
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Configuration;
 using System.ServiceModel.Description;
 using System.ServiceModel.Web;
 using System.Text;
@@ -24,6 +25,8 @@ using Unity;
 
 namespace Northwind.WebRole.Services
 {
+    [ErrorServiceBehavior(typeof(ErrorHandler))]
+
     public abstract class WebHttpService
     {
         protected readonly IUnityContainer Container;
@@ -58,6 +61,8 @@ namespace Northwind.WebRole.Services
             {
                 IncludeExceptionDetailInFaults = true
             });
+
+           
 
             WebHttpBinding webHttpBinding = new WebHttpBinding
             {
@@ -102,7 +107,8 @@ namespace Northwind.WebRole.Services
             {
                 DefaultOutgoingResponseFormat = WebMessageFormat.Json,
                 DefaultOutgoingRequestFormat = WebMessageFormat.Json,
-                AutomaticFormatSelectionEnabled = false
+                AutomaticFormatSelectionEnabled = true,
+                DefaultBodyStyle = WebMessageBodyStyle.Bare
             });
 
             config.Authorization.PrincipalPermissionMode = PrincipalPermissionMode.Custom;

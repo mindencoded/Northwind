@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -21,7 +20,6 @@ namespace Northwind.WebRole.UnitOfWork
         protected bool IsDisposed;
         protected IDictionary<Type, object> Repositories = new Dictionary<Type, object>();
         protected SqlTransaction Transaction;
-        private static readonly TraceSource Trace = new TraceSource(Assembly.GetExecutingAssembly().GetName().Name);
 
         protected UnitOfWork(SqlConnection connection)
         {
@@ -510,8 +508,6 @@ namespace Northwind.WebRole.UnitOfWork
         private void Initializer()
         {
             Connection.FireInfoMessageEventOnUserErrors = true;
-            Connection.InfoMessage += OnInfoMessage;
-            Connection.StateChange += OnStateChange;
         }
 
         protected virtual void Dispose(bool disposing)
@@ -529,25 +525,6 @@ namespace Northwind.WebRole.UnitOfWork
 
                 IsDisposed = true;
             }
-        }
-
-        private void OnInfoMessage(object sender, SqlInfoMessageEventArgs args)
-        {
-            foreach (SqlError err in args.Errors)
-            {
-                Trace.TraceEvent(TraceEventType.Error, 9000,
-                   "The {0} has received a severity {1}, state {2} error number {3}\n" +
-                    "on line {4} of procedure {5} on server {6}:\n{7}",
-                    err.Source, err.Class, err.State, err.Number, err.LineNumber,
-                    err.Procedure, err.Server, err.Message);
-            }
-        }
-
-        private void OnStateChange(object sender, StateChangeEventArgs args)
-        {
-            Trace.TraceEvent(TraceEventType.Error, 9000,
-                "The current Connection state has changed from {0} to {1}.",
-                args.OriginalState, args.CurrentState);
         }
 
         private T ExecuteCommand<T>(SqlCommand command)

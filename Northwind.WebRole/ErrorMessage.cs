@@ -6,22 +6,31 @@ namespace Northwind.WebRole
     [DataContract]
     public class ErrorMessage
     {
-        public ErrorMessage()
+
+        public ErrorMessage(string message)
         {
-            Message = "An error occurred.";
+            Message = message;
         }
 
-        public ErrorMessage(Exception error)
+        public ErrorMessage(Exception exception)
         {
-            Message = error.Message;
-            StackTrace = error.StackTrace;
-            Exception = error.GetType().Name;
+            Message = exception.Message;
+            StackTrace = exception.StackTrace;
+            Exception = exception.GetType().Name;
         }
 
-        [DataMember] public string StackTrace { get; set; }
+        public ErrorMessage(string message, Exception exception)
+        {
+            Message = message;
+            StackTrace = exception.StackTrace;
+            Exception = exception.GetType().Name;
+        }
 
-        [DataMember] public string Message { get; set; }
 
-        [DataMember] public string Exception { get; set; }
+        [DataMember] public string StackTrace { get; }
+
+        [DataMember] public string Message { get; }
+
+        [DataMember] public string Exception { get; }
     }
 }

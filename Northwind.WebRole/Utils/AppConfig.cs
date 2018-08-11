@@ -12,10 +12,6 @@ namespace Northwind.WebRole.Utils
 
         public static string BusinessDbConnectionName => ConfigurationManager.AppSettings["BusinessDbConnectionName"];
 
-        public static string BaseUri => ConfigurationManager.AppSettings["BaseUri"];
-
-        public static string DbDateFormat => ConfigurationManager.AppSettings["DbDateFormat"];
-
         public static bool EnableSecurity => Convert.ToBoolean(ConfigurationManager.AppSettings["EnableSecurity"]);
 
         public static SslFlag[] SslFlags

@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -21,7 +19,6 @@ namespace Northwind.WebRole.Services
 {
     public class AccountService : WebHttpService, IAccountService
     {
-        private static readonly TraceSource Trace = new TraceSource(Assembly.GetExecutingAssembly().GetName().Name);
         public AccountService(IUnityContainer container) : base(container)
         {
         }
@@ -30,6 +27,11 @@ namespace Northwind.WebRole.Services
         {
             try
             {
+                if (login == null)
+                {
+                    throw new ArgumentNullException("login");
+                }
+
                 UriTemplateMatch uriTemplateMatch =
                     (UriTemplateMatch) OperationContext.Current.IncomingMessageProperties["UriTemplateMatchResults"];
                 string host = uriTemplateMatch.BaseUri.Host;
@@ -67,7 +69,7 @@ namespace Northwind.WebRole.Services
                         byte[] symmetricKey = HmacStore.GetSecretKey("Northwind");
                         token = JwtHmacGenerator.Encode(symmetricKey, username, null, roles, host, host,
                             AppConfig.TokenExpirationMinutes);
-                    } 
+                    }
                     else
                     {
                         throw new Exception("The encryption algorithm is not recognized.");
@@ -78,13 +80,16 @@ namespace Northwind.WebRole.Services
                 }
 
                 throw new WebFaultException(HttpStatusCode.Unauthorized);
+                //throw new FaultException<ErrorMessage>(new ErrorMessage("Unauthorized"), new FaultReason("Unauthorized"));
+                //throw new FaultException(new FaultReason("Unauthorized"), new FaultCode("Sender", new FaultCode("Unauthorized")));
+            }
+            catch (ValidationException ex)
+            {
+                throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), HttpStatusCode.BadRequest);
             }
             catch (Exception ex)
             {
-                Trace.TraceEvent(TraceEventType.Error, 9000, ex.Message);
-                throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), ex is ValidationException
-                    ? HttpStatusCode.BadRequest
-                    : HttpStatusCode.InternalServerError);
+                throw new WebFaultException<ErrorMessage>(new ErrorMessage(ex), HttpStatusCode.InternalServerError);
             }
         }
 

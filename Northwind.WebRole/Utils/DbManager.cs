@@ -5,8 +5,6 @@ namespace Northwind.WebRole.Utils
 {
     public class DbManager
     {
-        public static readonly string DateFormat = ConfigurationManager.AppSettings["DbDateFormat"];
-
         public static int ConnectionTimeOut { get; set; }
 
         public static string ApplicationName { get; set; }

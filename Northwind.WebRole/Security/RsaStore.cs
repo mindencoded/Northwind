@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Security.Cryptography;
-using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Security
 {
     public class RsaStore
     {
-        private static readonly TraceSource Trace = new TraceSource(Assembly.GetExecutingAssembly().GetName().Name);
+        
 
         public static void Add(string keyContainerName)
         {
@@ -28,22 +25,12 @@ namespace Northwind.WebRole.Security
 
         public static RSACryptoServiceProvider GetServiceProvider(string keyContainerName, bool persistKeyInCsp = true)
         {
-            RSACryptoServiceProvider rsa = null;
-            try
+            CspParameters parameters = new CspParameters
             {
-                CspParameters parameters = new CspParameters
-                {
-                    KeyContainerName = keyContainerName,
-                    Flags = CspProviderFlags.UseMachineKeyStore
-                };
-                rsa = new RSACryptoServiceProvider(2048, parameters) { PersistKeyInCsp = persistKeyInCsp };
-
-            }
-            catch (CryptographicException e)
-            {
-                Trace.TraceEvent(TraceEventType.Error, 0, e.Message);
-            }
-            return rsa;
+                KeyContainerName = keyContainerName,
+                Flags = CspProviderFlags.UseMachineKeyStore
+            };
+            return new RSACryptoServiceProvider(2048, parameters) {PersistKeyInCsp = persistKeyInCsp};
         }
 
         public static RSACryptoServiceProvider Load(string keyContainerName)
