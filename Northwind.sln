@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind.DataTransferObjects", "Northwind.DataTransferObjects\Northwind.DataTransferObjects.csproj", "{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EA904C89-8435-491E-8224-91D3AF09AC76}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
@@ -27,8 +25,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{8FD3BE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{1DA2A057-BC5E-47AC-A0BA-689085EAF5E5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{EE957441-4C8F-4EE8-B99D-B2E415263A38}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Certificates", "Certificates", "{3EE754C9-4D88-40CC-8D7D-9EA4AD9F54F6}"
 	ProjectSection(SolutionItems) = preProject
 		Certificates\commands.bat = Certificates\commands.bat
@@ -45,10 +41,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6D21CD73-808B-42A2-A4E1-3583AB6BBF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6D21CD73-808B-42A2-A4E1-3583AB6BBF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D21CD73-808B-42A2-A4E1-3583AB6BBF23}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
@@ -78,7 +70,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{F10BA7FD-7A0B-4836-9DE5-4B55E078C7D4} = {EE957441-4C8F-4EE8-B99D-B2E415263A38}
 		{6D21CD73-808B-42A2-A4E1-3583AB6BBF23} = {48A4A3B7-4147-4D66-93B7-7F90C3FE6AE5}
 		{94CBFB90-729D-45CC-8A09-52E5B06D4EC8} = {48A4A3B7-4147-4D66-93B7-7F90C3FE6AE5}
 		{33409481-8939-42D1-BF98-E884B981100C} = {1DA2A057-BC5E-47AC-A0BA-689085EAF5E5}

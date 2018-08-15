@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Northwind.DataTransferObjects
+namespace Northwind.WebRole.Dtos
 {
     [DataContract]
     public class InvoiceDto : SerializableDynamicObject

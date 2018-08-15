@@ -4,11 +4,11 @@ using System.Net;
 using System.Security.Permissions;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-using Northwind.DataTransferObjects;
 using Northwind.WebRole.Commands;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Business;
+using Northwind.WebRole.Dtos;
 using Northwind.WebRole.UnitOfWork;
 using Northwind.WebRole.Utils;
 using Unity;
@@ -45,27 +45,21 @@ namespace Northwind.WebRole.Services
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
-        public override Stream SelectA(string page, string pageSize)
+        public override Stream SelectA(string page, string pageSize, string orderby)
         {
-            return base.SelectA(page, pageSize);
+            return base.SelectA(page, pageSize, orderby);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
-        public override Stream SelectB(string page, string pageSize, string orderby)
+        public override Stream SelectB(string page, string pageSize, string orderby, string filter)
         {
-            return base.SelectB(page, pageSize, orderby);
+            return base.SelectB(page, pageSize, orderby, filter);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
-        public override Stream SelectC(string page, string pageSize, string orderby, string filter)
+        public override Stream SelectC(string page, string pageSize, string orderby, string filter, string select)
         {
-            return base.SelectC(page, pageSize, orderby, filter);
-        }
-
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
-        public override Stream SelectD(string page, string pageSize, string orderby, string filter, string select)
-        {
-            return base.SelectD(page, pageSize, orderby, filter, select);
+            return base.SelectC(page, pageSize, orderby, filter, select);
         }
 
         [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Insert")]

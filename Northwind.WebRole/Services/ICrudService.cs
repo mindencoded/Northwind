@@ -10,20 +10,11 @@ namespace Northwind.WebRole.Services
         [OperationContract]
         [WebInvoke(
             Method = "GET",
-            UriTemplate = "/{page}/{pageSize}",
-            RequestFormat = WebMessageFormat.Json,
-            ResponseFormat = WebMessageFormat.Json,
-            BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectA(string page, string pageSize);
-
-        [OperationContract]
-        [WebInvoke(
-            Method = "GET",
             UriTemplate = "/{page}/{pageSize}/{orderby}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectB(string page, string pageSize, string orderby);
+        Stream SelectA(string page, string pageSize, string orderby);
 
         [OperationContract]
         [WebInvoke(
@@ -32,7 +23,7 @@ namespace Northwind.WebRole.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectC(string page, string pageSize, string orderby, string filter);
+        Stream SelectB(string page, string pageSize, string orderby, string filter);
 
         [OperationContract]
         [WebInvoke(
@@ -41,7 +32,7 @@ namespace Northwind.WebRole.Services
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare)]
-        Stream SelectD(string page, string pageSize, string orderby, string filter, string select);
+        Stream SelectC(string page, string pageSize, string orderby, string filter, string select);
 
         [OperationContract]
         [WebInvoke(

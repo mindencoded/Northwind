@@ -25,22 +25,17 @@ namespace Northwind.WebRole.Services
         {
         }
 
-        public virtual Stream SelectA(string page, string pageSize)
-        {
-            return Select(page, pageSize, null, null, null);
-        }
-
-        public virtual Stream SelectB(string page, string pageSize, string orderby)
+        public virtual Stream SelectA(string page, string pageSize, string orderby)
         {
             return Select(page, pageSize, orderby, null, null);
         }
 
-        public virtual Stream SelectC(string page, string pageSize, string orderby, string filter)
+        public virtual Stream SelectB(string page, string pageSize, string orderby, string filter)
         {
             return Select(page, pageSize, orderby, filter, null);
         }
 
-        public virtual Stream SelectD(string page, string pageSize, string orderby, string filter, string select)
+        public virtual Stream SelectC(string page, string pageSize, string orderby, string filter, string select)
         {
             return Select(page, pageSize, orderby, filter, select);
         }

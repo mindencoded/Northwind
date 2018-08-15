@@ -136,6 +136,31 @@
     <Compile Include="Commands\MoveCustomerCommand.cs" />
     <Compile Include="Commands\MoveCustomerCommandHandler.cs" />
     <Compile Include="ConfigContainer.cs" />
+    <Compile Include="Dtos\CustomerDto.cs" />
+    <Compile Include="Dtos\EmployeeDto.cs" />
+    <Compile Include="Dtos\InventoryTransactionDto.cs" />
+    <Compile Include="Dtos\InventoryTransactionTypeDto.cs" />
+    <Compile Include="Dtos\InvoiceDto.cs" />
+    <Compile Include="Dtos\LoginDto.cs" />
+    <Compile Include="Dtos\OrderDetailDto.cs" />
+    <Compile Include="Dtos\OrderDetailStatusDto.cs" />
+    <Compile Include="Dtos\OrderDto.cs" />
+    <Compile Include="Dtos\OrderStatusDto.cs" />
+    <Compile Include="Dtos\OrderTaxStatusDto.cs" />
+    <Compile Include="Dtos\PersonDto.cs" />
+    <Compile Include="Dtos\ProductDto.cs" />
+    <Compile Include="Dtos\PurchaseOrderDetailDto.cs" />
+    <Compile Include="Dtos\PurchaseOrderDto.cs" />
+    <Compile Include="Dtos\PurchaseOrderStatusDto.cs" />
+    <Compile Include="Dtos\RoleDetailDto.cs" />
+    <Compile Include="Dtos\RoleDto.cs" />
+    <Compile Include="Dtos\RoleGroupDto.cs" />
+    <Compile Include="Dtos\SerializableDynamicMetaObject.cs" />
+    <Compile Include="Dtos\SerializableDynamicObject.cs" />
+    <Compile Include="Dtos\ShipperDto.cs" />
+    <Compile Include="Dtos\SupplierDto.cs" />
+    <Compile Include="Dtos\UserDto.cs" />
+    <Compile Include="Dtos\UserTypeDto.cs" />
     <Compile Include="ErrorServiceBehavior.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="OperationContextExtension.cs" />
@@ -384,12 +409,6 @@
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Northwind.DataTransferObjects\Northwind.DataTransferObjects.csproj">
-      <Project>{f10ba7fd-7a0b-4836-9de5-4b55e078c7d4}</Project>
-      <Name>Northwind.DataTransferObjects</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

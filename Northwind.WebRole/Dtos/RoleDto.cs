@@ -1,16 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-namespace Northwind.DataTransferObjects
+namespace Northwind.WebRole.Dtos
 {
     [DataContract]
-    public class OrderTaxStatusDto : SerializableDynamicObject
+    public class RoleDto : SerializableDynamicObject
     {
-        [DataMember] public byte Id { get; set; }
+        [DataMember] public int Id { get; set; }
 
         [DataMember]
         [StringLength(50)]
         [Required(AllowEmptyStrings = false)]
-        public string StatusName { get; set; }
+        public string Name { get; set; }
     }
 }

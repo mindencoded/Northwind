@@ -1,5 +1,5 @@
 ﻿using System.ServiceModel;
-using Northwind.DataTransferObjects;
+using Northwind.WebRole.Dtos;
 
 namespace Northwind.WebRole.Services
 {
