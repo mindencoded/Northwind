@@ -14,9 +14,13 @@ namespace Northwind.WebRole.Security
     {
         public object AfterReceiveRequest(ref Message request, IClientChannel channel, InstanceContext instanceContext)
         {
-            UriTemplateMatch uriTemplateMatch =
-                (UriTemplateMatch) OperationContext.Current.IncomingMessageProperties["UriTemplateMatchResults"];
-            string host = uriTemplateMatch.BaseUri.Host;
+            MessageProperties messageProperties = OperationContext.Current.IncomingMessageProperties;
+            string host = AppConfig.Host;
+            if (messageProperties.ContainsKey("UriTemplateMatchResults"))
+            {
+                UriTemplateMatch uriTemplateMatch = (UriTemplateMatch)messageProperties["UriTemplateMatchResults"];
+                host = uriTemplateMatch.BaseUri.Host;
+            }   
             object value = OperationContext.Current.IncomingMessageProperties.TryGetValue("Principal", out value)
                 ? value
                 : null;

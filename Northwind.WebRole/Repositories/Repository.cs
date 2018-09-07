@@ -1742,9 +1742,14 @@ namespace Northwind.WebRole.Repositories
                                           "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
                                           ")");
                     }
+                } else if (value != null && value.ToString().Equals("null", StringComparison.OrdinalIgnoreCase))
+                {
+                    conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
+                                      columnName + "] IS NULL");
                 }
                 else
                 {
+                    
                     conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
                                       columnName + "] = " + parameterName);
                     parameters.Add(parameterName, value);
@@ -1951,6 +1956,22 @@ namespace Northwind.WebRole.Repositories
                                               "].[" + columnName + "] LIKE " + comparison + condition.EndGroup());
                             parameters.Add(parameterName, value);
                         }
+                    }
+                }
+                else if (value != null && value.ToString().Equals("null", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (condition.Comparison == Comparison.NotEqualTo)
+                    {
+                        conditionList.Add(condition.Condition + " " + condition.StartGroup() +
+                                          EntityUtils.GetSchema<T>() + ".[" +
+                                          EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] IS NOT NULL");
+                    }else 
+                    {
+                        conditionList.Add(condition.Condition + " " + condition.StartGroup() +
+                                          EntityUtils.GetSchema<T>() + ".[" +
+                                          EntityUtils.GetTableName<T>() +
+                                          "].[" + columnName + "] IS NULL");
                     }
                 }
                 else

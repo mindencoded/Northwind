@@ -357,6 +357,7 @@
     <Compile Include="Utils\SqlNotificationRequestRegister.cs" />
     <Compile Include="Utils\SslFlag.cs" />
     <Compile Include="Utils\StringExtensions.cs" />
+    <Compile Include="Utils\TraceEventValue.cs" />
     <Compile Include="Utils\TypeConvertor.cs" />
     <Compile Include="Utils\TypeExtensions.cs" />
     <Compile Include="Utils\ValidationHelper.cs" />
@@ -428,7 +429,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>64061</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44374/</IISUrl>
+          <IISUrl>http://localhost:64061/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

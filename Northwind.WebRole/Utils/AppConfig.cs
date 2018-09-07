@@ -96,11 +96,7 @@ namespace Northwind.WebRole.Utils
 
         public static string EncryptionAlgorithm => ConfigurationManager.AppSettings["EncryptionAlgorithm"];
 
-        public static DateTimeOffset GetCurrentTime(string timeZoneId)
-        {
-            TimeZoneInfo tzi = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-            DateTimeOffset now = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, tzi);
-            return now;
-        }
+        public static string Host => ConfigurationManager.AppSettings["Host"];
+
     }
 }
