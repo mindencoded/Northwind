@@ -2,15 +2,16 @@
 using System.Security.Permissions;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
+using Northwind.WebRole.Contracts.Maintenances;
 using Northwind.WebRole.Domain.Business;
 using Northwind.WebRole.Dtos;
 using Northwind.WebRole.UnitOfWork;
 using Northwind.WebRole.Utils;
 using Unity;
 
-namespace Northwind.WebRole.Services
+namespace Northwind.WebRole.Services.Maintenances
 {
-    [RoutePrefix("Invoice")]
+    [RoutePrefix("Invoices.svc")]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class InvoiceService : MaintenanceService<IBusinessUnitOfWork, Invoice, InvoiceDto>, IInvoiceService
     {

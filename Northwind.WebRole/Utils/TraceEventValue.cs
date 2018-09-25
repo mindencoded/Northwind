@@ -1,5 +1,4 @@
-﻿
-namespace Northwind.WebRole.Utils
+﻿namespace Northwind.WebRole.Utils
 {
     public enum TraceEventValue
     {

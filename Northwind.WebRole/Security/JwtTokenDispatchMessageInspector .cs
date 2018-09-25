@@ -18,9 +18,10 @@ namespace Northwind.WebRole.Security
             string host = AppConfig.Host;
             if (messageProperties.ContainsKey("UriTemplateMatchResults"))
             {
-                UriTemplateMatch uriTemplateMatch = (UriTemplateMatch)messageProperties["UriTemplateMatchResults"];
+                UriTemplateMatch uriTemplateMatch = (UriTemplateMatch) messageProperties["UriTemplateMatchResults"];
                 host = uriTemplateMatch.BaseUri.Host;
-            }   
+            }
+
             object value = OperationContext.Current.IncomingMessageProperties.TryGetValue("Principal", out value)
                 ? value
                 : null;

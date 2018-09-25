@@ -14,7 +14,7 @@ using Northwind.WebRole.UnitOfWork;
 using Northwind.WebRole.Utils;
 using Unity;
 
-namespace Northwind.WebRole.Services
+namespace Northwind.WebRole.Services.Maintenances
 {
     public abstract class MaintenanceService<TUnitOfWork, TEntity, TDto> : WebHttpService
         where TUnitOfWork : IUnitOfWork

@@ -30,7 +30,8 @@ namespace Northwind.WebRole.Security
             SigningCredentials signingCredentials = new SigningCredentials(new RsaSecurityKey(cryptoServiceProvider),
                 SecurityAlgorithms.RsaSha256Signature);
             JwtSecurityToken securityToken =
-                new JwtSecurityToken(issuer, audience, claims, DateTime.UtcNow.AddSeconds(-1), DateTime.UtcNow.AddMinutes(tokenExpirationMinutes), signingCredentials);
+                new JwtSecurityToken(issuer, audience, claims, DateTime.UtcNow.AddSeconds(-1),
+                    DateTime.UtcNow.AddMinutes(tokenExpirationMinutes), signingCredentials);
             JwtSecurityTokenHandler securityTokenHandler = new JwtSecurityTokenHandler();
             return securityTokenHandler.WriteToken(securityToken);
         }

@@ -3,7 +3,7 @@ using Unity.Wcf;
 
 namespace Northwind.WebRole
 {
-    public class WcfServiceFactory : UnityServiceHostFactory
+    public class WcfServiceHostFactory : UnityServiceHostFactory
     {
         protected override void ConfigureContainer(IUnityContainer container)
         {

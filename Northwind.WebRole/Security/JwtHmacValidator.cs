@@ -42,7 +42,7 @@ namespace Northwind.WebRole.Security
                 SecurityToken securityToken;
                 claimsPrincipal =
                     handler.ValidateToken(encryptedToken, tokenValidationParameters,
-                        out securityToken);              
+                        out securityToken);
                 JwtSecurityToken jwtSecurityToken = (JwtSecurityToken) securityToken;
                 JwtPayload jwtPayload = jwtSecurityToken.Payload;
                 int exp = Convert.ToInt32(jwtPayload.Exp);

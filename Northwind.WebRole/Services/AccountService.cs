@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
+using Northwind.WebRole.Contracts;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain.Security;
 using Northwind.WebRole.Dtos;

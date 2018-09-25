@@ -2,14 +2,14 @@
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-namespace Northwind.WebRole.Services
+namespace Northwind.WebRole.Contracts.Maintenances
 {
     [ServiceContract]
     public interface IMaintenanceService<TDto> : IService where TDto : class
     {
         [OperationContract]
         [WebInvoke(
-            Method = "GET",
+            Method = "GET",         
             UriTemplate = "/{page}/{pageSize}/{orderby}",
             RequestFormat = WebMessageFormat.Json,
             ResponseFormat = WebMessageFormat.Json,

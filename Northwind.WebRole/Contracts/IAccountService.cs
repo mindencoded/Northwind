@@ -3,7 +3,7 @@ using System.ServiceModel;
 using System.ServiceModel.Web;
 using Northwind.WebRole.Dtos;
 
-namespace Northwind.WebRole.Services
+namespace Northwind.WebRole.Contracts
 {
     [ServiceContract]
     public interface IAccountService : IService

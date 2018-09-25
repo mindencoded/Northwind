@@ -5,8 +5,8 @@ using System.Security.Permissions;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Web.Routing;
 using Northwind.WebRole.Commands;
+using Northwind.WebRole.Contracts.Maintenances;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;
 using Northwind.WebRole.Domain.Business;
@@ -15,9 +15,9 @@ using Northwind.WebRole.UnitOfWork;
 using Northwind.WebRole.Utils;
 using Unity;
 
-namespace Northwind.WebRole.Services
+namespace Northwind.WebRole.Services.Maintenances
 {
-    [RoutePrefix("Customer")]
+    [RoutePrefix("Customers.svc")]
     [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public class CustomerService : MaintenanceService<IBusinessUnitOfWork, Customer, CustomerDto>, ICustomerService
     {
@@ -48,49 +48,49 @@ namespace Northwind.WebRole.Services
             }
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Select")]
         public override Stream SelectA(string page, string pageSize, string orderby)
         {
             return base.SelectA(page, pageSize, orderby);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Select")]
         public override Stream SelectB(string page, string pageSize, string orderby, string filter)
         {
             return base.SelectB(page, pageSize, orderby, filter);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Select")]
         public override Stream SelectC(string page, string pageSize, string orderby, string filter, string select)
         {
             return base.SelectC(page, pageSize, orderby, filter, select);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Insert")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Insert")]
         public override void Insert(CustomerDto dto)
         {
             base.Insert(dto);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Update")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Update")]
         public override void Update(string id, CustomerDto dto)
         {
             base.Update(id, dto);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Update")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Update")]
         public override void PartialUpdate(string id, string data)
         {
             base.PartialUpdate(id, data);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Delete")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Delete")]
         public override void DeleteById(string id)
         {
             base.DeleteById(id);
         }
 
-        [PrincipalPermission(SecurityAction.Demand, Role = "CustomerCrud.Select")]
+        [PrincipalPermission(SecurityAction.Demand, Role = "Customer.Select")]
         public override Stream SelectById(string id)
         {
             return base.SelectById(id);

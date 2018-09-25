@@ -1,4 +1,4 @@
-﻿namespace Northwind.WebRole.Services
+﻿namespace Northwind.WebRole.Contracts
 {
     public interface IService
     {

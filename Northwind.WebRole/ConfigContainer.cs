@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Northwind.WebRole.Commands;
+using Northwind.WebRole.Contracts;
 using Northwind.WebRole.Decorators;
 using Northwind.WebRole.Domain;
 using Northwind.WebRole.Queries;
-using Northwind.WebRole.Services;
 using Northwind.WebRole.UnitOfWork;
 using Northwind.WebRole.Utils;
 using Unity;
@@ -17,6 +17,7 @@ namespace Northwind.WebRole
 {
     public class ConfigContainer
     {
+
         public static readonly IDictionary<GenericCommandType, Type> GenericCommandHandlerTypeDictionary =
             new Dictionary<GenericCommandType, Type>
             {
@@ -52,6 +53,7 @@ namespace Northwind.WebRole
 
         private IUnityContainer Build(IUnityContainer container)
         {
+
             container.RegisterType<ISecurityUnitOfWork, SecurityUnitOfWork>(new HierarchicalLifetimeManager(),
                 new InjectionConstructor(DbManager.GetSqlConnection(AppConfig.SecurityDbConnectionName)));
             container.RegisterType<IBusinessUnitOfWork, BusinessUnitOfWork>(new HierarchicalLifetimeManager(),
@@ -171,7 +173,6 @@ namespace Northwind.WebRole
                 }
             }
 
-
             Type[] serviceTypes = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(p => typeof(IService).IsAssignableFrom(p) && p.IsClass && !p.IsAbstract).ToArray();
             foreach (Type serviceType in serviceTypes)
@@ -183,7 +184,6 @@ namespace Northwind.WebRole
                     container.RegisterType(contractType, serviceType);
                 }
             }
-
             return container;
         }
     }

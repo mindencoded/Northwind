@@ -7,6 +7,7 @@ namespace Northwind.WebRole
         public void Dispose()
         {
         }
+
         public void Init(HttpApplication context)
         {
             context.BeginRequest += delegate

@@ -6,7 +6,6 @@ namespace Northwind.WebRole
     [DataContract]
     public class ErrorMessage
     {
-
         public ErrorMessage(string message)
         {
             Message = message;

@@ -1742,14 +1742,14 @@ namespace Northwind.WebRole.Repositories
                                           "].[" + columnName + "] IN (" + string.Join(", ", subConditionList) +
                                           ")");
                     }
-                } else if (value != null && value.ToString().Equals("null", StringComparison.OrdinalIgnoreCase))
+                }
+                else if (value != null && value.ToString().Equals("null", StringComparison.OrdinalIgnoreCase))
                 {
                     conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
                                       columnName + "] IS NULL");
                 }
                 else
                 {
-                    
                     conditionList.Add(EntityUtils.GetSchema<T>() + ".[" + EntityUtils.GetTableName<T>() + "].[" +
                                       columnName + "] = " + parameterName);
                     parameters.Add(parameterName, value);
@@ -1966,7 +1966,8 @@ namespace Northwind.WebRole.Repositories
                                           EntityUtils.GetSchema<T>() + ".[" +
                                           EntityUtils.GetTableName<T>() +
                                           "].[" + columnName + "] IS NOT NULL");
-                    }else 
+                    }
+                    else
                     {
                         conditionList.Add(condition.Condition + " " + condition.StartGroup() +
                                           EntityUtils.GetSchema<T>() + ".[" +

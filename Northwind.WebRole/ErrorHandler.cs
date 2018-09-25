@@ -10,6 +10,7 @@ namespace Northwind.WebRole
     public class ErrorHandler : IErrorHandler
     {
         private static readonly TraceSource Trace = new TraceSource("Northwind.WebRole");
+
         /// <summary>
         /// The method that's get invoked if any unhandled exception raised in service
         /// Here you can do what ever logic you would like to. 
@@ -45,8 +46,9 @@ namespace Northwind.WebRole
                 sb.Append(" | ").Append(innerException.Message);
                 innerException = innerException.InnerException;
             }
+
             Trace.TraceEvent(TraceEventType.Error, (int) TraceEventValue.Error, sb.ToString());
-            
+
             //if (error is FaultException)
             //{               
             //    FaultException faultException = error as FaultException;

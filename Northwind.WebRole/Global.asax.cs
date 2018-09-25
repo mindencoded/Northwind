@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.ServiceModel.Activation;
 using System.Web;
+using System.Web.Routing;
+using Northwind.WebRole.Contracts;
 using Northwind.WebRole.Security;
 using Northwind.WebRole.Utils;
 
@@ -22,6 +27,17 @@ namespace Northwind.WebRole
                 else
                 {
                     throw new Exception("The encryption algorithm is not recognized.");
+                }
+            }
+
+            Type[] serviceTypes = Assembly.GetExecutingAssembly().GetTypes()
+                .Where(p => typeof(IService).IsAssignableFrom(p) && p.IsClass && !p.IsAbstract).ToArray();
+            foreach (Type serviceType in serviceTypes)
+            {
+                RoutePrefixAttribute attribute = serviceType.GetCustomAttribute<RoutePrefixAttribute>(false);
+                if (attribute != null)
+                {
+                    RouteTable.Routes.Add(new ServiceRoute(attribute.Name, new WcfServiceHostFactory(), serviceType));
                 }
             }
         }

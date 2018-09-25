@@ -6,8 +6,6 @@ namespace Northwind.WebRole.Security
 {
     public class RsaStore
     {
-        
-
         public static void Add(string keyContainerName)
         {
             RSACryptoServiceProvider rsa = GetServiceProvider(keyContainerName);
