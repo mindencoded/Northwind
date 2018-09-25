@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="Northwind.WebRole.Services.PurchaseOrderCrudService"  Factory="Northwind.WebRole.WcfServiceFactory" %>
