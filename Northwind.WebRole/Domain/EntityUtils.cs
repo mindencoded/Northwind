@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Domain
 {
@@ -21,7 +22,7 @@ namespace Northwind.WebRole.Domain
                     property.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                 if (attribute != null)
                 {
-                    string column = GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + attribute.Name + "]";
+                    string column = GetSchema<T>() + ".[" + GetTableOrViewName<T>() + "].[" + attribute.Name + "]";
                     if (useColumnAlias)
                     {
                         column = column + " AS '" + property.Name + "'";
@@ -34,23 +35,39 @@ namespace Northwind.WebRole.Domain
             if (includeRowNumber)
             {
                 IList<string> keyNames = new List<string>();
+                ColumnAttribute columnAttribute = null;
                 foreach (PropertyInfo property in properties)
                 {
                     KeyAttribute attribute =
                         (KeyAttribute) Attribute.GetCustomAttribute(property, typeof(KeyAttribute));
                     if (attribute != null)
                     {
-                        ColumnAttribute columnAttribute = properties.First(x => x.Name == property.Name)
+                        columnAttribute = properties.First(x => x.Name == property.Name)
                             .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                         if (columnAttribute != null)
                         {
-                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name +
+                            keyNames.Add(GetSchema<T>() + ".[" + GetTableOrViewName<T>() + "].[" + columnAttribute.Name +
                                          "]");
                         }
                     }
                 }
 
-                columns.Add("ROW_NUMBER() OVER(ORDER BY " + string.Join(", ", keyNames) + ") AS 'RowNumber'");
+                string orderBy = "";
+                if (keyNames.Count > 0)
+                {
+                    orderBy = string.Join(", ", keyNames);
+                }
+                else
+                {
+                    columnAttribute = properties.First().GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
+                    if (columnAttribute != null)
+                    {
+                        orderBy = GetSchema<T>() + ".[" + GetTableOrViewName<T>() + "].[" + columnAttribute.Name +
+                                  "]";
+                    }
+                }
+
+                columns.Add("ROW_NUMBER() OVER(ORDER BY " + orderBy + ") AS 'RowNumber'");
             }
 
             return string.Join(", ", columns);
@@ -62,7 +79,7 @@ namespace Northwind.WebRole.Domain
             Type type = typeof(T);
             PropertyInfo[] properties = type.GetProperties();
             IList<string> columnAttributeList = properties
-                .Select(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
+                .Where(x => x.GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault() != null).Select(x => x.Name).ToList();
             IList<string> columnList = new List<string>();
             foreach (string item in columns)
             {
@@ -91,7 +108,7 @@ namespace Northwind.WebRole.Domain
                     continue;
                 }
 
-                string columnQuery = GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnName + "]";
+                string columnQuery = GetSchema<T>() + ".[" + GetTableOrViewName<T>() + "].[" + columnName + "]";
                 if (useColumnAlias)
                 {
                     columnQuery += " AS '" + propertyName + "'";
@@ -113,7 +130,7 @@ namespace Northwind.WebRole.Domain
                             .GetCustomAttributes(false).OfType<ColumnAttribute>().FirstOrDefault();
                         if (columnAttribute != null)
                         {
-                            keyNames.Add(GetSchema<T>() + ".[" + GetTableName<T>() + "].[" + columnAttribute.Name +
+                            keyNames.Add(GetSchema<T>() + ".[" + GetTableOrViewName<T>() + "].[" + columnAttribute.Name +
                                          "]");
                         }
                     }
@@ -149,7 +166,6 @@ namespace Northwind.WebRole.Domain
 
             return string.Join(",", columns);
         }
-
 
         public static string SimpleJoinColumns<T>(IEnumerable<string> columns, bool useColumnAlias = false)
             where T : class
@@ -269,14 +285,52 @@ namespace Northwind.WebRole.Domain
         public static string GetTableName<T>() where T : class
         {
             Type type = typeof(T);
-            object[] temp = type.GetCustomAttributes(
+            TableAttribute tableAttribute = type.GetCustomAttribute(
                 typeof(TableAttribute),
-                true);
+                true) as TableAttribute;
 
-            if (temp.Length > 0)
+            if (tableAttribute != null)
+            {          
+                return tableAttribute.Name;
+            }
+
+            return type.Name;
+        }
+
+        public static string GetViewName<T>() where T : class
+        {
+            Type type = typeof(T);
+            ViewAttribute viewAttribute = type.GetCustomAttribute(
+                typeof(ViewAttribute),
+                true) as ViewAttribute;
+
+            if (viewAttribute != null)
             {
-                if (temp[0] is TableAttribute tableAttribute)
-                    return tableAttribute.Name;
+                return viewAttribute.Name;
+            }
+
+            return type.Name;
+        }
+
+        public static string GetTableOrViewName<T>() where T : class
+        {
+            Type type = typeof(T);
+            TableAttribute tableAttribute = type.GetCustomAttribute(
+                typeof(TableAttribute),
+                true) as TableAttribute;
+
+            if (tableAttribute != null)
+            {
+                return tableAttribute.Name;
+            }
+
+            ViewAttribute viewAttribute = type.GetCustomAttribute(
+                typeof(ViewAttribute),
+                true) as ViewAttribute;
+
+            if (viewAttribute != null)
+            {
+                return viewAttribute.Name;
             }
 
             return type.Name;

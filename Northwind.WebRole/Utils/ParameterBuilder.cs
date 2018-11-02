@@ -43,8 +43,7 @@ namespace Northwind.WebRole.Utils
             {
                 if (valueType.IsArray)
                 {
-                    object[] values = Value as object[];
-                    if (values != null && values.Length > 0)
+                    if (Value is object[] values && values.Length > 0)
                     {
                         for (int i = 0; i < values.Length; i++)
                         {

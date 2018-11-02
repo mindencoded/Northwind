@@ -4,7 +4,7 @@ using Northwind.WebRole.UnitOfWork;
 
 namespace Northwind.WebRole.Repositories
 {
-    public class ShipperRepository : Repository<Shipper>, IShipperRepository
+    public class ShipperRepository : CommandRepository<Shipper>, IShipperRepository
     {
         public ShipperRepository(SqlConnection connection) : base(connection)
         {

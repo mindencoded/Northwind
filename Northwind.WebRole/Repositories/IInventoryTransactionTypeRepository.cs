@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IInventoryTransactionTypeRepository : IRepository<InventoryTransactionType>
+    public interface IInventoryTransactionTypeRepository : ICommandRepository<InventoryTransactionType>
     {
     }
 }

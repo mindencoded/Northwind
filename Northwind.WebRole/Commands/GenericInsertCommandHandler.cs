@@ -19,7 +19,7 @@ namespace Northwind.WebRole.Commands
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                _unitOfWork.Repository<TEntity>().Insert(command);
+                _unitOfWork.CommandRepository<TEntity>().Insert(command);
             }
         }
 
@@ -28,7 +28,7 @@ namespace Northwind.WebRole.Commands
             using (_unitOfWork)
             {
                 await _unitOfWork.OpenAsync();
-                await _unitOfWork.Repository<TEntity>().InsertAsync(command);
+                await _unitOfWork.CommandRepository<TEntity>().InsertAsync(command);
             }
         }
     }

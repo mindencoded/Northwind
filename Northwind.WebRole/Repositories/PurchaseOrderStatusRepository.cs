@@ -4,7 +4,7 @@ using Northwind.WebRole.UnitOfWork;
 
 namespace Northwind.WebRole.Repositories
 {
-    public class PurchaseOrderStatusRepository : Repository<PurchaseOrderStatus>, IPurchaseOrderStatusRepository
+    public class PurchaseOrderStatusRepository : CommandRepository<PurchaseOrderStatus>, IPurchaseOrderStatusRepository
     {
         public PurchaseOrderStatusRepository(SqlConnection connection) : base(connection)
         {

@@ -4,7 +4,7 @@ using Northwind.WebRole.UnitOfWork;
 
 namespace Northwind.WebRole.Repositories
 {
-    public class InventoryTransactionRepository : Repository<InventoryTransaction>, IInventoryTransactionRepository
+    public class InventoryTransactionRepository : CommandRepository<InventoryTransaction>, IInventoryTransactionRepository
     {
         public InventoryTransactionRepository(SqlConnection connection) : base(connection)
         {

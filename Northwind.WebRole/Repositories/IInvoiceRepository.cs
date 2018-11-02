@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IInvoiceRepository : IRepository<Invoice>
+    public interface IInvoiceRepository : ICommandRepository<Invoice>
     {
     }
 }

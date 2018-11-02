@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IShipperRepository : IRepository<Shipper>
+    public interface IShipperRepository : ICommandRepository<Shipper>
     {
     }
 }

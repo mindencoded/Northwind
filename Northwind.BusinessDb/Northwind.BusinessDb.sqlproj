@@ -101,6 +101,7 @@
     <Build Include="dbo\Keys\FK_PURCHASE_ORDER_DETAIL__INVENTORY_TRANSACTION.sql" />
     <Build Include="dbo\Keys\FK_PURCHASE_ORDER_DETAIL__PRODUCT.sql" />
     <Build Include="dbo\Keys\FK_PURCHASE_ORDER_DETAIL__PURCHASE_ORDER.sql" />
+    <Build Include="dbo\Views\CUSTOMER_ORDERS.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Northwind.BusinessDb.publish.xml" />

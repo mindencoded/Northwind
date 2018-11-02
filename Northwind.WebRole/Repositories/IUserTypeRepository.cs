@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IUserTypeRepository : IRepository<UserType>
+    public interface IUserTypeRepository : ICommandRepository<UserType>
     {
     }
 }

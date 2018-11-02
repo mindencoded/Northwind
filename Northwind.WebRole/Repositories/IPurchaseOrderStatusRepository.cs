@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IPurchaseOrderStatusRepository : IRepository<PurchaseOrderStatus>
+    public interface IPurchaseOrderStatusRepository : ICommandRepository<PurchaseOrderStatus>
     {
     }
 }

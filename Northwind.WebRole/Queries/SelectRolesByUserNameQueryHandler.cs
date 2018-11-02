@@ -30,7 +30,7 @@ namespace Northwind.WebRole.Queries
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                IRepository<User> userRepository = _unitOfWork.Repository<User>();
+                IQueryRepository<User> userRepository = _unitOfWork.QueryRepository<User>();
                 User user = userRepository.Select(parameters).FirstOrDefault();
                 if (user != null)
                 {
@@ -39,11 +39,11 @@ namespace Northwind.WebRole.Queries
                         {"UserId", user.Id},
                         {"Active", true}
                     };
-                    IRepository<RoleDetail> roleDetailRepository = _unitOfWork.Repository<RoleDetail>();
+                    IQueryRepository<RoleDetail> roleDetailRepository = _unitOfWork.QueryRepository<RoleDetail>();
                     IList<RoleDetail> roleDetails = roleDetailRepository.Select(parameters).ToList();
                     if (roleDetails.Any())
                     {
-                        IRepository<Role> roleRepository = _unitOfWork.Repository<Role>();
+                        IQueryRepository<Role> roleRepository = _unitOfWork.QueryRepository<Role>();
                         foreach (RoleDetail roleDetail in roleDetails)
                         {
                             parameters = new Dictionary<string, object>

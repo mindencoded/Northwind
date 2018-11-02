@@ -94,11 +94,4 @@ namespace Northwind.WebRole.Domain.Business
 
         public virtual ICollection<InventoryTransaction> InventoryTransactions { get; set; }
     }
-}
-
-//[RegularExpression(@"^\d+.\d{0,4}$")]
-//[RegularExpression(@"\d+(\.\d{0,4})?")]
-//[RegularExpression(@"^(0|-?\d{0,19}(\.\d{0,4})?)$")]
-//[RegularExpression("^[-+]?(?:[0-9]|[0-1][0-2](?:[.][0-9])?)$")]
-//[RegularExpression(@"^\d*(\.|,|(\.\d{1,4})|(,\d{1,4}))?$")]
-//[RegularExpression(@"[0-9]{0,}\.[0-9]{4}")]  
+}  

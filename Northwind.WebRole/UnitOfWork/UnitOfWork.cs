@@ -90,31 +90,42 @@ namespace Northwind.WebRole.UnitOfWork
             GC.SuppressFinalize(this);
         }
 
-        public IRepository<T> Repository<T>() where T : class
+        public ICommandRepository<T> CommandRepository<T>() where T : class
         {
-            if (!Repositories.Keys.Contains(typeof(IRepository<T>)))
+            if (!Repositories.Keys.Contains(typeof(ICommandRepository<T>)))
             {
-                Repositories.Add(typeof(IRepository<T>),
-                    Transaction != null ? new Repository<T>(Connection, Transaction) : new Repository<T>(Connection));
+                Repositories.Add(typeof(ICommandRepository<T>),
+                    Transaction != null ? new CommandRepository<T>(Connection, Transaction) : new CommandRepository<T>(Connection));
             }
 
-            return Repositories[typeof(IRepository<T>)] as IRepository<T>;
+            return Repositories[typeof(ICommandRepository<T>)] as ICommandRepository<T>;
         }
 
-        public object Repository(Type type)
+        public IQueryRepository<T> QueryRepository<T>() where T : class
         {
-            if (!typeof(IRepository).IsAssignableFrom(type))
-                throw new InvalidOperationException(string.Format("Type {0} not implement IRepository", type.Name));
-
-            if (!Repositories.ContainsKey(type))
+            if (!Repositories.Keys.Contains(typeof(IQueryRepository<T>)))
             {
-                object instance = Transaction != null
-                    ? Activator.CreateInstance(type, Connection, Transaction)
-                    : Activator.CreateInstance(type, Connection);
-                Repositories.Add(type, instance);
+                Repositories.Add(typeof(IQueryRepository<T>),
+                    Transaction != null ? new QueryRepository<T>(Connection, Transaction) : new QueryRepository<T>(Connection));
             }
 
-            return Repositories[type];
+            return Repositories[typeof(IQueryRepository<T>)] as IQueryRepository<T>;
+        }
+
+        public object Repository(Type repositoryType)
+        {
+            if (!typeof(IRepository).IsAssignableFrom(repositoryType))
+                throw new InvalidOperationException(string.Format("Type {0} not implement IRepository", repositoryType.Name));
+
+            if (!Repositories.ContainsKey(repositoryType))
+            {
+                object instance = Transaction != null
+                    ? Activator.CreateInstance(repositoryType, Connection, Transaction)
+                    : Activator.CreateInstance(repositoryType, Connection);
+                Repositories.Add(repositoryType, instance);
+            }
+
+            return Repositories[repositoryType];
         }
 
         public void Register(IRepository repository)

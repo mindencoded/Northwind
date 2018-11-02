@@ -1,5 +1,6 @@
 ﻿using System.Security.Principal;
 using System.ServiceModel;
+using Northwind.WebRole.Utils;
 
 namespace Northwind.WebRole.Security
 {
@@ -8,7 +9,12 @@ namespace Northwind.WebRole.Security
         protected override bool CheckAccessCore(OperationContext operationContext)
         {
             string role = operationContext.GetRoleName();
-            IPrincipal principal = new CustomPrincipal(new GenericIdentity("Anonymous"), new[] {role});
+            string[] roles = {};
+            if (role != null)
+            {
+                roles = new[] {role};
+            }
+            IPrincipal principal = new CustomPrincipal(new GenericIdentity("Anonymous"), roles);
             operationContext.IncomingMessageProperties.Add("Principal", principal);
             return true;
         }

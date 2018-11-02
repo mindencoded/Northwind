@@ -23,11 +23,11 @@ namespace Northwind.WebRole.Commands
                 if (command.GetType().IsGenericType &&
                     command.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
-                    _unitOfWork.Repository<TEntity>().Update((IDictionary<string, object>) command);
+                    _unitOfWork.CommandRepository<TEntity>().Update((IDictionary<string, object>) command);
                 }
                 else
                 {
-                    _unitOfWork.Repository<TEntity>().Update(command);
+                    _unitOfWork.CommandRepository<TEntity>().Update(command);
                 }
             }
         }
@@ -40,11 +40,11 @@ namespace Northwind.WebRole.Commands
                 if (command.GetType().IsGenericType &&
                     command.GetType().GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
-                    await _unitOfWork.Repository<TEntity>().UpdateAsync((IDictionary<string, object>) command);
+                    await _unitOfWork.CommandRepository<TEntity>().UpdateAsync((IDictionary<string, object>) command);
                 }
                 else
                 {
-                    await _unitOfWork.Repository<TEntity>().UpdateAsync(command);
+                    await _unitOfWork.CommandRepository<TEntity>().UpdateAsync(command);
                 }
             }
         }

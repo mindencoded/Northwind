@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IOrderDetailStatusRepository : IRepository<OrderDetailStatus>
+    public interface IOrderDetailStatusRepository : ICommandRepository<OrderDetailStatus>
     {
     }
 }

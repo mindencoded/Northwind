@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IOrderTaxStatusRepository : IRepository<OrderTaxStatus>
+    public interface IOrderTaxStatusRepository : ICommandRepository<OrderTaxStatus>
     {
     }
 }

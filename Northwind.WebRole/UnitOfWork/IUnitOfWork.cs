@@ -19,9 +19,11 @@ namespace Northwind.WebRole.UnitOfWork
 
         bool IsOpen();
 
-        IRepository<T> Repository<T>() where T : class;
+        ICommandRepository<T> CommandRepository<T>() where T : class;
 
-        object Repository(Type type);
+        IQueryRepository<T> QueryRepository<T>() where T : class;
+        
+       object Repository(Type repositoryType);
 
         void Register(IRepository repository);
 

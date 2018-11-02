@@ -4,7 +4,7 @@ using Northwind.WebRole.UnitOfWork;
 
 namespace Northwind.WebRole.Repositories
 {
-    public class OrderRepository : Repository<Order>, IOrderRepository
+    public class OrderRepository : CommandRepository<Order>, IOrderRepository
     {
         public OrderRepository(SqlConnection connection) : base(connection)
         {

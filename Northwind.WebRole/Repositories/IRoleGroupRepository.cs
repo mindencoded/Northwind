@@ -2,7 +2,7 @@
 
 namespace Northwind.WebRole.Repositories
 {
-    public interface IRoleGroupRepository : IRepository<RoleGroup>
+    public interface IRoleGroupRepository : ICommandRepository<RoleGroup>
     {
     }
 }

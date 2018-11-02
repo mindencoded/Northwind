@@ -29,7 +29,7 @@ namespace Northwind.WebRole.Queries
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                IRepository<User> userRepository = _unitOfWork.Repository<User>();
+                IQueryRepository<User> userRepository = _unitOfWork.QueryRepository<User>();
                 User user = userRepository.Select(parameters).FirstOrDefault();
                 return user != null;
             }
@@ -47,7 +47,7 @@ namespace Northwind.WebRole.Queries
             using (_unitOfWork)
             {
                 await _unitOfWork.OpenAsync();
-                IRepository<User> userRepository = _unitOfWork.Repository<User>();
+                IQueryRepository<User> userRepository = _unitOfWork.QueryRepository<User>();
                 IEnumerable<User> user = await userRepository.SelectAsync(parameters);
                 return user.Any();
             }

@@ -4,7 +4,7 @@ using Northwind.WebRole.UnitOfWork;
 
 namespace Northwind.WebRole.Repositories
 {
-    public class ProductRepository : Repository<Product>, IProductRepository
+    public class ProductRepository : CommandRepository<Product>, IProductRepository
     {
         public ProductRepository(SqlConnection connection) : base(connection)
         {

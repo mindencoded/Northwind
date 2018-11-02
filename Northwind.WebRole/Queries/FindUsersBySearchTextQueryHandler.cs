@@ -31,19 +31,19 @@ namespace Northwind.WebRole.Queries
                 {"Active", !query.IncludeInactiveUsers}
             };
 
-            IList<string> columns = new List<string>
-            {
-                "Username",
-                "Active"
-            };
+            //IList<string> columns = new List<string>
+            //{
+            //    "Username",
+            //    "Active"
+            //};
 
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                IRepository<User> userRepository = _unitOfWork.Repository<User>();
-                IEnumerable<dynamic> users = userRepository.Select(columns, parameters);
-                dynamic[] array = users.ToArray();
-                return null;
+                IQueryRepository<User> userRepository = _unitOfWork.QueryRepository<User>();
+                IEnumerable<User> users = userRepository.Select(parameters);
+                User[] array = users.ToArray();
+                return array;
             }
         }
 

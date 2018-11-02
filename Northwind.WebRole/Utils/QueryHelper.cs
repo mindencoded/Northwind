@@ -67,7 +67,8 @@ namespace Northwind.WebRole.Utils
             PropertyInfo[] properties = typeof(T).GetProperties();
             string[] propertyNames = properties.Select(x => x.Name).ToArray();
             IList<string> columnAttributeList = properties
-                .Select(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().FirstOrDefault()?.Name).ToList();
+                .Where(x => x.GetCustomAttributes(true).OfType<ColumnAttribute>().Any())
+                .Select(x => ((ColumnAttribute)x.GetCustomAttribute(typeof(ColumnAttribute), true)).Name).ToList();
             IList<string> columnNames = new List<string>();
             foreach (string orderItem in orderBy)
             {

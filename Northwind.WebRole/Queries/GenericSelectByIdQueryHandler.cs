@@ -21,7 +21,7 @@ namespace Northwind.WebRole.Queries
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                return _unitOfWork.Repository<TEntity>().SelectById(query.Id);
+                return _unitOfWork.CommandRepository<TEntity>().SelectById(query.Id);
             }
         }
 
@@ -30,7 +30,7 @@ namespace Northwind.WebRole.Queries
             using (_unitOfWork)
             {
                 await _unitOfWork.OpenAsync();
-                return await _unitOfWork.Repository<TEntity>().SelectByIdAsync(query.Id);
+                return await _unitOfWork.CommandRepository<TEntity>().SelectByIdAsync(query.Id);
             }
         }
     }

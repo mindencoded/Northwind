@@ -4,7 +4,7 @@ using Northwind.WebRole.UnitOfWork;
 
 namespace Northwind.WebRole.Repositories
 {
-    public class RoleGroupRepository : Repository<RoleGroup>, IRoleGroupRepository
+    public class RoleGroupRepository : CommandRepository<RoleGroup>, IRoleGroupRepository
     {
         public RoleGroupRepository(SqlConnection connection) : base(connection)
         {

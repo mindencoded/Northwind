@@ -28,7 +28,7 @@ namespace Northwind.WebRole.Commands
             using (_unitOfWork)
             {
                 _unitOfWork.Open();
-                IRepository<User> repository = _unitOfWork.Repository<User>();
+                ICommandRepository<User> repository = _unitOfWork.CommandRepository<User>();
                 repository.Insert(user);
             }
         }
